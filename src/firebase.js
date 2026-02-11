@@ -4,13 +4,12 @@ import { getFirestore, initializeFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDJgTEheRU5NvH0ihCRmKUwAkTJEKqs6fs",
-    authDomain: "vitaguard-cc314.firebaseapp.com",
-    projectId: "vitaguard-cc314",
-    storageBucket: "vitaguard-cc314.firebasestorage.app",
-    messagingSenderId: "383290056908",
-    appId: "1:383290056908:web:24f7a711365d483d45e269",
-    measurementId: "G-350HQ3H4YB"
+    apiKey: "AIzaSyDRb5CfkIIXbUEYG5cnfaWxZPTO44T0gQ0",
+    authDomain: "vitagaurd-3739d.firebaseapp.com",
+    projectId: "vitagaurd-3739d",
+    storageBucket: "vitagaurd-3739d.firebasestorage.app",
+    messagingSenderId: "1026762924536",
+    appId: "1:1026762924536:web:cfe77fd270867a5055f60d"
 };
 
 // Initialize Firebase
