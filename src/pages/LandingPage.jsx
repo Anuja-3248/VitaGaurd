@@ -1,8 +1,13 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ShieldCheck, Activity, LineChart, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Activity, LineChart, Lock, ArrowRight, CheckCircle2, X, Microscope, Database, FileText } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const LandingPage = () => {
+    const { currentUser } = useAuth();
+    const [activeStep, setActiveStep] = useState(null);
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -12,113 +17,307 @@ const LandingPage = () => {
     };
 
     const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1 }
+        hidden: { y: 30, opacity: 0 },
+        visible: { y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+    };
+
+    const stepDetails = {
+        "01": {
+            title: "Biometric Intake Protocol",
+            subtitle: "Data Collection & Calibration",
+            icon: <Microscope size={32} className="text-blue-500" />,
+            content: "Our system gathers baseline health markers including age, gender, BMI (via height/weight), and specific physical symptoms. This phase uses 'Smart Matching' to cross-reference your inputs with demographic risk pools.",
+            features: ["Personal Health Profiling", "Symptom Categorization", "Baseline Calibration"],
+            color: "from-blue-600 to-indigo-600"
+        },
+        "02": {
+            title: "Neural Analysis Engine",
+            subtitle: "Algorithmic Risk Assessment",
+            icon: <Database size={32} className="text-cyan-500" />,
+            content: "Your data is processed through our Vita-Neural engine. We compare your symptoms against 10,000+ medical case studies to identify early-stage risk markers for cardiovascular, respiratory, and metabolic conditions.",
+            features: ["Pattern Recognition", "Medical Database Scanning", "Probability Scoring"],
+            color: "from-health-cyber to-blue-500"
+        },
+        "03": {
+            title: "Clinical Synthesis",
+            subtitle: "Intelligent Action Planning",
+            icon: <FileText size={32} className="text-slate-800" />,
+            content: "The final output is a clinical-grade risk report. Our AI generates personalized precautions and calculates a 'Severity Score' to help you determine if immediate medical consultation is required.",
+            features: ["Risk Level Classification", "Custom Precautions", "PDF Health Documentation"],
+            color: "from-slate-800 to-slate-900"
+        }
     };
 
     return (
-        <div className="overflow-x-hidden">
-            {/* Hero Section */}
-            <section className="relative min-h-screen flex items-center pt-20 bg-gradient-to-br from-primary-50 via-white to-health-blue/10">
-                <div className="absolute top-0 right-0 w-1/2 h-full opacity-10 pointer-events-none">
-                    <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-                        <path fill="#3b82f6" d="M44.7,-76.4C58.1,-69.2,69.2,-58.1,76.4,-44.7C83.7,-31.2,87.1,-15.6,86.1,-0.6C85.1,14.5,79.5,28.9,71.2,41.9C62.9,54.9,51.8,66.4,38.4,73.5C25,80.7,9.4,83.5,-6.3,81.4C-22,79.4,-37.7,72.4,-51,62.3C-64.3,52.2,-75.1,39.1,-80.7,24.1C-86.3,9.1,-86.7,-7.8,-82.1,-23.1C-77.5,-38.4,-67.9,-52.1,-55,-59.8C-42.1,-67.5,-25.9,-69.2,-10.8,-73.4C4.3,-77.6,19.3,-84.3,44.7,-76.4Z" transform="translate(100 100)" />
-                    </svg>
-                </div>
-
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="overflow-x-hidden bg-white selection:bg-primary-100 selection:text-primary-700">
+            {/* Modal Overlay */}
+            <AnimatePresence>
+                {activeStep && (
+                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
                         <motion.div
-                            initial={{ x: -100, opacity: 0 }}
-                            animate={{ x: 0, opacity: 1 }}
-                            transition={{ duration: 0.8 }}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setActiveStep(null)}
+                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+                        />
+                        <motion.div
+                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                            className="relative w-full max-w-2xl glass-card rounded-[3rem] p-8 md:p-12 overflow-hidden shadow-2xl border-white"
                         >
-                            <span className="inline-block py-1 px-4 rounded-full bg-primary-100 text-primary-700 font-semibold text-sm mb-6">
-                                Next-Gen Health Analysis
-                            </span>
-                            <h1 className="text-5xl md:text-6xl font-extrabold text-slate-800 leading-tight mb-6">
-                                Detect Health Risks <span className="text-primary-600">Early</span>. Act Before It's Serious.
-                            </h1>
-                            <p className="text-xl text-slate-600 mb-10 max-w-lg leading-relaxed">
-                                Our intelligent system analyzes your symptoms and lifestyle to provide personalized health insights and early warning indicators.
-                            </p>
-                            <div className="flex flex-col sm:flex-row gap-4">
-                                <Link to="/signup" className="btn-primary flex items-center justify-center gap-2 text-lg">
-                                    Get Started <ArrowRight size={20} />
-                                </Link>
-                                <a href="#how-it-works" className="btn-secondary flex items-center justify-center text-lg">
-                                    Learn More
-                                </a>
+                            <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${stepDetails[activeStep].color} opacity-10 blur-[80px] -mr-32 -mt-32`}></div>
+
+                            <button
+                                onClick={() => setActiveStep(null)}
+                                className="absolute top-8 right-8 p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors text-slate-500"
+                            >
+                                <X size={20} />
+                            </button>
+
+                            <div className="relative z-10">
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                                        {stepDetails[activeStep].icon}
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-black text-primary-600 uppercase tracking-[0.3em] mb-1">{stepDetails[activeStep].subtitle}</p>
+                                        <h3 className="text-3xl font-black text-slate-900">{stepDetails[activeStep].title}</h3>
+                                    </div>
+                                </div>
+
+                                <p className="text-slate-600 text-lg leading-relaxed mb-10 font-medium">
+                                    {stepDetails[activeStep].content}
+                                </p>
+
+                                <div className="space-y-4">
+                                    <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Key Capabilities</p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                        {stepDetails[activeStep].features.map((f, i) => (
+                                            <div key={i} className="flex items-center gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
+                                                <span className="font-bold text-slate-700">{f}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="mt-12 pt-8 border-t border-slate-100">
+                                    <button
+                                        onClick={() => setActiveStep(null)}
+                                        className="w-full btn-premium py-5 text-lg"
+                                    >
+                                        Got it, Proceed <ArrowRight size={20} />
+                                    </button>
+                                </div>
                             </div>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
+
+            {/* Background Decorations */}
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-primary-100/50 blur-[120px] rounded-full animate-float"></div>
+                <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-health-cyber/10 blur-[100px] rounded-full animate-float" style={{ animationDelay: '-2s' }}></div>
+                <div className="absolute bottom-[10%] left-[20%] w-[25%] h-[25%] bg-health-violet/10 blur-[100px] rounded-full animate-float" style={{ animationDelay: '-4s' }}></div>
+            </div>
+
+            {/* Hero Section */}
+            <section className="relative min-h-screen flex items-center pt-28 pb-20 z-10">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative w-full">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            variants={containerVariants}
+                            className="text-center lg:text-left"
+                        >
+                            <motion.div variants={itemVariants} className="inline-flex items-center gap-2 py-2 px-5 rounded-full bg-primary-50 border border-primary-100 text-primary-600 font-bold text-xs uppercase tracking-widest mb-8 shadow-sm">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+                                </span>
+                                AI-Powered Preventive Care
+                            </motion.div>
+
+                            <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl lg:text-7xl font-black text-slate-900 leading-[1.1] mb-8 tracking-tight">
+                                Health Risk <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-health-cyber">Detection</span> Reimagined.
+                            </motion.h1>
+
+                            <motion.p variants={itemVariants} className="text-xl text-slate-500 mb-12 max-w-xl lg:mx-0 mx-auto leading-relaxed font-medium">
+                                Stay ahead of medical concerns with VitaGuard's sophisticated AI engine. We analyze your data to provide clinical-grade insights before they become serious.
+                            </motion.p>
+
+                            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
+                                <Link to={currentUser ? "/dashboard" : "/signup"} className="btn-premium group text-lg px-10 py-5 text-center">
+                                    {currentUser ? "Go to Dashboard" : "Get Started Free"}
+                                    <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
+                                </Link>
+                                <button
+                                    onClick={() => document.getElementById('features').scrollIntoView({ behavior: 'smooth' })}
+                                    className="flex items-center justify-center px-10 py-5 rounded-2xl border-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-all text-lg"
+                                >
+                                    Explore Features
+                                </button>
+                            </motion.div>
+
                         </motion.div>
 
                         <motion.div
-                            className="relative"
-                            initial={{ scale: 0.8, opacity: 0 }}
+                            className="relative lg:h-[600px] flex items-center justify-center"
+                            initial={{ scale: 0.9, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
-                            transition={{ duration: 1 }}
+                            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
                         >
-                            <div className="glass-card p-4 rounded-3xl relative z-10">
-                                <img
-                                    src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800"
-                                    alt="Doctor using tablet"
-                                    className="rounded-2xl shadow-inner w-full h-[400px] object-cover"
-                                />
-                                <div className="absolute -bottom-6 -left-6 glass-card p-6 rounded-2xl animate-pulse-soft hidden md:block">
-                                    <div className="flex items-center gap-4">
-                                        <div className="bg-health-green/20 p-2 rounded-full">
-                                            <ShieldCheck className="text-health-green h-8 w-8" />
+                            <div className="relative z-10 group">
+                                <div className="absolute -inset-4 bg-gradient-to-tr from-primary-400 to-health-cyber rounded-[2.5rem] blur-2xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                                <div className="glass-card p-3 rounded-[2.5rem] shadow-glass relative">
+                                    <img
+                                        src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800"
+                                        alt="Doctor using tablet"
+                                        className="rounded-[2rem] shadow-inner w-full h-[500px] object-cover"
+                                    />
+                                    {/* Floater UI 1 - Precision */}
+                                    <motion.div
+                                        animate={{ y: [0, -12, 0] }}
+                                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                        className="absolute -top-6 -right-12 bg-white p-5 rounded-[2rem] shadow-premium border-2 border-primary-100 flex items-center gap-4 z-30"
+                                    >
+                                        <div className="bg-emerald-50 p-2.5 rounded-xl shadow-sm border border-emerald-100">
+                                            <Activity className="text-emerald-500 h-6 w-6" />
                                         </div>
                                         <div>
-                                            <p className="text-sm text-slate-500 font-medium">Risk Analysis</p>
-                                            <p className="text-xl font-bold text-slate-800 underline decoration-health-green decoration-2">98.4% Accuracy</p>
+                                            <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mb-0.5">AI Engine</p>
+                                            <p className="text-xl font-black text-primary-900 leading-none">98.4% <span className="text-xs font-bold text-slate-400 ml-1">Precision</span></p>
                                         </div>
-                                    </div>
+                                    </motion.div>
+
+                                    {/* Floater UI 2 - Status */}
+                                    <motion.div
+                                        animate={{ y: [0, 12, 0] }}
+                                        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                                        className="absolute -bottom-8 -left-12 bg-white p-5 rounded-[2rem] shadow-premium border-2 border-primary-100 flex items-center gap-4 z-30"
+                                    >
+                                        <div className="bg-primary-50 p-2.5 rounded-xl shadow-sm border border-primary-100">
+                                            <ShieldCheck className="text-primary-600 h-6 w-6" />
+                                        </div>
+                                        <div>
+                                            <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mb-0.5">Trust Score</p>
+                                            <p className="text-xl font-black text-primary-900 leading-none italic tracking-tighter">Verified <span className="text-xs font-bold text-health-cyber ml-1">✓</span></p>
+                                        </div>
+                                    </motion.div>
                                 </div>
                             </div>
-                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-health-teal/20 blur-3xl rounded-full"></div>
-                            <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-primary-200/20 blur-3xl rounded-full"></div>
                         </motion.div>
                     </div>
                 </div>
             </section>
 
             {/* How It Works Section */}
-            <section id="how-it-works" className="py-24 bg-white relative">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="section-title">How It Works</h2>
-                        <p className="section-subtitle">Three simple steps to understand your health better and stay ahead of potential risks.</p>
+            <section id="how-it-works" className="py-32 bg-white relative overflow-hidden">
+                {/* Visual Connection Line (Desktop) */}
+                <div className="absolute top-[60%] left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary-100 to-transparent hidden md:block z-0"></div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="text-center mb-24">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            className="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-slate-900 text-white font-black text-[10px] uppercase tracking-[0.3em] mb-6"
+                        >
+                            The Protocol
+                        </motion.div>
+                        <motion.h2
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter mb-6"
+                        >
+                            Precision <span className="italic text-primary-600">Workflow</span>
+                        </motion.h2>
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.2 }}
+                            className="text-lg text-slate-500 max-w-2xl mx-auto font-medium"
+                        >
+                            Our diagnostic engine transforms raw data into clinical intelligence through a three-stage neural architecture.
+                        </motion.p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
                         {[
                             {
-                                icon: <Activity className="text-primary-600" />,
-                                title: "Enter Data",
-                                desc: "Provide your symptoms, lifestyle habits, and health history through our secure portal."
+                                step: "01",
+                                icon: <Activity className="text-white" size={28} />,
+                                title: "Biometric Intake",
+                                desc: "Our intelligent gateway synchronizes with your existing health metrics and symptoms.",
+                                color: "from-blue-600 to-indigo-600",
+                                glow: "bg-blue-400/20"
                             },
                             {
-                                icon: <LineChart className="text-health-teal" />,
-                                title: "AI Analysis",
-                                desc: "Our advanced algorithms process your data to identify patterns and potential risk markers."
+                                step: "02",
+                                icon: <LineChart className="text-white" size={28} />,
+                                title: "Neural Processing",
+                                desc: "Thousands of medical data points are scanned against your profile using our pro-logic models.",
+                                color: "from-health-cyber to-blue-500",
+                                glow: "bg-cyan-400/20"
                             },
                             {
-                                icon: <CheckCircle2 className="text-health-green" />,
-                                title: "Get Insights",
-                                desc: "Receive a comprehensive report with clear risk levels and personalized recommendations."
+                                step: "03",
+                                icon: <CheckCircle2 className="text-white" size={28} />,
+                                title: "Clinical Synthesis",
+                                desc: "A high-fidelity report is generated with exact risk classifications and preventive measures.",
+                                color: "from-slate-800 to-slate-900",
+                                glow: "bg-emerald-400/10"
                             }
                         ].map((item, idx) => (
                             <motion.div
                                 key={idx}
-                                whileHover={{ y: -10 }}
-                                className="bg-slate-50 p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300"
+                                initial={{ opacity: 0, y: 40 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: idx * 0.2, duration: 0.8 }}
+                                className="relative group cursor-pointer"
+                                onClick={() => setActiveStep(item.step)}
                             >
-                                <div className="bg-white p-4 rounded-2xl w-fit mb-6 shadow-sm">
-                                    {item.icon}
+                                {/* Step Indicator Shadow */}
+                                <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[8rem] font-black text-slate-50 opacity-[0.03] select-none group-hover:opacity-[0.07] transition-opacity duration-700">
+                                    {item.step}
                                 </div>
-                                <h3 className="text-2xl font-bold mb-4 text-slate-800">{item.title}</h3>
-                                <p className="text-slate-600 leading-relaxed">{item.desc}</p>
+
+                                <div className="glass-card p-10 rounded-[3rem] border-slate-100 hover:border-white hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-700 h-full flex flex-col items-center text-center group">
+                                    {/* Icon Container with Gradient Orb */}
+                                    <div className="relative mb-8">
+                                        <div className={`absolute inset-0 ${item.glow} blur-2xl rounded-full scale-150 group-hover:scale-[2] transition-transform duration-700`}></div>
+                                        <div className={`relative bg-gradient-to-br ${item.color} p-6 rounded-[2rem] shadow-lg shadow-blue-500/10 transform group-hover:rotate-12 transition-transform duration-500`}>
+                                            {item.icon}
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <div className="flex flex-col items-center">
+                                            <span className="text-[10px] font-black text-primary-600 uppercase tracking-widest bg-primary-50 px-3 py-1 rounded-full mb-3 inline-block">Stage {item.step}</span>
+                                            <h3 className="text-2xl font-black text-slate-900 tracking-tight">{item.title}</h3>
+                                        </div>
+                                    </div>
+
+                                    <p className="text-slate-500 leading-relaxed font-medium">
+                                        {item.desc}
+                                    </p>
+
+                                    {/* Action Label */}
+                                    <div className="mt-6 text-primary-600 text-xs font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
+                                        View Protocol Details <ArrowRight size={14} />
+                                    </div>
+
+                                    {/* Bottom Decorative Element */}
+                                    <div className={`w-12 h-1 bg-gradient-to-r ${item.color} rounded-full mt-8 opacity-20 group-hover:opacity-100 group-hover:w-20 transition-all duration-500`}></div>
+                                </div>
                             </motion.div>
                         ))}
                     </div>
@@ -126,13 +325,22 @@ const LandingPage = () => {
             </section>
 
             {/* Features Section */}
-            <section id="features" className="py-24 bg-slate-50">
+            <section id="features" className="py-32 bg-slate-50/50 relative">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col lg:flex-row items-center gap-16">
+                    <div className="flex flex-col lg:flex-row items-center gap-20">
                         <div className="w-full lg:w-1/2">
-                            <h2 className="text-3xl md:text-5xl font-bold text-slate-800 mb-8 leading-tight">
-                                Powerful Features for Your <span className="text-primary-600">Peace of Mind</span>
-                            </h2>
+                            <motion.div
+                                initial={{ opacity: 0, x: -30 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                            >
+                                <h2 className="text-4xl md:text-6xl font-black text-slate-900 mb-8 leading-[1.1] tracking-tight">
+                                    Premium Features for Your <span className="text-primary-600">Health</span>
+                                </h2>
+                                <p className="text-lg text-slate-500 mb-12 font-medium">
+                                    Our platform combines medical expertise with advanced AI to give you the most accurate proactive health tools.
+                                </p>
+                            </motion.div>
                             <div className="space-y-6">
                                 {[
                                     { icon: <Activity className="text-primary-500" />, title: "Symptom Checker", desc: "Detailed analysis of your current physical symptoms." },
@@ -162,10 +370,10 @@ const LandingPage = () => {
                                 </div>
                                 <div className="space-y-4">
                                     <div className="bg-white p-2 rounded-2xl overflow-hidden shadow-lg h-40">
-                                        <img src="https://images.unsplash.com/photo-1579684381251-1da014f08e51?auto=format&fit=crop&q=80&w=400" alt="Health 3" className="w-full h-full object-cover rounded-xl" />
+                                        <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=600" alt="Advanced Medical Laboratory" className="w-full h-full object-cover rounded-xl" />
                                     </div>
                                     <div className="bg-white p-2 rounded-2xl overflow-hidden shadow-lg h-60">
-                                        <img src="https://images.unsplash.com/photo-1484889158910-57ad217b19a5?auto=format&fit=crop&q=80&w=400" alt="Health 4" className="w-full h-full object-cover rounded-xl" />
+                                        <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&q=80&w=600" alt="Modern Diagnostic Interface" className="w-full h-full object-cover rounded-xl" />
                                     </div>
                                 </div>
                             </div>
@@ -175,26 +383,29 @@ const LandingPage = () => {
             </section>
 
             {/* CTA Section */}
-            <section className="py-20 relative">
+            <section className="py-32 relative z-10 overflow-hidden">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="bg-primary-600 rounded-[3rem] p-12 text-center text-white relative overflow-hidden shadow-2xl">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl -mr-32 -mt-32 rounded-full"></div>
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 blur-3xl -ml-32 -mb-32 rounded-full"></div>
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        className="bg-slate-900 rounded-[3.5rem] p-16 md:p-24 text-center text-white relative overflow-hidden shadow-2xl"
+                    >
+                        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-600/20 blur-[120px] rounded-full -mr-64 -mt-64 animate-pulse"></div>
+                        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-health-cyber/10 blur-[100px] rounded-full -ml-40 -mb-40"></div>
 
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true }}
-                        >
-                            <h2 className="text-4xl md:text-5xl font-bold mb-8">Ready to take control of your health?</h2>
-                            <p className="text-xl text-primary-100 mb-10 max-w-2xl mx-auto">
-                                Join thousands of users who are already using VitaGuard to stay proactive about their wellness.
+                        <div className="relative z-10">
+                            <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-none italic">
+                                Ready for a <span className="text-primary-400">Healthier</span> Future?
+                            </h2>
+                            <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto font-medium">
+                                Join our growing community of proactive individuals who trust VitaGuard for their daily health insights.
                             </p>
-                            <Link to="/signup" className="bg-white text-primary-600 hover:bg-primary-50 px-10 py-4 rounded-full font-bold text-lg transition-all shadow-lg inline-flex items-center gap-2">
-                                Get Started Now <ArrowRight size={20} />
+                            <Link to={currentUser ? "/dashboard" : "/signup"} className="btn-premium px-12 py-6 text-xl bg-white text-slate-900 hover:bg-slate-50 border-none shadow-white/10">
+                                {currentUser ? "Go to Dashboard" : "Get Started Now — It's Free"}
                             </Link>
-                        </motion.div>
-                    </div>
+                        </div>
+                    </motion.div>
                 </div>
             </section>
         </div>

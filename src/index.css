@@ -1,38 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased;
+    @apply bg-slate-50 text-slate-900 font-sans antialiased selection:bg-primary-100 selection:text-primary-700;
+    font-family: 'Outfit', sans-serif;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+    @apply bg-white/70 backdrop-blur-xl border border-white/40 shadow-glass transition-all duration-500;
   }
-  
-  .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg active:scale-95;
+
+  .glass-morphism {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
   }
-  
-  .btn-secondary {
-    @apply bg-white text-primary-600 border-2 border-primary-600 hover:bg-primary-50 font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95;
+
+  .btn-premium {
+    @apply relative overflow-hidden bg-primary-600 text-white font-bold py-3.5 px-8 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-glow shadow-lg flex items-center justify-center gap-2;
+  }
+
+  .btn-premium::after {
+    content: '';
+    @apply absolute top-0 left-[-100%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-25deg] transition-all duration-700;
+  }
+
+  .btn-premium:hover::after {
+    left: 150%;
   }
 
   .section-title {
-    @apply text-3xl md:text-4xl font-bold text-slate-800 text-center mb-4;
+    @apply text-4xl md:text-5xl font-black text-slate-900 text-center mb-4 tracking-tight;
   }
 
   .section-subtitle {
-    @apply text-lg text-slate-600 text-center max-w-2xl mx-auto mb-12;
+    @apply text-lg text-slate-500 text-center max-w-2xl mx-auto mb-12 font-medium;
   }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -40,5 +55,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 rounded-full hover:bg-slate-400;
+  @apply bg-slate-300 rounded-full border-4 border-slate-100 hover:bg-slate-400;
+}
+
+/* Blur Blobs */
+.blur-blob {
+  @apply absolute rounded-full blur-[100px] opacity-20 pointer-events-none;
 }

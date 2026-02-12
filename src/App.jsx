@@ -13,6 +13,7 @@ import ProfilePage from './pages/ProfilePage';
 // Components
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 
 import { AuthProvider } from './context/AuthContext';
 
@@ -20,6 +21,7 @@ function App() {
     return (
         <AuthProvider>
             <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                <ScrollToTop />
                 <div className="min-h-screen flex flex-col">
                     <Navbar />
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Activity, Clock, ShieldAlert, FileText, Plus, ArrowRight, TrendingUp, User } from 'lucide-react';
+import { Activity, Clock, ShieldAlert, FileText, Plus, ArrowRight, TrendingUp, User, Lock, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
 import { collection, query, where, getDocs, orderBy, limit, doc, getDoc } from 'firebase/firestore';
@@ -58,178 +58,236 @@ const DashboardPage = () => {
 
     // Prepare chart data (reverse to show chronological order)
     const chartData = assessments.slice(0, 7).reverse().map(item => ({
-        date: item.timestamp?.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        score: item.riskScore
+        date: item.timestamp?.toDate ? item.timestamp.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A',
+        score: item.riskScore || 0
     }));
 
     const stats = [
         {
             label: "Overall Risk",
-            value: assessments.length > 0 ? (assessments[0].riskScore < 20 ? "Low" : "Moderate") : "N/A",
-            color: "bg-health-green",
-            icon: <ShieldAlert className="text-white" />
+            value: assessments.length > 0 ? (assessments[0].riskScore < 15 ? "Low" : assessments[0].riskScore < 30 ? "Moderate" : "High") : "N/A",
+            color: assessments.length > 0
+                ? (assessments[0].riskScore < 15 ? "text-emerald-500" : assessments[0].riskScore < 30 ? "text-amber-500" : "text-rose-500")
+                : "text-slate-400",
+            bgColor: assessments.length > 0
+                ? (assessments[0].riskScore < 15 ? "bg-emerald-50" : assessments[0].riskScore < 30 ? "bg-amber-50" : "bg-rose-50")
+                : "bg-slate-50",
+            icon: <ShieldAlert size={22} />,
+            trend: assessments.length > 1 ? (assessments[0].riskScore < assessments[1].riskScore ? "improving" : "stable") : "baseline"
         },
         {
             label: "Last Checkup",
-            value: assessments.length > 0 ? assessments[0].timestamp?.toDate().toLocaleDateString() : "Never",
-            color: "bg-primary-500",
-            icon: <Clock className="text-white" />
+            value: assessments.length > 0 ? assessments[0].timestamp?.toDate?.().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : "Never",
+            color: "text-primary-600",
+            bgColor: "bg-primary-50",
+            icon: <Clock size={22} />,
+            trend: assessments.length > 0 ? "recent" : "pending"
         },
         {
-            label: "Assessments",
-            value: assessments.length.toString(),
-            color: "bg-health-teal",
-            icon: <FileText className="text-white" />
+            label: "Active Insights",
+            value: assessments.length > 0 ? "3 Alerts" : "0 Alerts",
+            color: "text-health-cyber",
+            bgColor: "bg-cyan-50",
+            icon: <TrendingUp size={22} />,
+            trend: "analyzing"
         }
     ];
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1 }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { y: 20, opacity: 0 },
+        visible: { y: 0, opacity: 1 }
+    };
+
     return (
-        <div className="bg-slate-50 min-h-screen pt-24 pb-12">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-slate-50 min-h-screen pt-36 pb-12 px-4 relative overflow-hidden">
+            {/* Background Decorations */}
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <div className="absolute top-[10%] left-[5%] w-[30%] h-[30%] bg-primary-100/40 blur-[100px] rounded-full animate-float"></div>
+                <div className="absolute bottom-[5%] right-[5%] w-[25%] h-[25%] bg-health-cyber/10 blur-[80px] rounded-full animate-float" style={{ animationDelay: '-3s' }}></div>
+            </div>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
                 {/* Profile Completion Multi-Banner */}
                 {!loading && !isProfileComplete && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="bg-indigo-600 rounded-3xl p-6 md:p-8 mb-10 text-white shadow-2xl shadow-indigo-200 relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6"
+                        className="glass-card mb-10 overflow-hidden group shadow-premium"
                     >
-                        <div className="relative z-10 text-center md:text-left">
-                            <h2 className="text-2xl font-black mb-2 flex items-center justify-center md:justify-start gap-3 uppercase tracking-tight">
-                                <Activity className="text-indigo-200" /> Complete Your Health Profile
-                            </h2>
-                            <p className="text-indigo-100 font-medium max-w-lg">
-                                For high-precision AI risk detection, we need your baseline metrics like age, height, and weight.
-                            </p>
+                        <div className="bg-gradient-to-r from-primary-600 via-primary-500 to-health-violet p-1">
+                            <div className="bg-white rounded-[1.4rem] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                                <div className="flex items-center gap-6 text-center md:text-left">
+                                    <div className="h-16 w-16 bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                                        <User size={32} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-2xl font-black text-slate-900 tracking-tight mb-1">
+                                            Complete Your Health Profile
+                                        </h2>
+                                        <p className="text-slate-500 font-medium max-w-lg">
+                                            Unlock high-precision AI risk detection by providing your baseline metrics.
+                                        </p>
+                                    </div>
+                                </div>
+                                <Link to="/profile" className="btn-premium px-8 py-4 text-base whitespace-nowrap shadow-glow">
+                                    Complete Setup <ArrowRight size={18} className="ml-2" />
+                                </Link>
+                            </div>
                         </div>
-                        <Link to="/profile" className="relative z-10 bg-white text-indigo-600 px-8 py-4 rounded-2xl font-black hover:bg-slate-50 transition-all shadow-xl whitespace-nowrap">
-                            Complete Setup →
-                        </Link>
-                        {/* Decorative BG element */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
                     </motion.div>
                 )}
 
                 {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                    >
-                        <h1 className="text-3xl font-bold text-slate-800">Hello, {userName}! 👋</h1>
-                        <p className="text-slate-500 mt-1">Here's a summary of your health status.</p>
+                <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12"
+                >
+                    <motion.div variants={itemVariants}>
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 font-black text-[10px] uppercase tracking-widest mb-4 shadow-sm">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                            </span>
+                            AI Monitoring Active
+                        </div>
+                        <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter leading-none">
+                            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-health-cyber">{userName}</span>
+                        </h1>
+                        <p className="text-lg text-slate-500 mt-3 font-medium">Your health insights are updated and ready for review.</p>
                     </motion.div>
 
-                    <Link to="/assessment" className="btn-primary flex items-center gap-2">
-                        <Plus size={20} />
-                        Start New Assessment
-                    </Link>
-                </div>
+                    <motion.div variants={itemVariants}>
+                        <Link to="/assessment" className="btn-premium group px-8 py-4 shadow-glow">
+                            <Plus size={20} className="mr-2 group-hover:rotate-90 transition-transform duration-300" />
+                            New Assessment
+                        </Link>
+                    </motion.div>
+                </motion.div>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
+                >
                     {stats.map((stat, idx) => (
                         <motion.div
                             key={idx}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: idx * 0.1 }}
-                            className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-6"
+                            variants={itemVariants}
+                            className="glass-card p-6 rounded-[2rem] hover:shadow-glow transition-all duration-500 group border-white/60"
                         >
-                            <div className={`${stat.color} p-4 rounded-2xl shadow-lg`}>
-                                {stat.icon}
-                            </div>
-                            <div>
-                                <p className="text-sm text-slate-500 font-medium">{stat.label}</p>
-                                <p className="text-2xl font-bold text-slate-800">{stat.value}</p>
+                            <div className="flex items-center gap-5">
+                                <div className={`${stat.bgColor} ${stat.color} p-4 rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-300`}>
+                                    {stat.icon}
+                                </div>
+                                <div>
+                                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
+                                    <p className="text-2xl font-black text-slate-900 tracking-tight">{stat.value}</p>
+                                </div>
+                                <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <ArrowRight size={18} className="text-slate-300" />
+                                </div>
                             </div>
                         </motion.div>
                     ))}
-                </div>
+                </motion.div>
 
                 {/* Health Trend Chart */}
                 <motion.section
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm mb-12"
+                    transition={{ delay: 0.4 }}
+                    className="glass-card p-8 md:p-10 rounded-[2.5rem] shadow-premium mb-12 border-white/60 relative overflow-hidden"
                 >
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/5 blur-3xl rounded-full -mr-32 -mt-32"></div>
+
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 relative z-10">
                         <div>
-                            <h3 className="text-xl font-bold text-slate-800">Risk Analytics Trend</h3>
-                            <p className="text-sm text-slate-500">Historical performance of your early detection scans.</p>
+                            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Risk Analytics Trend</h3>
+                            <p className="text-slate-500 font-medium">Visualizing your progress over the last 7 scans.</p>
                         </div>
                         <div className="flex flex-wrap gap-3">
                             {assessments.length >= 2 && (
                                 <>
-                                    <div className="flex items-center gap-2 text-health-green bg-green-50 px-3 py-1 rounded-lg text-xs font-bold border border-green-100">
-                                        Min: {Math.min(...assessments.map(a => a.riskScore))}%
-                                    </div>
-                                    <div className="flex items-center gap-2 text-rose-600 bg-rose-50 px-3 py-1 rounded-lg text-xs font-bold border border-rose-100">
-                                        Peak: {Math.max(...assessments.map(a => a.riskScore))}%
+                                    <div className="flex items-center gap-2 text-emerald-600 bg-emerald-50 px-4 py-2 rounded-xl text-xs font-black border border-emerald-100 shadow-sm">
+                                        <ShieldCheck size={14} /> Peak Health: {Math.min(...assessments.map(a => a.riskScore))}%
                                     </div>
                                 </>
                             )}
-                            <div className="flex items-center gap-2 text-primary-600 bg-primary-50 px-3 py-1 rounded-lg text-xs font-bold border border-primary-100">
-                                <TrendingUp size={14} />
-                                AI Insight Active
+                            <div className="flex items-center gap-2 text-primary-600 bg-primary-50 px-4 py-2 rounded-xl text-xs font-black border border-primary-100 shadow-sm">
+                                <TrendingUp size={14} /> AI Analysis
                             </div>
                         </div>
                     </div>
 
-                    <div className="h-[320px] w-full min-h-[320px]">
+                    <div className="h-[350px] w-full relative z-10">
                         {loading ? (
-                            <div className="h-full flex items-center justify-center text-slate-400">Loading your health data...</div>
+                            <div className="h-full flex items-center justify-center text-slate-400 font-bold animate-pulse">Analyzing health data...</div>
                         ) : assessments.length < 2 ? (
-                            <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-4">
-                                <Activity size={32} className="opacity-20 translate-y-2" />
-                                <p className="text-sm">Complete at least 2 assessments to see your health trend line.</p>
-                                <Link to="/assessment" className="text-primary-600 text-sm font-bold hover:underline">Take another test →</Link>
+                            <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-6">
+                                <div className="p-6 bg-slate-50 rounded-3xl opacity-50">
+                                    <Activity size={48} className="text-slate-300" />
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-lg font-bold text-slate-500">Insufficient Data Points</p>
+                                    <p className="text-sm">Complete 2 more assessments to unlock trend analytics.</p>
+                                </div>
+                                <Link to="/assessment" className="btn-premium py-3 px-6 text-sm">Start Assessment</Link>
                             </div>
                         ) : (
-                            <ResponsiveContainer width="100%" height="100%" minHeight={300}>
+                            <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                     <defs>
                                         <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                            <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.15} />
+                                            <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                    <CartesianGrid strokeDasharray="8 8" vertical={false} stroke="#e2e8f0" />
 
-                                    {/* Risk Zones */}
-                                    <ReferenceArea y1={0} y2={15} fill="#f0fdf4" fillOpacity={0.6} label={{ position: 'insideLeft', value: 'SAFE', fill: '#16a34a', fontSize: 10, fontWeight: 'bold' }} />
-                                    <ReferenceArea y1={15} y2={30} fill="#fffbeb" fillOpacity={0.6} label={{ position: 'insideLeft', value: 'MONITOR', fill: '#d97706', fontSize: 10, fontWeight: 'bold' }} />
-                                    <ReferenceArea y1={30} y2={100} fill="#fef2f2" fillOpacity={0.6} label={{ position: 'insideLeft', value: 'HIGH', fill: '#dc2626', fontSize: 10, fontWeight: 'bold' }} />
+                                    <ReferenceArea y1={0} y2={15} fill="#ecfdf5" fillOpacity={0.4} />
+                                    <ReferenceArea y1={15} y2={30} fill="#fff7ed" fillOpacity={0.4} />
+                                    <ReferenceArea y1={30} y2={100} fill="#fff1f2" fillOpacity={0.4} />
 
                                     <XAxis
                                         dataKey="date"
                                         axisLine={false}
                                         tickLine={false}
-                                        tick={{ fill: '#64748b', fontSize: 12, fontWeight: 600 }}
+                                        tick={{ fill: '#64748b', fontSize: 11, fontWeight: 800 }}
                                         dy={15}
                                     />
                                     <YAxis
                                         axisLine={false}
                                         tickLine={false}
-                                        tick={{ fill: '#94a3b8', fontSize: 10 }}
-                                        domain={[0, 45]}
+                                        tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }}
                                     />
                                     <Tooltip
                                         content={({ active, payload }) => {
                                             if (active && payload && payload.length) {
                                                 const score = payload[0].value;
-                                                const status = score < 15 ? "Excellent" : score < 30 ? "Monitor" : "Attention Required";
-                                                const color = score < 15 ? "text-health-green" : score < 30 ? "text-amber-500" : "text-rose-500";
+                                                const status = score < 15 ? "Excellent" : score < 30 ? "Monitor" : "Warning";
+                                                const color = score < 15 ? "text-emerald-500" : score < 30 ? "text-amber-500" : "text-rose-500";
                                                 return (
-                                                    <div className="bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-2xl border border-slate-100 animate-slide-up">
-                                                        <p className="text-xs font-bold text-slate-400 mb-1 uppercase tracking-wider">{payload[0].payload.date}</p>
-                                                        <div className="flex items-center gap-3">
-                                                            <div className={`text-2xl font-black ${color}`}>{score}%</div>
-                                                            <div className="h-8 w-[1px] bg-slate-100"></div>
-                                                            <div className="text-xs font-bold text-slate-600 leading-tight">
-                                                                Risk Level<br />
-                                                                <span className={color}>{status}</span>
+                                                    <div className="glass-card p-5 rounded-[1.5rem] shadow-2xl border-white animate-slide-up">
+                                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{payload[0].payload?.date || 'N/A'}</p>
+                                                        <div className="flex items-center gap-4">
+                                                            <div className={`text-3xl font-black ${color}`}>{score}%</div>
+                                                            <div className="h-10 w-[1px] bg-slate-100"></div>
+                                                            <div>
+                                                                <p className="text-[10px] font-black text-slate-400 uppercase">Risk Level</p>
+                                                                <p className={`text-xs font-black ${color}`}>{status}</p>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -237,19 +295,18 @@ const DashboardPage = () => {
                                             }
                                             return null;
                                         }}
-                                        cursor={{ stroke: '#3b82f6', strokeWidth: 2, strokeDasharray: '6 6' }}
+                                        cursor={{ stroke: '#4f46e5', strokeWidth: 2, strokeDasharray: '6 6' }}
                                     />
                                     <Area
                                         type="monotone"
                                         dataKey="score"
-                                        stroke="#2563eb"
+                                        stroke="#4f46e5"
                                         strokeWidth={4}
                                         fillOpacity={1}
                                         fill="url(#colorScore)"
-                                        dot={{ r: 6, fill: '#fff', stroke: '#2563eb', strokeWidth: 3 }}
-                                        activeDot={{ r: 8, fill: '#2563eb', stroke: '#fff', strokeWidth: 4, shadow: '0 0 10px rgba(37, 99, 235, 0.5)' }}
-                                        animationDuration={2000}
-                                        animationEasing="ease-in-out"
+                                        dot={{ r: 6, fill: '#fff', stroke: '#4f46e5', strokeWidth: 3 }}
+                                        activeDot={{ r: 8, fill: '#4f46e5', stroke: '#fff', strokeWidth: 4, shadow: '0 0 15px rgba(79, 70, 229, 0.4)' }}
+                                        animationDuration={1500}
                                     />
                                 </AreaChart>
                             </ResponsiveContainer>
@@ -257,37 +314,45 @@ const DashboardPage = () => {
                     </div>
                 </motion.section>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative z-10">
                     {/* Main Content Area */}
                     <div className="lg:col-span-2 space-y-8">
                         {/* Recent Assessments */}
-                        <section className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
-                            <div className="p-6 border-b border-slate-50 flex justify-between items-center">
-                                <h3 className="text-xl font-bold text-slate-800">Recent Assessments</h3>
-                                <button className="text-primary-600 hover:text-primary-700 font-medium text-sm">View All</button>
+                        <section className="glass-card rounded-[2.5rem] shadow-premium overflow-hidden border-white/60">
+                            <div className="p-8 border-b border-slate-50 flex justify-between items-center">
+                                <h3 className="text-2xl font-black text-slate-900 tracking-tight">Recent Assessments</h3>
+                                <button className="text-primary-600 hover:text-primary-700 font-bold text-sm tracking-tight flex items-center gap-1 group">
+                                    View Repository <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                                </button>
                             </div>
                             <div className="divide-y divide-slate-50">
                                 {loading ? (
-                                    <div className="p-12 text-center text-slate-400">Loading your reports...</div>
+                                    <div className="p-16 text-center text-slate-400 font-bold">Accessing medical records...</div>
                                 ) : assessments.length === 0 ? (
-                                    <div className="p-12 text-center text-slate-400">No assessments found. Start one today!</div>
+                                    <div className="p-16 text-center text-slate-400">
+                                        <p className="text-lg font-bold text-slate-500 mb-2">No Reports Found</p>
+                                        <p className="text-sm">Your assessment history will appear here.</p>
+                                    </div>
                                 ) : (
                                     assessments.slice(0, 5).map((item) => (
-                                        <div key={item.id} className="p-6 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                                            <div className="flex items-center gap-4">
-                                                <div className="bg-slate-100 p-2 rounded-lg">
-                                                    <Activity className="text-slate-400" size={20} />
+                                        <div key={item.id} className="p-6 md:p-8 flex items-center justify-between hover:bg-slate-50 transition-colors group">
+                                            <div className="flex items-center gap-6">
+                                                <div className="bg-slate-50 p-3 rounded-2xl group-hover:bg-white transition-colors shadow-sm">
+                                                    <Activity className="text-primary-500" size={24} />
                                                 </div>
                                                 <div>
-                                                    <p className="font-bold text-slate-800">Risk Assessment</p>
-                                                    <p className="text-sm text-slate-500">{item.timestamp?.toDate().toLocaleDateString()}</p>
+                                                    <p className="font-black text-slate-900 text-lg">Health Risk Scan</p>
+                                                    <p className="text-sm text-slate-400 font-bold">{item.timestamp?.toDate ? item.timestamp.toDate().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
                                                 </div>
                                             </div>
-                                            <div className="flex items-center gap-4">
-                                                <span className={`font-bold ${item.riskScore < 20 ? 'text-health-green' : 'text-amber-500'}`}>
-                                                    {item.riskScore < 20 ? 'Low Risk' : 'Moderate Risk'}
-                                                </span>
-                                                <ArrowRight size={18} className="text-slate-300" />
+                                            <div className="flex items-center gap-8">
+                                                <div className="text-right hidden sm:block">
+                                                    <p className={`text-sm font-black ${item.riskScore < 15 ? 'text-emerald-500' : item.riskScore < 30 ? 'text-amber-500' : 'text-rose-500'}`}>
+                                                        {item.riskScore < 15 ? 'Optimal Health' : item.riskScore < 30 ? 'Monitor Status' : 'Attention Required'}
+                                                    </p>
+                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">AI Verified Result</p>
+                                                </div>
+                                                <ArrowRight size={22} className="text-slate-200 group-hover:text-primary-400 transition-colors group-hover:translate-x-1" />
                                             </div>
                                         </div>
                                     ))
@@ -295,17 +360,28 @@ const DashboardPage = () => {
                             </div>
                         </section>
 
-                        {/* Health Tips Card */}
-                        <section className="bg-gradient-to-r from-health-teal to-primary-600 rounded-3xl p-8 text-white relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 blur-2xl rounded-full -mr-16 -mt-16"></div>
-                            <div className="relative z-10 flex flex-col md:flex-row items-center gap-8">
-                                <div className="md:w-2/3">
-                                    <h3 className="text-2xl font-bold mb-4">Improve your sleep quality</h3>
-                                    <p className="text-primary-50 mb-6">Users with consistent sleep patterns show an 18% lower risk of cardiovascular issues. Try to sleep 7.5 hours tonight.</p>
-                                    <button className="bg-white text-primary-600 px-6 py-2 rounded-full font-bold text-sm">Read Article</button>
+                        {/* Health Insight Card */}
+                        <section className="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden group shadow-2xl">
+                            <div className="absolute top-0 right-0 w-80 h-80 bg-primary-600/20 blur-[100px] rounded-full -mr-40 -mt-40 group-hover:scale-110 transition-transform duration-700"></div>
+                            <div className="absolute bottom-0 left-0 w-40 h-40 bg-health-cyber/10 blur-[60px] rounded-full -ml-20 -mb-20"></div>
+
+                            <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                                <div className="md:w-3/5 text-center md:text-left">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-health-cyber font-black text-[10px] uppercase tracking-widest mb-6">
+                                        Clinical Insight
+                                    </div>
+                                    <h3 className="text-3xl font-black mb-4 tracking-tight italic">Optimizing for Longevity</h3>
+                                    <p className="text-slate-400 mb-8 font-medium leading-relaxed">
+                                        Data shows consistent cardiovascular monitoring can reduce long-term risks by up to 24%. Stay proactive.
+                                    </p>
+                                    <button className="btn-premium px-8 py-4 bg-white text-slate-900 hover:bg-slate-50 border-none shadow-white/5">
+                                        Explore Methodology
+                                    </button>
                                 </div>
-                                <div className="md:w-1/3 bg-white/10 backdrop-blur-sm p-4 rounded-2xl flex items-center justify-center">
-                                    <TrendingUp size={64} className="text-white/40" />
+                                <div className="md:w-2/5 flex justify-center">
+                                    <div className="h-40 w-40 bg-white/5 backdrop-blur-md rounded-[2.5rem] flex items-center justify-center border border-white/10 shadow-inner group-hover:rotate-12 transition-transform duration-500">
+                                        <TrendingUp size={80} className="text-health-cyber opacity-40" />
+                                    </div>
                                 </div>
                             </div>
                         </section>
@@ -313,42 +389,57 @@ const DashboardPage = () => {
 
                     {/* Sidebar Area */}
                     <div className="space-y-8">
-                        {/* Risk Breakdown */}
-                        <section className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6">
-                            <h3 className="text-xl font-bold text-slate-800 mb-6">Risk Categories</h3>
-                            <div className="space-y-6">
+                        {/* Risk Categories */}
+                        <section className="glass-card rounded-[2.5rem] p-8 shadow-premium border-white/60">
+                            <h3 className="text-xl font-black text-slate-900 tracking-tight mb-8">Risk Metrics</h3>
+                            <div className="space-y-8">
                                 {[
-                                    { name: "Cardiovascular", level: "Low", percentage: 12, color: "bg-health-green" },
-                                    { name: "Respiratory", level: "Low", percentage: 8, color: "bg-health-green" },
-                                    { name: "Metabolic", level: "Low", percentage: 15, color: "bg-health-green" }
+                                    { name: "Cardiovascular", level: "Optimal", percentage: 12, color: "bg-emerald-500", light: "bg-emerald-100" },
+                                    { name: "Respiratory Status", level: "Optimal", percentage: 8, color: "bg-emerald-500", light: "bg-emerald-100" },
+                                    { name: "Metabolic Health", level: "Monitor", percentage: 22, color: "bg-amber-500", light: "bg-amber-100" }
                                 ].map((risk, idx) => (
-                                    <div key={idx}>
-                                        <div className="flex justify-between items-center mb-2">
-                                            <span className="text-slate-700 font-medium">{risk.name}</span>
-                                            <span className="text-sm text-slate-500">{risk.level}</span>
+                                    <div key={idx} className="group">
+                                        <div className="flex justify-between items-center mb-3">
+                                            <span className="text-slate-700 font-black text-sm">{risk.name}</span>
+                                            <span className={`text-[10px] font-black uppercase tracking-widest ${risk.percentage < 15 ? 'text-emerald-500' : 'text-amber-500'}`}>{risk.level}</span>
                                         </div>
-                                        <div className="w-full bg-slate-100 rounded-full h-2">
-                                            <div className={`${risk.color} h-2 rounded-full`} style={{ width: `${risk.percentage}%` }}></div>
+                                        <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                            <motion.div
+                                                initial={{ width: 0 }}
+                                                whileInView={{ width: `${risk.percentage}%` }}
+                                                className={`${risk.color} h-full rounded-full shadow-sm`}
+                                            ></motion.div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </section>
 
-                        {/* Quick Actions */}
-                        <section className="bg-white rounded-3xl border border-slate-100 shadow-sm p-6">
-                            <h3 className="text-xl font-bold text-slate-800 mb-4">Quick Actions</h3>
+                        {/* Smart Nav */}
+                        <section className="glass-card rounded-[2.5rem] p-8 shadow-premium border-white/60">
+                            <h3 className="text-xl font-black text-slate-900 tracking-tight mb-6">Gateway</h3>
                             <div className="grid grid-cols-2 gap-4">
-                                <Link to="/profile" className="flex flex-col items-center gap-2 p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-all group">
-                                    <div className="bg-white p-3 rounded-xl shadow-sm text-primary-600 group-hover:scale-110 transition-transform"><User size={20} /></div>
-                                    <span className="text-sm font-medium text-slate-700">Profile</span>
+                                <Link to="/profile" className="flex flex-col items-center gap-3 p-5 bg-slate-50/50 rounded-3xl hover:bg-white hover:shadow-glow transition-all duration-300 border border-transparent hover:border-primary-100 group">
+                                    <div className="bg-white p-3 rounded-2xl shadow-sm text-primary-500 group-hover:scale-110 transition-transform"><User size={22} /></div>
+                                    <span className="text-xs font-black text-slate-600 uppercase tracking-widest">Profile</span>
                                 </Link>
-                                <Link to="/dashboard" className="flex flex-col items-center gap-2 p-4 bg-slate-50 rounded-2xl hover:bg-slate-100 transition-all group">
-                                    <div className="bg-white p-3 rounded-xl shadow-sm text-health-teal group-hover:scale-110 transition-transform"><FileText size={20} /></div>
-                                    <span className="text-sm font-medium text-slate-700">Reports</span>
+                                <Link to="/results" className="flex flex-col items-center gap-3 p-5 bg-slate-50/50 rounded-3xl hover:bg-white hover:shadow-glow transition-all duration-300 border border-transparent hover:border-health-cyber group">
+                                    <div className="bg-white p-3 rounded-2xl shadow-sm text-health-cyber group-hover:scale-110 transition-transform"><FileText size={22} /></div>
+                                    <span className="text-xs font-black text-slate-600 uppercase tracking-widest">Reports</span>
                                 </Link>
                             </div>
                         </section>
+
+                        {/* System Lock */}
+                        <div className="bg-emerald-50 border border-emerald-100 rounded-3xl p-6 flex items-center gap-4">
+                            <div className="bg-white p-2 rounded-xl shadow-sm">
+                                <Lock size={20} className="text-emerald-600" />
+                            </div>
+                            <div>
+                                <p className="text-[10px] font-black text-emerald-800 uppercase tracking-widest">Status</p>
+                                <p className="text-xs font-bold text-emerald-600">Encrypted & Secure</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

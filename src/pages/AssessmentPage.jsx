@@ -118,7 +118,7 @@ const AssessmentPage = () => {
     }
 
     return (
-        <div className="bg-slate-50 min-h-screen pt-24 pb-20 px-4">
+        <div className="bg-slate-50 min-h-screen pt-36 pb-20 px-4">
             <div className="max-w-3xl mx-auto">
                 {/* Progress Stepper */}
                 <div className="mb-12 flex justify-between relative">

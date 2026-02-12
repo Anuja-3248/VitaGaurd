@@ -24,26 +24,106 @@ const ResultsPage = () => {
 
     const currentScore = assessmentData.score || 18;
     const currentName = assessmentData.name || currentUser?.displayName || "User";
+    const formData = assessmentData.formData || {};
 
-    // Dummy data
-    const result = {
-        riskLevel: getRiskLevel(currentScore),
-        score: currentScore,
-        date: new Date().toLocaleDateString(),
-        userName: currentName,
-        summary: "Based on your reported symptoms and lifestyle, your current health risk profile is Low. However, persistent symptoms should always be evaluated by a healthcare professional.",
-        recommendations: [
-            "Maintain your regular exercise routine (3-4 times/week).",
-            "Improve sleep consistency to further reduce metabolic risks.",
-            "Consider a routine annual physical checkup.",
-            "Monitor your caffeine intake during afternoon hours."
-        ],
-        details: [
-            { category: "Cardiovascular", risk: "Very Low", score: 10 },
-            { category: "Respiratory", risk: "Low", score: 15 },
-            { category: "Metabolic", risk: "Moderate", score: 25 }
-        ]
+    // Dynamic Analysis Engine
+    const generateAnalysis = () => {
+        const riskLevel = getRiskLevel(currentScore);
+        const symptoms = formData.symptoms || [];
+
+        // 1. Generate Recommendations based on symptoms
+        const recommendations = [];
+
+        if (symptoms.includes('Chest Pain')) {
+            recommendations.push("Consult a cardiologist for persistent chest discomfort.");
+            recommendations.push("Monitor heart rate and blood pressure regularly.");
+        }
+        if (symptoms.includes('Shortness of Breath')) {
+            recommendations.push("Perform deep breathing exercises daily.");
+            recommendations.push("Avoid strenuous activity until evaluated by a professional.");
+        }
+        if (symptoms.includes('Fatigue')) {
+            recommendations.push("Check for iron or Vitamin D deficiencies.");
+            recommendations.push("Minimize blue light exposure 1 hour before sleep.");
+        }
+        if (symptoms.includes('Dizziness')) {
+            recommendations.push("Ensure adequate hydration (2.5L+ daily).");
+            recommendations.push("Avoid sudden postural changes.");
+        }
+        if (symptoms.includes('Persistent Cough')) {
+            recommendations.push("Maintain humid air in your living space.");
+            recommendations.push("Monitor for signs of fever or respiratory congestion.");
+        }
+        if (symptoms.includes('Nausea')) {
+            recommendations.push("Opt for smaller, frequent meals throughout the day.");
+            recommendations.push("Stay hydrated with electrolyte-rich fluids.");
+        }
+        if (symptoms.includes('Frequent Urination')) {
+            recommendations.push("Limit caffeine and alcohol intake in the evenings.");
+            recommendations.push("Consult a specialist to check metabolic risk markers.");
+        }
+        if (symptoms.includes('Headache')) {
+            recommendations.push("Practice stress reduction techniques like meditation.");
+            recommendations.push("Ensure consistent hydration and caffeine cycles.");
+        }
+
+        // 2. Lifestyle based recommendations
+        if (formData.sleep === 'less_5') recommendations.push("Prioritize 7+ hours of sleep for neural recovery.");
+        if (formData.exercise === 'never') recommendations.push("Start with 15 minutes of light walking daily.");
+        if (formData.smoking === 'regular' || formData.smoking === 'occasional') recommendations.push("Consider respiratory support to mitigate smoking impact.");
+
+        // Fallback for healthy profiles
+        if (recommendations.length === 0) {
+            recommendations.push("Maintain your current healthy balanced routine.");
+            recommendations.push("Focus on preventive screening as per age protocols.");
+            recommendations.push("Continue regular physical activity and hydration.");
+            recommendations.push("Monitor any changes in energy levels or sleep patterns.");
+        }
+
+        // Limit to top 4 relevant recommendations
+        const finalRecs = recommendations.slice(0, 4);
+
+        // 3. Dynamic Summary
+        let summary = `Based on your reported ${symptoms.length > 0 ? "symptoms and " : ""}lifestyle, your health risk profile is ${riskLevel}. `;
+        if (riskLevel === "High") {
+            summary += "We recommend consulting a medical professional soon to discuss your specific concerns and diagnostic options.";
+        } else if (riskLevel === "Moderate") {
+            summary += "While not critical, you should monitor your symptoms closely and focus on lifestyle optimizations mentioned below.";
+        } else {
+            summary += "You are in a healthy range. Maintaining your current habits will help preserve this baseline.";
+        }
+
+        // 4. Detailed category scores
+        const details = [
+            {
+                category: "Cardiovascular",
+                risk: currentScore > 40 ? "Elevated" : symptoms.includes('Chest Pain') ? "Moderate" : "Low",
+                score: Math.min(100, currentScore + (symptoms.includes('Chest Pain') ? 20 : 0))
+            },
+            {
+                category: "Respiratory",
+                risk: currentScore > 50 || symptoms.includes('Shortness of Breath') ? "Moderate" : "Low",
+                score: Math.min(100, Math.floor(currentScore * 0.8) + (symptoms.includes('Persistent Cough') ? 15 : 0))
+            },
+            {
+                category: "Metabolic",
+                risk: formData.weight > 90 || formData.exercise === 'never' ? "Moderate" : "Low",
+                score: Math.min(100, Math.floor(currentScore * 0.7))
+            }
+        ];
+
+        return {
+            riskLevel,
+            score: currentScore,
+            date: new Date().toLocaleDateString(),
+            userName: currentName,
+            summary,
+            recommendations: finalRecs,
+            details
+        };
     };
+
+    const result = generateAnalysis();
 
     const getRiskColor = (level) => {
         switch (level) {
@@ -110,7 +190,7 @@ const ResultsPage = () => {
     };
 
     return (
-        <div className="bg-slate-50 min-h-screen pt-24 pb-20 px-4">
+        <div className="bg-slate-50 min-h-screen pt-36 pb-20 px-4">
             {/* Hidden Medical Template for PDF Generation */}
             <MedicalReportTemplate
                 ref={pdfTemplateRef}
