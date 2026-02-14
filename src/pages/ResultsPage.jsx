@@ -1,11 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShieldAlert, CheckCircle2, AlertTriangle, ArrowLeft, Download, Share2, Info, Loader2 } from 'lucide-react';
+import { ShieldAlert, CheckCircle2, AlertTriangle, ArrowLeft, Download, Share2, Info, Loader2, Lightbulb, Sparkles, Cpu } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useRef, useState } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import MedicalReportTemplate from '../components/MedicalReportTemplate';
+import { analyzeHealthWithGemini } from '../services/gemini';
 
 const ResultsPage = () => {
     const { currentUser } = useAuth();
@@ -15,115 +16,156 @@ const ResultsPage = () => {
     const pdfTemplateRef = useRef(null);
     const [isGenerating, setIsGenerating] = useState(false);
 
-    // Determine risk level based on score
-    const getRiskLevel = (score) => {
-        if (score < 15) return "Low";
-        if (score < 30) return "Moderate";
-        return "High";
-    };
-
-    const currentScore = assessmentData.score || 18;
     const currentName = assessmentData.name || currentUser?.displayName || "User";
     const formData = assessmentData.formData || {};
 
-    // Dynamic Analysis Engine
-    const generateAnalysis = () => {
-        const riskLevel = getRiskLevel(currentScore);
+    // Use Gemini AI analysis if available, otherwise call the deterministic fallback engine
+    const getResult = () => {
+        const aiAnalysis = assessmentData.aiAnalysis;
+
+        if (aiAnalysis && aiAnalysis.success && aiAnalysis.data) {
+            return {
+                ...aiAnalysis.data,
+                source: aiAnalysis.source
+            };
+        }
+
+        // No AI analysis available — use the service's deterministic fallback
+        // This happens when the assessment errored or the API was unreachable
+        return null; // Will be resolved asynchronously below
+    };
+
+    // For synchronous rendering, we need the fallback to work inline
+    const getResultSync = () => {
+        const aiResult = getResult();
+        if (aiResult) return aiResult;
+
+        // Inline deterministic fallback (mirrors gemini.js fallback logic)
+        return generateLocalAnalysis();
+    };
+
+    const generateLocalAnalysis = () => {
         const symptoms = formData.symptoms || [];
+        const age = parseInt(formData.age) || 25;
+        const weight = parseFloat(formData.weight) || 0;
+        const height = parseFloat(formData.height) || 170;
+        const heightM = height / 100;
+        const bmi = weight > 0 ? weight / (heightM * heightM) : 22;
 
-        // 1. Generate Recommendations based on symptoms
+        // ========== DETERMINISTIC RISK SCORE ==========
+        let riskScore = 5;
+        const symptomWeights = {
+            'Chest Pain': 6, 'Shortness of Breath': 5, 'Fatigue': 3,
+            'Dizziness': 4, 'Persistent Cough': 3, 'Nausea': 3,
+            'Frequent Urination': 4, 'Headache': 2
+        };
+        symptoms.forEach(s => { riskScore += symptomWeights[s] || 3; });
+
+        // Co-occurrence bonuses
+        if (symptoms.includes('Chest Pain') && symptoms.includes('Shortness of Breath')) riskScore += 5;
+        if (symptoms.includes('Fatigue') && symptoms.includes('Dizziness')) riskScore += 3;
+
+        // Lifestyle scoring
+        const lifestyleScores = {
+            sleep: { 'less_5': 5, '5_7': 2, '7_9': 0, '9_plus': 1 },
+            exercise: { 'never': 5, 'sometimes': 2, 'regular': 0, 'daily': -1 },
+            smoking: { 'non': 0, 'former': 2, 'occasional': 4, 'regular': 6 },
+            alcohol: { 'none': 0, 'low': 1, 'moderate': 3, 'high': 5 }
+        };
+        riskScore += lifestyleScores.sleep[formData.sleep] || 0;
+        riskScore += lifestyleScores.exercise[formData.exercise] || 0;
+        riskScore += lifestyleScores.smoking[formData.smoking] || 0;
+        riskScore += lifestyleScores.alcohol[formData.alcohol] || 0;
+
+        // Age & BMI adjustments
+        if (age > 50) riskScore += 4; else if (age > 40) riskScore += 2; else if (age > 30) riskScore += 1;
+        if (bmi > 30) riskScore += 4; else if (bmi > 25) riskScore += 2; else if (bmi < 18.5) riskScore += 2;
+
+        riskScore = Math.min(75, Math.max(5, riskScore));
+
+        const getRiskLevel = (s) => s < 15 ? "Low" : s < 30 ? "Moderate" : "High";
+        const riskLevel = getRiskLevel(riskScore);
+
+        // ========== RECOMMENDATIONS ==========
         const recommendations = [];
-
-        if (symptoms.includes('Chest Pain')) {
-            recommendations.push("Consult a cardiologist for persistent chest discomfort.");
-            recommendations.push("Monitor heart rate and blood pressure regularly.");
-        }
-        if (symptoms.includes('Shortness of Breath')) {
-            recommendations.push("Perform deep breathing exercises daily.");
-            recommendations.push("Avoid strenuous activity until evaluated by a professional.");
-        }
-        if (symptoms.includes('Fatigue')) {
-            recommendations.push("Check for iron or Vitamin D deficiencies.");
-            recommendations.push("Minimize blue light exposure 1 hour before sleep.");
-        }
-        if (symptoms.includes('Dizziness')) {
-            recommendations.push("Ensure adequate hydration (2.5L+ daily).");
-            recommendations.push("Avoid sudden postural changes.");
-        }
-        if (symptoms.includes('Persistent Cough')) {
-            recommendations.push("Maintain humid air in your living space.");
-            recommendations.push("Monitor for signs of fever or respiratory congestion.");
-        }
-        if (symptoms.includes('Nausea')) {
-            recommendations.push("Opt for smaller, frequent meals throughout the day.");
-            recommendations.push("Stay hydrated with electrolyte-rich fluids.");
-        }
-        if (symptoms.includes('Frequent Urination')) {
-            recommendations.push("Limit caffeine and alcohol intake in the evenings.");
-            recommendations.push("Consult a specialist to check metabolic risk markers.");
-        }
-        if (symptoms.includes('Headache')) {
-            recommendations.push("Practice stress reduction techniques like meditation.");
-            recommendations.push("Ensure consistent hydration and caffeine cycles.");
-        }
-
-        // 2. Lifestyle based recommendations
-        if (formData.sleep === 'less_5') recommendations.push("Prioritize 7+ hours of sleep for neural recovery.");
-        if (formData.exercise === 'never') recommendations.push("Start with 15 minutes of light walking daily.");
-        if (formData.smoking === 'regular' || formData.smoking === 'occasional') recommendations.push("Consider respiratory support to mitigate smoking impact.");
-
-        // Fallback for healthy profiles
+        if (symptoms.includes('Chest Pain')) recommendations.push("Consult a cardiologist for a detailed ECG and stress test.");
+        if (symptoms.includes('Shortness of Breath')) recommendations.push("Schedule a pulmonary function test to assess respiratory capacity.");
+        if (symptoms.includes('Fatigue')) recommendations.push("Get a complete blood panel to check iron, Vitamin D, and thyroid markers.");
+        if (symptoms.includes('Dizziness')) recommendations.push("Monitor blood pressure twice daily and ensure 2.5L+ daily hydration.");
+        if (symptoms.includes('Persistent Cough')) recommendations.push("If cough persists beyond 3 weeks, schedule a chest X-ray.");
+        if (symptoms.includes('Nausea')) recommendations.push("Review diet and medications — nausea may indicate interactions or sensitivities.");
+        if (symptoms.includes('Frequent Urination')) recommendations.push("Get fasting blood glucose and HbA1c to screen metabolic markers.");
+        if (symptoms.includes('Headache')) recommendations.push("Track headache triggers for 2 weeks — consult a neurologist if frequent.");
+        if (formData.sleep === 'less_5') recommendations.push("Increase sleep to 7-8 hours to lower cortisol and cardiovascular risk.");
+        if (formData.exercise === 'never') recommendations.push("Begin with 20 min brisk walking daily — reduces all-cause mortality by 20%.");
+        if (formData.smoking === 'regular') recommendations.push("Initiate a smoking cessation plan to reduce respiratory and cardiovascular risk.");
         if (recommendations.length === 0) {
-            recommendations.push("Maintain your current healthy balanced routine.");
-            recommendations.push("Focus on preventive screening as per age protocols.");
-            recommendations.push("Continue regular physical activity and hydration.");
-            recommendations.push("Monitor any changes in energy levels or sleep patterns.");
+            recommendations.push("Maintain your balanced routine — your metrics are within healthy ranges.");
+            recommendations.push("Schedule annual preventive health screening for your age group.");
+            recommendations.push("Continue physical activity and 2-3L daily hydration.");
+            recommendations.push("Monitor any changes in energy or sleep patterns.");
         }
 
-        // Limit to top 4 relevant recommendations
-        const finalRecs = recommendations.slice(0, 4);
+        // ========== TIPS ==========
+        const tips = [];
+        tips.push(formData.sleep === 'less_5' || formData.sleep === '5_7'
+            ? "Set a consistent sleep schedule — same bedtime and wake time, even on weekends."
+            : "Maintain your sleep routine and avoid screens 30 minutes before bed.");
+        tips.push(formData.exercise === 'never' || formData.exercise === 'sometimes'
+            ? "Take a 10-minute walk after each meal — improves blood sugar regulation by 30%."
+            : "Include both cardio and strength training in your weekly routine.");
+        tips.push(age > 40
+            ? "Prioritize calcium and Vitamin D for bone density support."
+            : "Build stress-management habits — try 5 min daily meditation.");
+        tips.push("Eat colorful vegetables daily — aim for 5+ different colors per week.");
 
-        // 3. Dynamic Summary
-        let summary = `Based on your reported ${symptoms.length > 0 ? "symptoms and " : ""}lifestyle, your health risk profile is ${riskLevel}. `;
-        if (riskLevel === "High") {
-            summary += "We recommend consulting a medical professional soon to discuss your specific concerns and diagnostic options.";
-        } else if (riskLevel === "Moderate") {
-            summary += "While not critical, you should monitor your symptoms closely and focus on lifestyle optimizations mentioned below.";
-        } else {
-            summary += "You are in a healthy range. Maintaining your current habits will help preserve this baseline.";
-        }
+        // ========== SUMMARY ==========
+        let summary = `Based on your ${symptoms.length} reported symptom${symptoms.length !== 1 ? 's' : ''} and lifestyle profile, your risk is ${riskLevel} (${riskScore}%). `;
+        if (riskLevel === "High") summary += "We strongly recommend a healthcare consultation for diagnostic testing.";
+        else if (riskLevel === "Moderate") summary += "Proactive lifestyle changes can significantly reduce your long-term risk.";
+        else summary += "Continue your current habits and stay consistent with preventive check-ups.";
 
-        // 4. Detailed category scores
-        const details = [
-            {
-                category: "Cardiovascular",
-                risk: currentScore > 40 ? "Elevated" : symptoms.includes('Chest Pain') ? "Moderate" : "Low",
-                score: Math.min(100, currentScore + (symptoms.includes('Chest Pain') ? 20 : 0))
-            },
-            {
-                category: "Respiratory",
-                risk: currentScore > 50 || symptoms.includes('Shortness of Breath') ? "Moderate" : "Low",
-                score: Math.min(100, Math.floor(currentScore * 0.8) + (symptoms.includes('Persistent Cough') ? 15 : 0))
-            },
-            {
-                category: "Metabolic",
-                risk: formData.weight > 90 || formData.exercise === 'never' ? "Moderate" : "Low",
-                score: Math.min(100, Math.floor(currentScore * 0.7))
-            }
-        ];
+        // ========== CATEGORY SCORES ==========
+        let cvScore = 5;
+        if (symptoms.includes('Chest Pain')) cvScore += 25;
+        if (symptoms.includes('Dizziness')) cvScore += 10;
+        if (symptoms.includes('Shortness of Breath')) cvScore += 10;
+        if (formData.smoking === 'regular') cvScore += 15;
+        if (formData.exercise === 'never') cvScore += 10;
+        if (bmi > 30) cvScore += 10; else if (bmi > 25) cvScore += 5;
+        if (age > 50) cvScore += 8;
+
+        let respScore = 5;
+        if (symptoms.includes('Shortness of Breath')) respScore += 25;
+        if (symptoms.includes('Persistent Cough')) respScore += 20;
+        if (formData.smoking === 'regular') respScore += 20;
+        else if (formData.smoking === 'occasional') respScore += 10;
+
+        let metaScore = 5;
+        if (symptoms.includes('Frequent Urination')) metaScore += 20;
+        if (symptoms.includes('Fatigue')) metaScore += 10;
+        if (symptoms.includes('Nausea')) metaScore += 8;
+        if (formData.exercise === 'never') metaScore += 10;
+        if (bmi > 30) metaScore += 15; else if (bmi > 25) metaScore += 8;
+        if (formData.alcohol === 'high') metaScore += 10;
+
+        const getRiskLabel = (s) => s > 40 ? "Elevated" : s > 20 ? "Moderate" : "Low";
 
         return {
-            riskLevel,
-            score: currentScore,
-            date: new Date().toLocaleDateString(),
-            userName: currentName,
-            summary,
-            recommendations: finalRecs,
-            details
+            riskLevel, score: riskScore,
+            date: new Date().toLocaleDateString(), userName: currentName,
+            summary, recommendations: recommendations.slice(0, 4),
+            tips: tips.slice(0, 4),
+            details: [
+                { category: "Cardiovascular", risk: getRiskLabel(cvScore), score: Math.min(100, cvScore) },
+                { category: "Respiratory", risk: getRiskLabel(respScore), score: Math.min(100, respScore) },
+                { category: "Metabolic", risk: getRiskLabel(metaScore), score: Math.min(100, metaScore) }
+            ],
+            source: 'fallback'
         };
     };
 
-    const result = generateAnalysis();
+    const result = getResultSync();
 
     const getRiskColor = (level) => {
         switch (level) {
@@ -152,21 +194,19 @@ const ResultsPage = () => {
         try {
             const element = pdfTemplateRef.current;
 
-            // Show temporarily for capture (reset hidden styles)
             const originalStyle = element.style.cssText;
             element.style.position = 'static';
             element.style.left = '0';
             element.style.zIndex = '9999';
 
             const canvas = await html2canvas(element, {
-                scale: 3, // Very high quality for print
+                scale: 3,
                 useCORS: true,
                 logging: false,
                 backgroundColor: "#ffffff",
                 windowWidth: 800
             });
 
-            // Re-hide the template
             element.style.cssText = originalStyle;
 
             const imgData = canvas.toDataURL('image/png', 1.0);
@@ -205,7 +245,12 @@ const ResultsPage = () => {
                         <ArrowLeft size={18} />
                         Back to Dashboard
                     </Link>
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 items-center">
+                        {/* AI Source Badge */}
+                        <div className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-widest border ${result.source === 'gemini' ? 'bg-violet-50 text-violet-600 border-violet-100' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>
+                            {result.source === 'gemini' ? <Sparkles size={14} /> : <Cpu size={14} />}
+                            {result.source === 'gemini' ? 'Gemini AI' : 'Local Engine'}
+                        </div>
                         <button className="p-2 bg-white rounded-xl border border-slate-200 text-slate-400 hover:text-primary-600 transition-colors">
                             <Share2 size={20} />
                         </button>
@@ -267,7 +312,12 @@ const ResultsPage = () => {
                                         <span className="text-slate-300 text-sm font-medium">{detail.score}%</span>
                                     </div>
                                     <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
-                                        <div className={`h-full bg-primary-500 rounded-full`} style={{ width: `${detail.score}%` }}></div>
+                                        <motion.div
+                                            className="h-full bg-primary-500 rounded-full"
+                                            initial={{ width: 0 }}
+                                            animate={{ width: `${detail.score}%` }}
+                                            transition={{ duration: 1, delay: 0.3 + idx * 0.2 }}
+                                        />
                                     </div>
                                 </div>
                             ))}
@@ -288,12 +338,18 @@ const ResultsPage = () => {
                             </h3>
                             <ul className="space-y-6">
                                 {result.recommendations.map((rec, idx) => (
-                                    <li key={idx} className="flex items-start gap-4">
+                                    <motion.li
+                                        key={idx}
+                                        initial={{ opacity: 0, x: -10 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ delay: 0.4 + idx * 0.1 }}
+                                        className="flex items-start gap-4"
+                                    >
                                         <div className="bg-primary-50 text-primary-600 rounded-full p-1.5 mt-1">
                                             <CheckCircle2 size={16} />
                                         </div>
                                         <p className="text-slate-700 font-medium leading-relaxed">{rec}</p>
-                                    </li>
+                                    </motion.li>
                                 ))}
                             </ul>
                         </div>
@@ -327,6 +383,52 @@ const ResultsPage = () => {
                             <p className="text-sm text-slate-500 italic">This report is generated securely. Your data is encrypted and only accessible by you.</p>
                         </div>
                     </motion.div>
+
+                    {/* ======================== DAILY HEALTH TIPS SECTION ======================== */}
+                    {result.tips && result.tips.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.6 }}
+                            className="lg:col-span-12"
+                        >
+                            <div className="bg-gradient-to-br from-primary-600 via-primary-500 to-health-cyber rounded-[2.5rem] p-1 shadow-2xl">
+                                <div className="bg-white rounded-[2.3rem] p-8 md:p-10">
+                                    <div className="flex items-center gap-4 mb-8">
+                                        <div className="bg-amber-50 p-3 rounded-2xl">
+                                            <Lightbulb className="text-amber-500" size={24} />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-2xl font-black text-slate-800 tracking-tight">Daily Health Tips</h3>
+                                            <p className="text-slate-400 text-sm font-medium">Personalized suggestions to improve your health daily</p>
+                                        </div>
+                                        {result.source === 'gemini' && (
+                                            <div className="ml-auto hidden md:flex items-center gap-2 bg-violet-50 text-violet-600 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-violet-100">
+                                                <Sparkles size={12} />
+                                                AI Generated
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {result.tips.map((tip, idx) => (
+                                            <motion.div
+                                                key={idx}
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ delay: 0.7 + idx * 0.1 }}
+                                                className="flex items-start gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-100 hover:border-primary-200 hover:bg-primary-50/30 transition-all duration-300 group"
+                                            >
+                                                <div className="bg-gradient-to-br from-primary-500 to-health-cyber text-white rounded-xl p-2.5 mt-0.5 shadow-sm group-hover:scale-110 transition-transform">
+                                                    <span className="text-sm font-black">{idx + 1}</span>
+                                                </div>
+                                                <p className="text-slate-700 font-medium leading-relaxed">{tip}</p>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
                 </div>
             </div>
         </div>

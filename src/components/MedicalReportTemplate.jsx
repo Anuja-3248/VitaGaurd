@@ -182,6 +182,20 @@ const MedicalReportTemplate = React.forwardRef(({ result, formData }, ref) => {
                 </div>
             </div>
 
+            {/* 8. Daily Health Tips */}
+            {result.tips && result.tips.length > 0 && (
+                <div className="p-6 bg-amber-50/50 rounded-3xl border border-amber-100 mb-8">
+                    <h4 className="text-sm font-black text-amber-700 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        💡 Personalized Daily Health Tips
+                    </h4>
+                    <ul className="text-sm space-y-3 text-amber-800/80 font-medium">
+                        {result.tips.map((tip, i) => (
+                            <li key={i} className="flex gap-2">✦ {tip}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
             {/* Footer / Page Number */}
             <div className="text-center text-[10px] text-slate-400 uppercase tracking-[0.3em] font-black pt-8 border-t">
                 End of VitaGuard Clinical Summary | Page 01 of 01

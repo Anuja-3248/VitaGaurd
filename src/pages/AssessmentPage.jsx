@@ -5,6 +5,7 @@ import { HeartPulse, ChevronRight, ChevronLeft, Activity, Info, Loader2 } from '
 
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
+import { analyzeHealthWithGemini } from '../services/gemini';
 import { useAuth } from '../context/AuthContext';
 
 const AssessmentPage = () => {
@@ -66,29 +67,48 @@ const AssessmentPage = () => {
         e.preventDefault();
         setLoading(true);
 
-        // 1. Calculate the mock risk score immediately
-        const riskScore = Math.floor(Math.random() * 40) + 5;
+        try {
+            // 1. Call Gemini AI for intelligent analysis (no random scores — 100% data-driven)
+            const analysisResult = await analyzeHealthWithGemini(formData);
+            const finalScore = analysisResult.data.score;
 
-        // 2. Start the background save to Firebase (Best Effort)
-        // We do not 'await' this so the UI doesn't hang if the network is slow
-        if (currentUser) {
-            addDoc(collection(db, "assessments"), {
-                userId: currentUser.uid,
-                ...formData,
-                riskScore: riskScore,
-                timestamp: serverTimestamp()
-            }).then(() => {
-                console.log("Cloud Save Successful (Background)");
-            }).catch((err) => {
-                console.error("Cloud Save Failed (Background):", err);
+            // 2. Save to Firebase (best effort, non-blocking)
+            if (currentUser) {
+                addDoc(collection(db, "assessments"), {
+                    userId: currentUser.uid,
+                    ...formData,
+                    riskScore: finalScore,
+                    aiSource: analysisResult.source,
+                    timestamp: serverTimestamp()
+                }).then(() => {
+                    console.log("Cloud Save Successful (Background)");
+                }).catch((err) => {
+                    console.error("Cloud Save Failed (Background):", err);
+                });
+            }
+
+            // 3. Navigate to results with the full AI analysis
+            setLoading(false);
+            navigate('/results', {
+                state: {
+                    score: finalScore,
+                    name: formData.name,
+                    formData: formData,
+                    aiAnalysis: analysisResult
+                }
+            });
+        } catch (error) {
+            console.error("Assessment Error:", error);
+            setLoading(false);
+            // Navigate to results — the ResultsPage will use its local analysis engine
+            navigate('/results', {
+                state: {
+                    score: null,
+                    name: formData.name,
+                    formData: formData
+                }
             });
         }
-
-        // 3. Keep the user in the 'Processing' state for exactly 2 seconds for UX
-        setTimeout(() => {
-            setLoading(false);
-            navigate('/results', { state: { score: riskScore, name: formData.name, formData: formData } });
-        }, 2000);
     };
 
     const steps = [
