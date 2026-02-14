@@ -106,9 +106,9 @@ const Navbar = () => {
                                     <LayoutDashboard size={20} />
                                     <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">Dashboard</span>
                                 </Link>
-                                <Link to="/profile" className="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl shadow-sm border border-slate-100 hover:border-primary-200 transition-all text-slate-700 font-bold text-sm">
-                                    <div className="bg-primary-50 p-1 rounded-lg">
-                                        <User size={16} className="text-primary-600" />
+                                <Link to="/profile" className="flex items-center gap-3 bg-white dark:bg-slate-800 px-4 py-2 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 hover:border-primary-200 transition-all text-slate-700 dark:text-slate-200 font-bold text-sm">
+                                    <div className="bg-primary-50 dark:bg-primary-900/30 p-1 rounded-lg">
+                                        <User size={16} className="text-primary-600 dark:text-primary-400" />
                                     </div>
                                     Profile
                                 </Link>
@@ -123,7 +123,7 @@ const Navbar = () => {
                             </div>
                         ) : (
                             <div className="flex items-center space-x-4">
-                                <Link to="/login" className="text-slate-600 hover:text-primary-600 font-bold text-sm">Login</Link>
+                                <Link to="/login" className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 font-bold text-sm">Login</Link>
                                 <Link to="/signup" className="btn-primary py-2.5 px-6 text-sm">Sign Up</Link>
                             </div>
                         )}
@@ -166,12 +166,12 @@ const Navbar = () => {
                                             navigate(link.path);
                                         }
                                     }}
-                                    className="flex flex-col items-center justify-center p-4 bg-slate-50 rounded-3xl border border-slate-100 hover:bg-primary-50 hover:border-primary-100 transition-all group"
+                                    className="flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-100 transition-all group"
                                 >
-                                    <div className="text-slate-400 group-hover:text-primary-600 transition-colors mb-2">
+                                    <div className="text-slate-400 dark:text-slate-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-2">
                                         {link.icon}
                                     </div>
-                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{link.name}</span>
+                                    <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">{link.name}</span>
                                 </button>
                             ))}
                         </div>

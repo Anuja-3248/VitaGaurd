@@ -71,7 +71,7 @@ const LoginPage = () => {
 
                     <form onSubmit={handleLogin} className="space-y-6 relative z-10">
                         <div>
-                            <label className="block text-slate-700 text-xs font-black uppercase tracking-widest mb-3 ml-1 opacity-70">Email Address</label>
+                            <label className="block text-slate-700 dark:text-slate-300 text-xs font-black uppercase tracking-widest mb-3 ml-1 opacity-70">Email Address</label>
                             <div className="relative">
                                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
                                     <Mail size={18} />
@@ -79,7 +79,7 @@ const LoginPage = () => {
                                 <input
                                     type="email"
                                     required
-                                    className="w-full pl-12 pr-4 py-4 bg-slate-50/50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
+                                    className="w-full pl-12 pr-4 py-4 bg-slate-50/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium dark:text-white"
                                     placeholder="name@example.com"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -88,7 +88,7 @@ const LoginPage = () => {
                         </div>
 
                         <div>
-                            <label className="block text-slate-700 text-xs font-black uppercase tracking-widest mb-3 ml-1 opacity-70">Password</label>
+                            <label className="block text-slate-700 dark:text-slate-300 text-xs font-black uppercase tracking-widest mb-3 ml-1 opacity-70">Password</label>
                             <div className="relative">
                                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
                                     <Lock size={18} />
@@ -96,14 +96,14 @@ const LoginPage = () => {
                                 <input
                                     type="password"
                                     required
-                                    className="w-full pl-12 pr-4 py-4 bg-slate-50/50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
+                                    className="w-full pl-12 pr-4 py-4 bg-slate-50/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium dark:text-white"
                                     placeholder="••••••••"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
                             </div>
                             <div className="text-right mt-3">
-                                <button type="button" className="text-sm text-primary-600 font-bold hover:text-primary-700 transition-colors">Forgot password?</button>
+                                <button type="button" className="text-sm text-primary-600 dark:text-primary-400 font-bold hover:text-primary-700 transition-colors">Forgot password?</button>
                             </div>
                         </div>
 

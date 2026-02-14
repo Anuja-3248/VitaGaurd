@@ -28,7 +28,7 @@ const SignupPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 pt-20 relative overflow-hidden">
+        <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 px-4 pt-20 relative overflow-hidden transition-colors duration-300">
             {/* Background Decorations */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
                 <div className="absolute top-[10%] left-[5%] w-96 h-96 bg-primary-100/50 blur-[100px] rounded-full animate-float"></div>
@@ -49,8 +49,8 @@ const SignupPage = () => {
                             VitaGuard
                         </span>
                     </Link>
-                    <h2 className="text-4xl font-black text-slate-900 tracking-tight">Create Account</h2>
-                    <p className="text-slate-500 mt-2 font-medium italic">Join thousand of users staying proactive about health</p>
+                    <h2 className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">Create Account</h2>
+                    <p className="text-slate-500 dark:text-slate-400 mt-2 font-medium italic">Join thousand of users staying proactive about health</p>
                     {error && (
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0 }}
@@ -72,7 +72,7 @@ const SignupPage = () => {
 
                     <form onSubmit={handleSignup} className="space-y-5 relative z-10">
                         <div>
-                            <label className="block text-slate-700 text-xs font-black uppercase tracking-widest mb-3 ml-1 opacity-70">Full Name</label>
+                            <label className="block text-slate-700 dark:text-slate-300 text-xs font-black uppercase tracking-widest mb-3 ml-1 opacity-70">Full Name</label>
                             <div className="relative">
                                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
                                     <User size={18} />
@@ -80,7 +80,7 @@ const SignupPage = () => {
                                 <input
                                     type="text"
                                     required
-                                    className="w-full pl-12 pr-4 py-4 bg-slate-50/50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
+                                    className="w-full pl-12 pr-4 py-4 bg-slate-50/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium dark:text-white"
                                     placeholder="John Doe"
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
@@ -89,7 +89,7 @@ const SignupPage = () => {
                         </div>
 
                         <div>
-                            <label className="block text-slate-700 text-xs font-black uppercase tracking-widest mb-3 ml-1 opacity-70">Email Address</label>
+                            <label className="block text-slate-700 dark:text-slate-300 text-xs font-black uppercase tracking-widest mb-3 ml-1 opacity-70">Email Address</label>
                             <div className="relative">
                                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
                                     <Mail size={18} />
@@ -97,7 +97,7 @@ const SignupPage = () => {
                                 <input
                                     type="email"
                                     required
-                                    className="w-full pl-12 pr-4 py-4 bg-slate-50/50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
+                                    className="w-full pl-12 pr-4 py-4 bg-slate-50/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium dark:text-white"
                                     placeholder="name@example.com"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
@@ -106,7 +106,7 @@ const SignupPage = () => {
                         </div>
 
                         <div>
-                            <label className="block text-slate-700 text-xs font-black uppercase tracking-widest mb-3 ml-1 opacity-70">Password</label>
+                            <label className="block text-slate-700 dark:text-slate-300 text-xs font-black uppercase tracking-widest mb-3 ml-1 opacity-70">Password</label>
                             <div className="relative">
                                 <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
                                     <Lock size={18} />
@@ -114,7 +114,7 @@ const SignupPage = () => {
                                 <input
                                     type="password"
                                     required
-                                    className="w-full pl-12 pr-4 py-4 bg-slate-50/50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium"
+                                    className="w-full pl-12 pr-4 py-4 bg-slate-50/50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 transition-all font-medium dark:text-white"
                                     placeholder="••••••••"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
@@ -140,9 +140,9 @@ const SignupPage = () => {
                     </form>
 
                     <div className="mt-10 text-center relative z-10">
-                        <p className="text-slate-500 font-medium">
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">
                             Already a member?{' '}
-                            <Link to="/login" className="text-primary-600 font-black hover:text-primary-700 transition-colors underline underline-offset-4 decoration-primary-200 hover:decoration-primary-500">
+                            <Link to="/login" className="text-primary-600 dark:text-primary-400 font-black hover:text-primary-700 transition-colors underline underline-offset-4 decoration-primary-200 hover:decoration-primary-500">
                                 Log in
                             </Link>
                         </p>

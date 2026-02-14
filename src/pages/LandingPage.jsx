@@ -49,7 +49,7 @@ const LandingPage = () => {
     };
 
     return (
-        <div className="overflow-x-hidden bg-white dark:bg-slate-900 selection:bg-primary-100 selection:text-primary-700 transition-colors duration-300">
+        <div className="overflow-x-hidden bg-white dark:bg-dark-bg selection:bg-primary-100 selection:text-primary-700 transition-colors duration-300">
             {/* Modal Overlay */}
             <AnimatePresence>
                 {activeStep && (
@@ -59,7 +59,7 @@ const LandingPage = () => {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setActiveStep(null)}
-                            className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                         />
                         <motion.div
                             initial={{ scale: 0.9, opacity: 0, y: 20 }}
@@ -71,23 +71,23 @@ const LandingPage = () => {
 
                             <button
                                 onClick={() => setActiveStep(null)}
-                                className="absolute top-8 right-8 p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition-colors text-slate-500"
+                                className="absolute top-8 right-8 p-2 bg-slate-100 dark:bg-dark-border/50 rounded-full hover:bg-slate-200 dark:hover:bg-dark-border transition-colors text-slate-500 dark:text-slate-400"
                             >
                                 <X size={20} />
                             </button>
 
                             <div className="relative z-10">
                                 <div className="flex items-center gap-4 mb-8">
-                                    <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                                    <div className="bg-white dark:bg-dark-card p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-dark-border">
                                         {stepDetails[activeStep].icon}
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-black text-primary-600 uppercase tracking-[0.3em] mb-1">{stepDetails[activeStep].subtitle}</p>
-                                        <h3 className="text-3xl font-black text-slate-900">{stepDetails[activeStep].title}</h3>
+                                        <p className="text-[10px] font-black text-primary-600 dark:text-primary-400 uppercase tracking-[0.3em] mb-1">{stepDetails[activeStep].subtitle}</p>
+                                        <h3 className="text-3xl font-black text-slate-900 dark:text-white">{stepDetails[activeStep].title}</h3>
                                     </div>
                                 </div>
 
-                                <p className="text-slate-600 text-lg leading-relaxed mb-10 font-medium">
+                                <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed mb-10 font-medium">
                                     {stepDetails[activeStep].content}
                                 </p>
 
@@ -95,9 +95,9 @@ const LandingPage = () => {
                                     <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Key Capabilities</p>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                         {stepDetails[activeStep].features.map((f, i) => (
-                                            <div key={i} className="flex items-center gap-3 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                            <div key={i} className="flex items-center gap-3 bg-slate-50 dark:bg-dark-card/50 p-4 rounded-2xl border border-slate-100 dark:border-dark-border">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
-                                                <span className="font-bold text-slate-700">{f}</span>
+                                                <span className="font-bold text-slate-700 dark:text-slate-200">{f}</span>
                                             </div>
                                         ))}
                                     </div>
@@ -119,9 +119,9 @@ const LandingPage = () => {
 
             {/* Background Decorations */}
             <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-primary-100/50 blur-[120px] rounded-full animate-float"></div>
-                <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-health-cyber/10 blur-[100px] rounded-full animate-float" style={{ animationDelay: '-2s' }}></div>
-                <div className="absolute bottom-[10%] left-[20%] w-[25%] h-[25%] bg-health-violet/10 blur-[100px] rounded-full animate-float" style={{ animationDelay: '-4s' }}></div>
+                <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-primary-100/30 dark:bg-primary-900/10 blur-[120px] rounded-full animate-float"></div>
+                <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-health-cyber/10 dark:bg-health-cyber/5 blur-[100px] rounded-full animate-float" style={{ animationDelay: '-2s' }}></div>
+                <div className="absolute bottom-[10%] left-[20%] w-[25%] h-[25%] bg-health-violet/10 dark:bg-health-violet/5 blur-[100px] rounded-full animate-float" style={{ animationDelay: '-4s' }}></div>
             </div>
 
             {/* Hero Section */}
@@ -177,14 +177,14 @@ const LandingPage = () => {
                                     <motion.div
                                         animate={{ y: [0, -12, 0] }}
                                         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                        className="absolute -top-6 -right-12 bg-white p-5 rounded-[2rem] shadow-premium border-2 border-primary-100 flex items-center gap-4 z-30"
+                                        className="absolute -top-6 -right-12 bg-white dark:bg-dark-card p-5 rounded-[2rem] shadow-premium border-2 border-primary-100 dark:border-dark-border flex items-center gap-4 z-30"
                                     >
-                                        <div className="bg-emerald-50 p-2.5 rounded-xl shadow-sm border border-emerald-100">
+                                        <div className="bg-emerald-50 dark:bg-emerald-900/20 p-2.5 rounded-xl shadow-sm border border-emerald-100 dark:border-emerald-800/50">
                                             <Activity className="text-emerald-500 h-6 w-6" />
                                         </div>
                                         <div>
-                                            <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mb-0.5">AI Engine</p>
-                                            <p className="text-xl font-black text-primary-900 leading-none">98.4% <span className="text-xs font-bold text-slate-400 ml-1">Precision</span></p>
+                                            <p className="text-[10px] uppercase font-black text-slate-400 dark:text-slate-500 tracking-widest mb-0.5">AI Engine</p>
+                                            <p className="text-xl font-black text-primary-900 dark:text-white leading-none">98.4% <span className="text-xs font-bold text-slate-400 dark:text-slate-500 ml-1">Precision</span></p>
                                         </div>
                                     </motion.div>
 
@@ -192,14 +192,14 @@ const LandingPage = () => {
                                     <motion.div
                                         animate={{ y: [0, 12, 0] }}
                                         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                                        className="absolute -bottom-8 -left-12 bg-white p-5 rounded-[2rem] shadow-premium border-2 border-primary-100 flex items-center gap-4 z-30"
+                                        className="absolute -bottom-8 -left-12 bg-white dark:bg-dark-card p-5 rounded-[2rem] shadow-premium border-2 border-primary-100 dark:border-dark-border flex items-center gap-4 z-30"
                                     >
-                                        <div className="bg-primary-50 p-2.5 rounded-xl shadow-sm border border-primary-100">
-                                            <ShieldCheck className="text-primary-600 h-6 w-6" />
+                                        <div className="bg-primary-50 dark:bg-primary-900/20 p-2.5 rounded-xl shadow-sm border border-primary-100 dark:border-primary-800/50">
+                                            <ShieldCheck className="text-primary-600 dark:text-primary-400 h-6 w-6" />
                                         </div>
                                         <div>
-                                            <p className="text-[10px] uppercase font-black text-slate-400 tracking-widest mb-0.5">Trust Score</p>
-                                            <p className="text-xl font-black text-primary-900 leading-none italic tracking-tighter">Verified <span className="text-xs font-bold text-health-cyber ml-1">✓</span></p>
+                                            <p className="text-[10px] uppercase font-black text-slate-400 dark:text-slate-500 tracking-widest mb-0.5">Trust Score</p>
+                                            <p className="text-xl font-black text-primary-900 dark:text-white leading-none italic tracking-tighter">Verified <span className="text-xs font-bold text-health-cyber ml-1">✓</span></p>
                                         </div>
                                     </motion.div>
                                 </div>
@@ -210,7 +210,7 @@ const LandingPage = () => {
             </section>
 
             {/* How It Works Section */}
-            <section id="how-it-works" className="py-32 bg-white dark:bg-slate-900 relative overflow-hidden transition-colors duration-300">
+            <section id="how-it-works" className="py-32 bg-white dark:bg-dark-bg relative overflow-hidden transition-colors duration-300">
                 {/* Visual Connection Line (Desktop) */}
                 <div className="absolute top-[60%] left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary-100 to-transparent hidden md:block z-0"></div>
 
@@ -284,7 +284,7 @@ const LandingPage = () => {
                                     {item.step}
                                 </div>
 
-                                <div className="glass-card bg-white/50 dark:bg-slate-800/50 p-10 rounded-[3rem] border-slate-100 dark:border-slate-700 hover:border-white dark:hover:border-slate-600 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-700 h-full flex flex-col items-center text-center group">
+                                <div className="glass-card bg-white/50 dark:bg-dark-card/40 p-10 rounded-[3rem] border-slate-100 dark:border-dark-border/50 hover:border-white dark:hover:border-dark-border hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-700 h-full flex flex-col items-center text-center group">
                                     {/* Icon Container with Gradient Orb */}
                                     <div className="relative mb-8">
                                         <div className={`absolute inset-0 ${item.glow} blur-2xl rounded-full scale-150 group-hover:scale-[2] transition-transform duration-700`}></div>
@@ -319,7 +319,7 @@ const LandingPage = () => {
             </section>
 
             {/* Features Section */}
-            <section id="features" className="py-32 bg-slate-50/50 dark:bg-slate-800/50 relative transition-colors duration-300">
+            <section id="features" className="py-32 bg-slate-50/50 dark:bg-dark-bg/50 relative transition-colors duration-300">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row items-center gap-20">
                         <div className="w-full lg:w-1/2">
@@ -343,10 +343,10 @@ const LandingPage = () => {
                                     { icon: <ShieldCheck className="text-primary-600" />, title: "Early Warnings", desc: "Prevent serious illness with proactive health indicators." }
                                 ].map((feature, idx) => (
                                     <div key={idx} className="flex items-start gap-4">
-                                        <div className="bg-white p-3 rounded-xl shadow-sm mt-1">{feature.icon}</div>
+                                        <div className="bg-white dark:bg-dark-card p-3 rounded-xl shadow-sm mt-1">{feature.icon}</div>
                                         <div>
-                                            <h4 className="text-xl font-bold text-slate-800 mb-1">{feature.title}</h4>
-                                            <p className="text-slate-600">{feature.desc}</p>
+                                            <h4 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">{feature.title}</h4>
+                                            <p className="text-slate-600 dark:text-slate-300">{feature.desc}</p>
                                         </div>
                                     </div>
                                 ))}

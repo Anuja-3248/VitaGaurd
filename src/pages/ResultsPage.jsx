@@ -230,7 +230,7 @@ const ResultsPage = () => {
     };
 
     return (
-        <div className="bg-slate-50 min-h-screen pt-36 pb-20 px-4">
+        <div className="bg-slate-50 dark:bg-dark-bg min-h-screen pt-36 pb-20 px-4 transition-colors duration-300">
             {/* Hidden Medical Template for PDF Generation */}
             <MedicalReportTemplate
                 ref={pdfTemplateRef}
@@ -241,23 +241,23 @@ const ResultsPage = () => {
             <div className="max-w-4xl mx-auto">
                 {/* Header Actions */}
                 <div className="flex justify-between items-center mb-8">
-                    <Link to="/dashboard" className="flex items-center gap-2 text-slate-600 hover:text-primary-600 font-medium transition-colors">
+                    <Link to="/dashboard" className="flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors">
                         <ArrowLeft size={18} />
                         Back to Dashboard
                     </Link>
                     <div className="flex gap-4 items-center">
                         {/* AI Source Badge */}
-                        <div className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-widest border ${result.source === 'gemini' ? 'bg-violet-50 text-violet-600 border-violet-100' : 'bg-slate-50 text-slate-500 border-slate-200'}`}>
+                        <div className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-black uppercase tracking-widest border ${result.source === 'gemini' ? 'bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 border-violet-100 dark:border-dark-border/50' : 'bg-slate-50 dark:bg-dark-card text-slate-500 dark:text-slate-400 border-slate-200 dark:border-dark-border'}`}>
                             {result.source === 'gemini' ? <Sparkles size={14} /> : <Cpu size={14} />}
                             {result.source === 'gemini' ? 'Gemini AI' : 'Local Engine'}
                         </div>
-                        <button className="p-2 bg-white rounded-xl border border-slate-200 text-slate-400 hover:text-primary-600 transition-colors">
+                        <button className="p-2 bg-white dark:bg-dark-card rounded-xl border border-slate-200 dark:border-dark-border text-slate-400 dark:text-slate-500 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                             <Share2 size={20} />
                         </button>
                         <button
                             onClick={handleDownloadPDF}
                             disabled={isGenerating}
-                            className="p-2 bg-white rounded-xl border border-slate-200 text-slate-400 hover:text-primary-600 transition-colors disabled:opacity-50"
+                            className="p-2 bg-white dark:bg-dark-card rounded-xl border border-slate-200 dark:border-dark-border text-slate-400 dark:text-slate-500 hover:text-primary-600 dark:hover:text-primary-400 transition-colors disabled:opacity-50"
                         >
                             {isGenerating ? <Loader2 size={20} className="animate-spin" /> : <Download size={20} />}
                         </button>
@@ -269,7 +269,7 @@ const ResultsPage = () => {
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="lg:col-span-12 bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden"
+                        className="lg:col-span-12 bg-white dark:bg-dark-card rounded-[2.5rem] shadow-xl border border-slate-100 dark:border-dark-border overflow-hidden"
                     >
                         <div className="p-8 md:p-12">
                             <div className="flex flex-col md:flex-row items-center gap-12">
@@ -287,31 +287,31 @@ const ResultsPage = () => {
                                         />
                                     </svg>
                                     <div className="absolute flex flex-col items-center">
-                                        <span className="text-4xl font-black text-slate-800">{result.score}%</span>
-                                        <span className="text-xs uppercase tracking-widest text-slate-400 font-bold">Severity</span>
+                                        <span className="text-4xl font-black text-slate-800 dark:text-white">{result.score}%</span>
+                                        <span className="text-xs uppercase tracking-widest text-slate-400 dark:text-slate-500 font-bold">Severity</span>
                                     </div>
                                 </div>
 
                                 <div className="flex-1 text-center md:text-left">
-                                    <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border mb-6 ${getRiskColor(result.riskLevel)}`}>
+                                    <div className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full border mb-6 ${getRiskColor(result.riskLevel)} dark:bg-opacity-20`}>
                                         {getRiskIcon(result.riskLevel)}
                                         <span className="font-bold text-lg">{result.riskLevel} Risk Level</span>
                                     </div>
-                                    <h1 className="text-3xl font-bold text-slate-800 mb-4">Hello {result.userName}, your analysis is complete.</h1>
-                                    <p className="text-slate-600 text-lg leading-relaxed">{result.summary}</p>
+                                    <h1 className="text-3xl font-bold text-slate-800 dark:text-white mb-4">Hello {result.userName}, your analysis is complete.</h1>
+                                    <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed">{result.summary}</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-slate-50 py-8 px-8 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-slate-100">
+                        <div className="bg-slate-50 dark:bg-dark-bg/50 py-8 px-8 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-slate-100 dark:border-dark-border">
                             {result.details.map((detail, idx) => (
-                                <div key={idx} className="bg-white p-5 rounded-3xl shadow-sm border border-slate-100">
-                                    <p className="text-sm font-bold text-slate-400 mb-1 uppercase tracking-tight">{detail.category}</p>
+                                <div key={idx} className="bg-white dark:bg-dark-card p-5 rounded-3xl shadow-sm border border-slate-100 dark:border-dark-border">
+                                    <p className="text-sm font-bold text-slate-400 dark:text-slate-500 mb-1 uppercase tracking-tight">{detail.category}</p>
                                     <div className="flex justify-between items-end">
-                                        <span className="text-xl font-bold text-slate-800">{detail.risk}</span>
-                                        <span className="text-slate-300 text-sm font-medium">{detail.score}%</span>
+                                        <span className="text-xl font-bold text-slate-800 dark:text-white">{detail.risk}</span>
+                                        <span className="text-slate-300 dark:text-slate-500 text-sm font-medium">{detail.score}%</span>
                                     </div>
-                                    <div className="w-full bg-slate-100 h-1.5 rounded-full mt-3 overflow-hidden">
+                                    <div className="w-full bg-slate-100 dark:bg-slate-700 h-1.5 rounded-full mt-3 overflow-hidden">
                                         <motion.div
                                             className="h-full bg-primary-500 rounded-full"
                                             initial={{ width: 0 }}
@@ -331,7 +331,7 @@ const ResultsPage = () => {
                         transition={{ delay: 0.3 }}
                         className="lg:col-span-7 space-y-6"
                     >
-                        <div className="bg-white rounded-[2rem] p-8 shadow-lg border border-slate-100 h-full">
+                        <div className="bg-white dark:bg-dark-card rounded-[2rem] p-8 shadow-lg border border-slate-100 dark:border-dark-border h-full">
                             <h3 className="text-2xl font-bold text-slate-800 mb-8 flex items-center gap-3">
                                 <ShieldAlert className="text-primary-600" />
                                 Recommended Precautions
@@ -345,7 +345,7 @@ const ResultsPage = () => {
                                         transition={{ delay: 0.4 + idx * 0.1 }}
                                         className="flex items-start gap-4"
                                     >
-                                        <div className="bg-primary-50 text-primary-600 rounded-full p-1.5 mt-1">
+                                        <div className="bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 rounded-full p-1.5 mt-1">
                                             <CheckCircle2 size={16} />
                                         </div>
                                         <p className="text-slate-700 font-medium leading-relaxed">{rec}</p>
@@ -365,15 +365,15 @@ const ResultsPage = () => {
                         <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-[2rem] p-8 shadow-lg text-white">
                             <h3 className="text-xl font-bold mb-4">Need a detailed consultation?</h3>
                             <p className="text-slate-400 mb-8 font-medium">While our AI system is accurate, it doesn't replace a real doctor's advice. Consult a specialist for a deep dive.</p>
-                            <button className="w-full bg-white text-slate-900 font-bold py-4 rounded-2xl hover:bg-primary-50 transition-all flex items-center justify-center gap-2 mb-4">
+                            <button className="w-full bg-white dark:bg-dark-card text-slate-900 dark:text-white font-bold py-4 rounded-2xl hover:bg-primary-50 dark:hover:bg-primary-900/10 transition-all flex items-center justify-center gap-2 mb-4">
                                 Find a Doctor Near Me
                             </button>
-                            <button className="w-full bg-slate-700/50 text-white font-bold py-4 rounded-2xl hover:bg-slate-700 transition-all border border-slate-700">
+                            <button className="w-full bg-slate-700/50 dark:bg-dark-border/50 text-white font-bold py-4 rounded-2xl hover:bg-slate-700 dark:hover:bg-dark-border transition-all border border-slate-700 dark:border-dark-border">
                                 Save Result to Profile
                             </button>
                         </div>
 
-                        <div className="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm">
+                        <div className="bg-white dark:bg-dark-card rounded-[2rem] p-8 border border-slate-100 dark:border-dark-border shadow-sm">
                             <div className="flex items-center gap-4 mb-4">
                                 <div className="bg-health-teal/10 p-3 rounded-2xl">
                                     <Info className="text-health-teal" />
@@ -393,7 +393,7 @@ const ResultsPage = () => {
                             className="lg:col-span-12"
                         >
                             <div className="bg-gradient-to-br from-primary-600 via-primary-500 to-health-cyber rounded-[2.5rem] p-1 shadow-2xl">
-                                <div className="bg-white rounded-[2.3rem] p-8 md:p-10">
+                                <div className="bg-white dark:bg-dark-card rounded-[2.3rem] p-8 md:p-10">
                                     <div className="flex items-center gap-4 mb-8">
                                         <div className="bg-amber-50 p-3 rounded-2xl">
                                             <Lightbulb className="text-amber-500" size={24} />
@@ -403,7 +403,7 @@ const ResultsPage = () => {
                                             <p className="text-slate-400 text-sm font-medium">Personalized suggestions to improve your health daily</p>
                                         </div>
                                         {result.source === 'gemini' && (
-                                            <div className="ml-auto hidden md:flex items-center gap-2 bg-violet-50 text-violet-600 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-violet-100">
+                                            <div className="ml-auto hidden md:flex items-center gap-2 bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-violet-100 dark:border-violet-800/50">
                                                 <Sparkles size={12} />
                                                 AI Generated
                                             </div>
@@ -416,7 +416,7 @@ const ResultsPage = () => {
                                                 initial={{ opacity: 0, y: 10 }}
                                                 animate={{ opacity: 1, y: 0 }}
                                                 transition={{ delay: 0.7 + idx * 0.1 }}
-                                                className="flex items-start gap-4 bg-slate-50 p-5 rounded-2xl border border-slate-100 hover:border-primary-200 hover:bg-primary-50/30 transition-all duration-300 group"
+                                                className="flex items-start gap-4 bg-slate-50 dark:bg-dark-bg/40 p-5 rounded-2xl border border-slate-100 dark:border-dark-border hover:border-primary-200 hover:bg-primary-50/30 transition-all duration-300 group"
                                             >
                                                 <div className="bg-gradient-to-br from-primary-500 to-health-cyber text-white rounded-xl p-2.5 mt-0.5 shadow-sm group-hover:scale-110 transition-transform">
                                                     <span className="text-sm font-black">{idx + 1}</span>

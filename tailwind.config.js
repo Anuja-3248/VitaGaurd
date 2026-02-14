@@ -20,10 +20,16 @@ export default {
                     800: '#1b3494',
                     900: '#162b79',
                 },
+                dark: {
+                    bg: '#0a0c10',     /* Pure, deep charcoal */
+                    card: '#161b22',   /* GitHub-style dark grey */
+                    border: '#30363d', /* Subtle border */
+                    accent: '#1f6feb', /* Muted blue for dark mode */
+                },
                 health: {
-                    indigo: '#4f46e5',
-                    violet: '#7c3aed',
-                    cyber: '#06b6d4',
+                    indigo: '#6366f1',
+                    violet: '#8b5cf6',
+                    cyber: '#22d3ee',
                     emerald: '#10b981',
                     rose: '#f43f5e',
                     amber: '#f59e0b',

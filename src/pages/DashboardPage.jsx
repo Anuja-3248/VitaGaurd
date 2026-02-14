@@ -107,11 +107,11 @@ const DashboardPage = () => {
     };
 
     return (
-        <div className="bg-slate-50 min-h-screen pt-36 pb-12 px-4 relative overflow-hidden">
+        <div className="bg-slate-50 dark:bg-dark-bg min-h-screen pt-36 pb-12 px-4 relative overflow-hidden transition-colors duration-300">
             {/* Background Decorations */}
             <div className="fixed inset-0 pointer-events-none z-0">
-                <div className="absolute top-[10%] left-[5%] w-[30%] h-[30%] bg-primary-100/40 blur-[100px] rounded-full animate-float"></div>
-                <div className="absolute bottom-[5%] right-[5%] w-[25%] h-[25%] bg-health-cyber/10 blur-[80px] rounded-full animate-float" style={{ animationDelay: '-3s' }}></div>
+                <div className="absolute top-[10%] left-[5%] w-[30%] h-[30%] bg-primary-100/30 dark:bg-primary-900/10 blur-[100px] rounded-full animate-float"></div>
+                <div className="absolute bottom-[5%] right-[5%] w-[25%] h-[25%] bg-health-cyber/5 dark:bg-health-cyber/2 blur-[80px] rounded-full animate-float" style={{ animationDelay: '-3s' }}></div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -124,16 +124,16 @@ const DashboardPage = () => {
                         className="glass-card mb-10 overflow-hidden group shadow-premium"
                     >
                         <div className="bg-gradient-to-r from-primary-600 via-primary-500 to-health-violet p-1">
-                            <div className="bg-white rounded-[1.4rem] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="bg-white dark:bg-dark-card rounded-[1.4rem] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
                                 <div className="flex items-center gap-6 text-center md:text-left">
-                                    <div className="h-16 w-16 bg-primary-50 rounded-2xl flex items-center justify-center text-primary-600 shadow-inner group-hover:scale-110 transition-transform duration-500">
+                                    <div className="h-16 w-16 bg-primary-50 dark:bg-primary-900/10 rounded-2xl flex items-center justify-center text-primary-600 dark:text-primary-400 shadow-inner group-hover:scale-110 transition-transform duration-500">
                                         <User size={32} />
                                     </div>
                                     <div>
-                                        <h2 className="text-2xl font-black text-slate-900 tracking-tight mb-1">
+                                        <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-1">
                                             Complete Your Health Profile
                                         </h2>
-                                        <p className="text-slate-500 font-medium max-w-lg">
+                                        <p className="text-slate-500 dark:text-slate-400 font-medium max-w-lg">
                                             Unlock high-precision AI risk detection by providing your baseline metrics.
                                         </p>
                                     </div>
@@ -154,17 +154,17 @@ const DashboardPage = () => {
                     className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12"
                 >
                     <motion.div variants={itemVariants}>
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-600 font-black text-[10px] uppercase tracking-widest mb-4 shadow-sm">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/50 text-emerald-600 dark:text-emerald-400 font-black text-[10px] uppercase tracking-widest mb-4 shadow-sm">
                             <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                             </span>
                             AI Monitoring Active
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter leading-none">
+                        <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter leading-none">
                             Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-health-cyber">{userName}</span>
                         </h1>
-                        <p className="text-lg text-slate-500 mt-3 font-medium">Your health insights are updated and ready for review.</p>
+                        <p className="text-lg text-slate-500 dark:text-slate-400 mt-3 font-medium">Your health insights are updated and ready for review.</p>
                     </motion.div>
 
                     <motion.div variants={itemVariants}>
@@ -193,8 +193,8 @@ const DashboardPage = () => {
                                     {stat.icon}
                                 </div>
                                 <div>
-                                    <p className="text-xs font-black text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
-                                    <p className="text-2xl font-black text-slate-900 tracking-tight">{stat.value}</p>
+                                    <p className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">{stat.label}</p>
+                                    <p className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{stat.value}</p>
                                 </div>
                                 <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
                                     <ArrowRight size={18} className="text-slate-300" />
@@ -215,8 +215,8 @@ const DashboardPage = () => {
 
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 relative z-10">
                         <div>
-                            <h3 className="text-2xl font-black text-slate-900 tracking-tight">Risk Analytics Trend</h3>
-                            <p className="text-slate-500 font-medium">Visualizing your progress over the last 7 scans.</p>
+                            <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Risk Analytics Trend</h3>
+                            <p className="text-slate-500 dark:text-slate-400 font-medium">Visualizing your progress over the last 7 scans.</p>
                         </div>
                         <div className="flex flex-wrap gap-3">
                             {assessments.length >= 2 && (
@@ -318,9 +318,9 @@ const DashboardPage = () => {
                     {/* Main Content Area */}
                     <div className="lg:col-span-2 space-y-8">
                         {/* Recent Assessments */}
-                        <section className="glass-card rounded-[2.5rem] shadow-premium overflow-hidden border-white/60">
-                            <div className="p-8 border-b border-slate-50 flex justify-between items-center">
-                                <h3 className="text-2xl font-black text-slate-900 tracking-tight">Recent Assessments</h3>
+                        <section className="glass-card rounded-[2.5rem] shadow-premium overflow-hidden border-white/60 dark:border-dark-border/40">
+                            <div className="p-8 border-b border-slate-50 dark:border-dark-border/50 flex justify-between items-center">
+                                <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Recent Assessments</h3>
                                 <button className="text-primary-600 hover:text-primary-700 font-bold text-sm tracking-tight flex items-center gap-1 group">
                                     View Repository <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
