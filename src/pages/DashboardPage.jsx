@@ -57,13 +57,13 @@ const DashboardPage = () => {
     const isProfileComplete = userProfile?.age && userProfile?.height && userProfile?.weight;
 
     // Prepare chart data (reverse to show chronological order)
-    const chartData = assessments.slice(0, 10).reverse().map(item => {
+    const chartData = assessments.slice(0, 10).reverse().map((item, index) => {
         const date = item.timestamp?.toDate ? item.timestamp.toDate() : null;
         return {
-            date: date ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A',
-            time: date ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '',
+            displayDate: date ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A',
+            displayTime: date ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '',
             score: item.riskScore || 0,
-            id: item.id
+            id: item.id || index // Unique key for positioning
         };
     });
 
@@ -274,11 +274,23 @@ const DashboardPage = () => {
                                     <ReferenceArea y1={30} y2={100} fill="#fff1f2" fillOpacity={0.4} />
 
                                     <XAxis
-                                        dataKey="date"
+                                        dataKey="id"
                                         axisLine={false}
                                         tickLine={false}
-                                        tick={{ fill: '#64748b', fontSize: 11, fontWeight: 800 }}
-                                        dy={15}
+                                        tick={({ x, y, payload, index }) => {
+                                            const item = chartData[index];
+                                            return (
+                                                <g transform={`translate(${x},${y})`}>
+                                                    <text x={0} y={0} dy={16} textAnchor="middle" fill="#64748b" style={{ fontSize: '10px', fontWeight: '800' }}>
+                                                        {item?.displayDate}
+                                                    </text>
+                                                    <text x={0} y={0} dy={28} textAnchor="middle" fill="#94a3b8" style={{ fontSize: '8px', fontWeight: '400' }}>
+                                                        {item?.displayTime}
+                                                    </text>
+                                                </g>
+                                            );
+                                        }}
+                                        height={50}
                                     />
                                     <YAxis
                                         axisLine={false}
@@ -294,8 +306,8 @@ const DashboardPage = () => {
                                                 return (
                                                     <div className="glass-card p-5 rounded-[1.5rem] shadow-2xl border-white animate-slide-up">
                                                         <div className="flex justify-between items-start mb-3">
-                                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{payload[0].payload?.date || 'N/A'}</p>
-                                                            <p className="text-[10px] font-bold text-primary-500">{payload[0].payload?.time}</p>
+                                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{payload[0].payload?.displayDate || 'N/A'}</p>
+                                                            <p className="text-[10px] font-bold text-primary-500">{payload[0].payload?.displayTime}</p>
                                                         </div>
                                                         <div className="flex items-center gap-4">
                                                             <div className={`text-3xl font-black ${color}`}>{score}%</div>
