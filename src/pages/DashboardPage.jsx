@@ -57,10 +57,22 @@ const DashboardPage = () => {
     const isProfileComplete = userProfile?.age && userProfile?.height && userProfile?.weight;
 
     // Prepare chart data (reverse to show chronological order)
-    const chartData = assessments.slice(0, 7).reverse().map(item => ({
-        date: item.timestamp?.toDate ? item.timestamp.toDate().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A',
-        score: item.riskScore || 0
-    }));
+    const chartData = assessments.slice(0, 10).reverse().map(item => {
+        const date = item.timestamp?.toDate ? item.timestamp.toDate() : null;
+        return {
+            date: date ? date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'N/A',
+            time: date ? date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) : '',
+            score: item.riskScore || 0,
+            id: item.id
+        };
+    });
+
+    // Extract detailed metrics from the latest assessment
+    const latestDetails = assessments.length > 0 && assessments[0].details ? assessments[0].details : [
+        { category: "Cardiovascular", risk: "N/A", score: 0 },
+        { category: "Respiratory", risk: "N/A", score: 0 },
+        { category: "Metabolic", risk: "N/A", score: 0 }
+    ];
 
     const stats = [
         {
@@ -281,7 +293,10 @@ const DashboardPage = () => {
                                                 const color = score < 15 ? "text-emerald-500" : score < 30 ? "text-amber-500" : "text-rose-500";
                                                 return (
                                                     <div className="glass-card p-5 rounded-[1.5rem] shadow-2xl border-white animate-slide-up">
-                                                        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{payload[0].payload?.date || 'N/A'}</p>
+                                                        <div className="flex justify-between items-start mb-3">
+                                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{payload[0].payload?.date || 'N/A'}</p>
+                                                            <p className="text-[10px] font-bold text-primary-500">{payload[0].payload?.time}</p>
+                                                        </div>
                                                         <div className="flex items-center gap-4">
                                                             <div className={`text-3xl font-black ${color}`}>{score}%</div>
                                                             <div className="h-10 w-[1px] bg-slate-100"></div>
@@ -391,27 +406,29 @@ const DashboardPage = () => {
                     <div className="space-y-8">
                         {/* Risk Categories */}
                         <section className="glass-card rounded-[2.5rem] p-8 shadow-premium border-white/60">
-                            <h3 className="text-xl font-black text-slate-900 tracking-tight mb-8">Risk Metrics</h3>
+                            <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight mb-8">Risk Metrics</h3>
                             <div className="space-y-8">
-                                {[
-                                    { name: "Cardiovascular", level: "Optimal", percentage: 12, color: "bg-emerald-500", light: "bg-emerald-100" },
-                                    { name: "Respiratory Status", level: "Optimal", percentage: 8, color: "bg-emerald-500", light: "bg-emerald-100" },
-                                    { name: "Metabolic Health", level: "Monitor", percentage: 22, color: "bg-amber-500", light: "bg-amber-100" }
-                                ].map((risk, idx) => (
-                                    <div key={idx} className="group">
-                                        <div className="flex justify-between items-center mb-3">
-                                            <span className="text-slate-700 font-black text-sm">{risk.name}</span>
-                                            <span className={`text-[10px] font-black uppercase tracking-widest ${risk.percentage < 15 ? 'text-emerald-500' : 'text-amber-500'}`}>{risk.level}</span>
+                                {latestDetails.map((risk, idx) => {
+                                    const score = risk.score || 0;
+                                    const color = score > 40 ? "bg-rose-500" : score > 20 ? "bg-amber-500" : "bg-emerald-500";
+                                    return (
+                                        <div key={idx} className="group">
+                                            <div className="flex justify-between items-center mb-3">
+                                                <span className="text-slate-700 dark:text-slate-300 font-black text-sm">{risk.category}</span>
+                                                <span className={`text-[10px] font-black uppercase tracking-widest ${score > 40 ? 'text-rose-500' : score > 20 ? 'text-amber-500' : 'text-emerald-500'}`}>
+                                                    {risk.risk || (score > 40 ? 'Elevated' : score > 20 ? 'Moderate' : 'Optimal')}
+                                                </span>
+                                            </div>
+                                            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
+                                                <motion.div
+                                                    initial={{ width: 0 }}
+                                                    whileInView={{ width: `${score}%` }}
+                                                    className={`${color} h-full rounded-full shadow-sm`}
+                                                ></motion.div>
+                                            </div>
                                         </div>
-                                        <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                                            <motion.div
-                                                initial={{ width: 0 }}
-                                                whileInView={{ width: `${risk.percentage}%` }}
-                                                className={`${risk.color} h-full rounded-full shadow-sm`}
-                                            ></motion.div>
-                                        </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </section>
 
