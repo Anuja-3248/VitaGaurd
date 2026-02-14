@@ -1,3 +1,4 @@
+// Forced refresh for chatbot visibility check
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShieldAlert, CheckCircle2, AlertTriangle, ArrowLeft, Download, Share2, Info, Loader2, Lightbulb, Sparkles, Cpu } from 'lucide-react';
@@ -7,6 +8,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import MedicalReportTemplate from '../components/MedicalReportTemplate';
 import { analyzeHealthWithGemini } from '../services/gemini';
+import HealthChatBot from '../components/HealthChatBot';
 
 const ResultsPage = () => {
     const { currentUser } = useAuth();
@@ -431,6 +433,9 @@ const ResultsPage = () => {
                     )}
                 </div>
             </div>
+
+            {/* AI Health Assistant Chatbot */}
+            <HealthChatBot reportData={result} />
         </div>
     );
 };
