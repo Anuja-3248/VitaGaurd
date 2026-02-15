@@ -22,7 +22,7 @@ function App() {
     return (
         <AuthProvider>
             <ThemeProvider>
-                <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                <Router>
                     <ScrollToTop />
                     <div className="min-h-screen flex flex-col bg-white dark:bg-slate-900 text-slate-900 dark:text-white transition-colors duration-300">
                         <Navbar />
