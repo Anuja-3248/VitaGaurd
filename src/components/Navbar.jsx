@@ -1,25 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, HeartPulse, User, Home, Info, Sparkles, LayoutDashboard, LogOut, Sun, Moon } from 'lucide-react';
+import { Menu, X, Home, Info, Sparkles, LayoutDashboard, LogOut, Sun, Moon, Zap, User, HeartPulse } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const Navbar = () => {
-    const { currentUser, logout } = useAuth();
+    const { currentUser } = useAuth();
     const { theme, toggleTheme } = useTheme();
-    const [isOpen, setIsOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
-    const location = useLocation();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    const [isOpen, setIsOpen] = useState(false);
+    const location = useLocation();
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -31,21 +24,46 @@ const Navbar = () => {
 
     const handleLogout = async () => {
         try {
-            await logout();
-            navigate('/');
+            await signOut(auth);
         } catch (error) {
-            console.error("Failed to log out", error);
+            console.error('Logout error:', error);
+        }
+    };
+
+    const handleNavClick = (path) => {
+        setIsOpen(false);
+        if (path === '/') {
+            if (location.pathname === '/') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                navigate('/');
+            }
+            return;
+        }
+
+        if (path.startsWith('/#')) {
+            const id = path.split('#')[1];
+            if (location.pathname === '/') {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                navigate(path);
+            }
+        } else {
+            navigate(path);
         }
     };
 
     return (
-        <nav className={`fixed w-full z-[100] transition-all duration-500 ${scrolled ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl shadow-premium border-b border-slate-100 dark:border-slate-800 py-3' : 'bg-white/40 dark:bg-slate-900/40 backdrop-blur-md py-5'}`}>
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-dark-bg/70 backdrop-blur-xl border-b border-white/20 dark:border-dark-border/50 transition-all duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
                     <Link to="/" className="flex items-center space-x-2 group">
-                        <div className="bg-primary-600 p-1.5 rounded-xl shadow-glow group-hover:scale-110 transition-transform duration-300">
-                            <HeartPulse className="h-6 w-6 text-white" />
+                        <div className="bg-primary-600 p-2 rounded-xl shadow-glow group-hover:rotate-12 transition-transform duration-300 flex items-center justify-center h-10 w-10">
+                            <Zap className="h-6 w-6 text-white" fill="currentColor" />
                         </div>
                         <span className="text-2xl font-black bg-gradient-to-r from-primary-700 via-primary-600 to-health-cyber bg-clip-text text-transparent tracking-tight">
                             VitaGuard
@@ -54,26 +72,14 @@ const Navbar = () => {
 
                     {/* Desktop Links - Symbols Only */}
                     <div className="hidden md:flex items-center space-x-10">
-                        <div className="flex items-center space-x-2 bg-slate-100/50 p-1.5 rounded-2xl border border-slate-200/50">
+                        <div className="flex items-center space-x-2 bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-200/50 dark:border-slate-700/50">
                             {navLinks.map((link) => (
                                 <motion.button
                                     key={link.name}
-                                    whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,1)' }}
+                                    whileHover={{ scale: 1.1, backgroundColor: theme === 'dark' ? 'rgba(51, 65, 85, 0.5)' : 'rgba(255,255,255,1)' }}
                                     whileTap={{ scale: 0.95 }}
-                                    onClick={() => {
-                                        if (link.path.startsWith('/#')) {
-                                            const id = link.path.split('#')[1];
-                                            const element = document.getElementById(id);
-                                            if (element) {
-                                                element.scrollIntoView({ behavior: 'smooth' });
-                                            } else {
-                                                navigate(link.path);
-                                            }
-                                        } else {
-                                            navigate(link.path);
-                                        }
-                                    }}
-                                    className="p-3 text-slate-500 hover:text-primary-600 rounded-xl transition-colors relative group"
+                                    onClick={() => handleNavClick(link.path)}
+                                    className="p-3 text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-colors relative group"
                                     title={link.name}
                                 >
                                     {link.icon}
@@ -102,9 +108,9 @@ const Navbar = () => {
 
                         {currentUser ? (
                             <div className="flex items-center space-x-4">
-                                <Link to="/dashboard" className="p-3 text-slate-500 hover:text-primary-600 hover:bg-white rounded-xl transition-all relative group" title="Dashboard">
+                                <Link to="/dashboard" className="p-3 text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all relative group" title="Dashboard">
                                     <LayoutDashboard size={20} />
-                                    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">Dashboard</span>
+                                    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-800 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">Dashboard</span>
                                 </Link>
                                 <Link to="/profile" className="flex items-center gap-3 bg-white dark:bg-dark-card px-4 py-2 rounded-2xl shadow-sm border border-slate-100 dark:border-dark-border hover:border-primary-200 transition-all text-slate-700 dark:text-slate-200 font-bold text-sm">
                                     <div className="bg-primary-50 dark:bg-primary-900/10 p-1 rounded-lg">
@@ -114,7 +120,7 @@ const Navbar = () => {
                                 </Link>
                                 <button
                                     onClick={handleLogout}
-                                    className="p-3 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all group relative"
+                                    className="p-3 text-slate-400 dark:text-slate-500 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all group relative"
                                     title="Logout"
                                 >
                                     <LogOut size={20} />
@@ -146,26 +152,13 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             {isOpen && (
-                <div className="md:hidden bg-white/95 backdrop-blur-xl shadow-2xl absolute w-[90%] left-[5%] top-20 rounded-[2.5rem] border border-slate-100 overflow-hidden animate-fade-in z-[110]">
+                <div className="md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-2xl absolute w-[90%] left-[5%] top-20 rounded-[2.5rem] border border-slate-100 dark:border-dark-border overflow-hidden animate-fade-in z-[110]">
                     <div className="p-8 space-y-4">
                         <div className="grid grid-cols-3 gap-4 mb-8">
                             {navLinks.map((link) => (
                                 <button
                                     key={link.name}
-                                    onClick={() => {
-                                        setIsOpen(false);
-                                        if (link.path.startsWith('/#')) {
-                                            const id = link.path.split('#')[1];
-                                            const element = document.getElementById(id);
-                                            if (element) {
-                                                element.scrollIntoView({ behavior: 'smooth' });
-                                            } else {
-                                                navigate(link.path);
-                                            }
-                                        } else {
-                                            navigate(link.path);
-                                        }
-                                    }}
+                                    onClick={() => handleNavClick(link.path)}
                                     className="flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-100 transition-all group"
                                 >
                                     <div className="text-slate-400 dark:text-slate-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-2">
@@ -179,13 +172,13 @@ const Navbar = () => {
                         <div className="space-y-3 pt-4 border-t border-slate-100">
                             {currentUser ? (
                                 <>
-                                    <Link to="/dashboard" className="flex items-center gap-4 p-4 text-slate-600 font-bold rounded-2xl hover:bg-slate-50" onClick={() => setIsOpen(false)}>
+                                    <Link to="/dashboard" className="flex items-center gap-4 p-4 text-slate-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800" onClick={() => setIsOpen(false)}>
                                         <LayoutDashboard size={20} /> Dashboard
                                     </Link>
-                                    <Link to="/profile" className="flex items-center gap-4 p-4 text-primary-600 font-black rounded-2xl bg-primary-50" onClick={() => setIsOpen(false)}>
+                                    <Link to="/profile" className="flex items-center gap-4 p-4 text-primary-600 font-black rounded-2xl bg-primary-50 dark:bg-primary-900/20" onClick={() => setIsOpen(false)}>
                                         <User size={20} /> My Health Profile
                                     </Link>
-                                    <button onClick={() => { handleLogout(); setIsOpen(false); }} className="flex items-center gap-4 w-full p-4 text-rose-500 font-bold">
+                                    <button onClick={() => { handleLogout(); setIsOpen(false); }} className="flex items-center gap-4 w-full p-4 text-rose-500 font-bold hover:bg-rose-50 dark:hover:bg-rose-900/10 rounded-2xl transition-colors">
                                         <LogOut size={20} /> Logout
                                     </button>
                                 </>
