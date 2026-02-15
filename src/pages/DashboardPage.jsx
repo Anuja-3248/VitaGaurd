@@ -360,14 +360,14 @@ const DashboardPage = () => {
                                     </div>
                                 ) : (
                                     assessments.slice(0, 5).map((item) => (
-                                        <div key={item.id} className="p-6 md:p-8 flex items-center justify-between hover:bg-slate-50 transition-colors group">
+                                        <div key={item.id} className="p-6 md:p-8 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                                             <div className="flex items-center gap-6">
-                                                <div className="bg-slate-50 p-3 rounded-2xl group-hover:bg-white transition-colors shadow-sm">
+                                                <div className="bg-slate-50 dark:bg-slate-800 p-3 rounded-2xl group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm">
                                                     <Activity className="text-primary-500" size={24} />
                                                 </div>
                                                 <div>
-                                                    <p className="font-black text-slate-900 text-lg">Health Risk Scan</p>
-                                                    <p className="text-sm text-slate-400 font-bold">{item.timestamp?.toDate ? item.timestamp.toDate().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
+                                                    <p className="font-black text-slate-900 dark:text-white text-lg">Health Risk Scan</p>
+                                                    <p className="text-sm text-slate-400 dark:text-slate-500 font-bold">{item.timestamp?.toDate ? item.timestamp.toDate().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-8">
@@ -443,28 +443,28 @@ const DashboardPage = () => {
                         </section>
 
                         {/* Smart Nav */}
-                        <section className="glass-card rounded-[2.5rem] p-8 shadow-premium border-white/60">
-                            <h3 className="text-xl font-black text-slate-900 tracking-tight mb-6">Gateway</h3>
+                        <section className="glass-card rounded-[2.5rem] p-8 shadow-premium border-white/60 dark:border-dark-border/40">
+                            <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight mb-6">Gateway</h3>
                             <div className="grid grid-cols-2 gap-4">
-                                <Link to="/profile" className="flex flex-col items-center gap-3 p-5 bg-slate-50/50 rounded-3xl hover:bg-white hover:shadow-glow transition-all duration-300 border border-transparent hover:border-primary-100 group">
-                                    <div className="bg-white p-3 rounded-2xl shadow-sm text-primary-500 group-hover:scale-110 transition-transform"><User size={22} /></div>
-                                    <span className="text-xs font-black text-slate-600 uppercase tracking-widest">Profile</span>
+                                <Link to="/profile" className="flex flex-col items-center gap-3 p-5 bg-slate-50/50 dark:bg-slate-800/50 rounded-3xl hover:bg-white dark:hover:bg-slate-700 hover:shadow-glow transition-all duration-300 border border-transparent hover:border-primary-100 group">
+                                    <div className="bg-white dark:bg-dark-card p-3 rounded-2xl shadow-sm text-primary-500 group-hover:scale-110 transition-transform"><User size={22} /></div>
+                                    <span className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Profile</span>
                                 </Link>
-                                <Link to="/results" className="flex flex-col items-center gap-3 p-5 bg-slate-50/50 rounded-3xl hover:bg-white hover:shadow-glow transition-all duration-300 border border-transparent hover:border-health-cyber group">
-                                    <div className="bg-white p-3 rounded-2xl shadow-sm text-health-cyber group-hover:scale-110 transition-transform"><FileText size={22} /></div>
-                                    <span className="text-xs font-black text-slate-600 uppercase tracking-widest">Reports</span>
+                                <Link to="/results" className="flex flex-col items-center gap-3 p-5 bg-slate-50/50 dark:bg-slate-800/50 rounded-3xl hover:bg-white dark:hover:bg-slate-700 hover:shadow-glow transition-all duration-300 border border-transparent hover:border-health-cyber group">
+                                    <div className="bg-white dark:bg-dark-card p-3 rounded-2xl shadow-sm text-health-cyber group-hover:scale-110 transition-transform"><FileText size={22} /></div>
+                                    <span className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Reports</span>
                                 </Link>
                             </div>
                         </section>
 
                         {/* System Lock */}
-                        <div className="bg-emerald-50 border border-emerald-100 rounded-3xl p-6 flex items-center gap-4">
-                            <div className="bg-white p-2 rounded-xl shadow-sm">
-                                <Lock size={20} className="text-emerald-600" />
+                        <div className="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800/50 rounded-3xl p-6 flex items-center gap-4">
+                            <div className="bg-white dark:bg-dark-card p-2 rounded-xl shadow-sm">
+                                <Lock size={20} className="text-emerald-600 dark:text-emerald-400" />
                             </div>
                             <div>
-                                <p className="text-[10px] font-black text-emerald-800 uppercase tracking-widest">Status</p>
-                                <p className="text-xs font-bold text-emerald-600">Encrypted & Secure</p>
+                                <p className="text-[10px] font-black text-emerald-800 dark:text-emerald-400 uppercase tracking-widest">Status</p>
+                                <p className="text-xs font-bold text-emerald-600 dark:text-emerald-500">Encrypted & Secure</p>
                             </div>
                         </div>
                     </div>

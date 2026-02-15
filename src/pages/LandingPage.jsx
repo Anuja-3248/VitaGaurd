@@ -1,13 +1,33 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Activity, LineChart, Lock, ArrowRight, CheckCircle2, X, Microscope, Database, FileText, Brain, HeartPulse } from 'lucide-react';
 import GenZIcon from '../components/GenZIcon';
+import OnboardingModal from '../components/OnboardingModal';
 import { useAuth } from '../context/AuthContext';
 
 const LandingPage = () => {
     const { currentUser } = useAuth();
     const [activeStep, setActiveStep] = useState(null);
+    const [showOnboarding, setShowOnboarding] = useState(false);
+
+    useEffect(() => {
+        // Temporarily forcing to true so you can see it! 
+        // We will turn the "remember me" logic back on once you like the design.
+        setShowOnboarding(true);
+
+        /* 
+        const hasSeenOnboarding = sessionStorage.getItem('vitaGuard_onboarding_seen');
+        if (!hasSeenOnboarding) {
+            setShowOnboarding(true);
+        }
+        */
+    }, []);
+
+    const completeOnboarding = () => {
+        setShowOnboarding(false);
+        sessionStorage.setItem('vitaGuard_onboarding_seen', 'true');
+    };
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -51,6 +71,13 @@ const LandingPage = () => {
 
     return (
         <div className="overflow-x-hidden bg-white dark:bg-dark-bg selection:bg-primary-100 selection:text-primary-700 transition-colors duration-300">
+            {/* Onboarding Flow */}
+            <AnimatePresence>
+                {showOnboarding && (
+                    <OnboardingModal onComplete={completeOnboarding} />
+                )}
+            </AnimatePresence>
+
             {/* Modal Overlay */}
             <AnimatePresence>
                 {activeStep && (
@@ -137,12 +164,12 @@ const LandingPage = () => {
                         >
 
 
-                            <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl lg:text-7xl font-black text-slate-900 dark:text-white leading-[1.1] mb-8 tracking-tight">
-                                Health Risk <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-health-cyber">Detection</span> Reimagined.
+                            <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl lg:text-7xl font-normal text-slate-900 dark:text-white leading-[1.1] mb-8 tracking-tighter" style={{ fontFamily: "'DM Serif Display', serif" }}>
+                                Health Risk <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-health-cyber">Detection</span> Reimagined.
                             </motion.h1>
 
                             <motion.p variants={itemVariants} className="text-xl text-slate-500 dark:text-slate-400 mb-12 max-w-xl lg:mx-0 mx-auto leading-relaxed font-medium">
-                                Stay ahead of medical concerns with VitaGuard's sophisticated AI engine. We analyze your data to provide clinical-grade insights before they become serious.
+                                Bridge the gap between symptoms and clinical certainty. VitaGuard utilizes advanced diagnostic synthesis to map your biometric patterns, identifying subtle health shifts with technical precision.
                             </motion.p>
 
                             <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
@@ -184,7 +211,7 @@ const LandingPage = () => {
                                             <Activity className="text-emerald-500 h-6 w-6" />
                                         </div>
                                         <div>
-                                            <p className="text-[10px] uppercase font-black text-slate-400 dark:text-slate-500 tracking-widest mb-0.5">AI Engine</p>
+                                            <p className="text-[10px] uppercase font-black text-slate-400 dark:text-slate-500 tracking-widest mb-0.5">Protocol</p>
                                             <p className="text-xl font-black text-primary-900 dark:text-white leading-none">98.4% <span className="text-xs font-bold text-slate-400 dark:text-slate-500 ml-1">Precision</span></p>
                                         </div>
                                     </motion.div>
@@ -389,16 +416,42 @@ const LandingPage = () => {
                         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-600/20 blur-[120px] rounded-full -mr-64 -mt-64 animate-pulse"></div>
                         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-health-cyber/10 blur-[100px] rounded-full -ml-40 -mb-40"></div>
 
-                        <div className="relative z-10">
-                            <h2 className="text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-none italic">
-                                Ready for a <span className="text-primary-400">Healthier</span> Future?
+                        <div className="relative z-10 max-w-4xl mx-auto">
+                            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-sm">
+                                <ShieldCheck size={18} className="text-emerald-400" />
+                                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400">Military Grade Encryption</span>
+                            </div>
+
+                            <h2 className="text-6xl md:text-8xl font-normal mb-8 tracking-tighter leading-none text-white" style={{ fontFamily: "'DM Serif Display', serif" }}>
+                                Secure Your <span className="italic text-primary-400 underline decoration-primary-500/30">Future</span>
                             </h2>
-                            <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto font-medium">
-                                Join our growing community of proactive individuals who trust VitaGuard for their daily health insights.
+
+                            <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
+                                Join our network of over 12,000+ individuals utilizing <span className="text-white font-bold">Predictive Synthesis</span> to stay ahead of metabolic and cardiovascular risks.
                             </p>
-                            <Link to={currentUser ? "/dashboard" : "/signup"} className="btn-premium px-12 py-6 text-xl bg-white dark:bg-primary-600 text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-primary-700 border-none shadow-white/10 dark:shadow-primary-900/40">
-                                {currentUser ? "Go to Dashboard" : "Get Started Now — It's Free"}
-                            </Link>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+                                <div className="p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
+                                    <div className="text-primary-400 font-black text-3xl mb-2">45s</div>
+                                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Rapid Analysis</div>
+                                </div>
+                                <div className="p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
+                                    <div className="text-emerald-400 font-black text-3xl mb-2">100%</div>
+                                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Private & Anonymous</div>
+                                </div>
+                                <div className="p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
+                                    <div className="text-health-cyber font-black text-3xl mb-2">24/7</div>
+                                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Global Access</div>
+                                </div>
+                            </div>
+
+                            <div className="flex flex-col items-center gap-6">
+                                <Link to={currentUser ? "/dashboard" : "/signup"} className="btn-premium px-16 py-8 text-2xl bg-primary-600 text-white hover:bg-primary-700 border-none shadow-2xl shadow-primary-900/40 group">
+                                    {currentUser ? "Launch Personal Portal" : "Begin Diagnostic Scan"}
+                                    <ArrowRight size={28} className="group-hover:translate-x-2 transition-transform" />
+                                </Link>
+                                <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">No credit card or insurance required</p>
+                            </div>
                         </div>
                     </motion.div>
                 </div>

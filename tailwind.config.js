@@ -21,10 +21,10 @@ export default {
                     900: '#162b79',
                 },
                 dark: {
-                    bg: '#0a0c10',     /* Pure, deep charcoal */
-                    card: '#161b22',   /* GitHub-style dark grey */
-                    border: '#30363d', /* Subtle border */
-                    accent: '#1f6feb', /* Muted blue for dark mode */
+                    bg: '#0f172a',     /* Softer Navy/Slate background */
+                    card: '#1e293b',   /* Lighter card shade */
+                    border: '#334155', /* Visible but soft border */
+                    accent: '#3b82f6', /* Brighter blue for contrast */
                 },
                 health: {
                     indigo: '#6366f1',
