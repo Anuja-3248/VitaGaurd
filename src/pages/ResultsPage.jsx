@@ -1,7 +1,7 @@
 // Forced refresh for chatbot visibility check
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShieldAlert, CheckCircle2, AlertTriangle, ArrowLeft, Download, Share2, Info, Loader2, Lightbulb, Sparkles, Cpu } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, CheckCircle2, AlertTriangle, ArrowLeft, Download, Share2, Info, Loader2, Lightbulb, Sparkles, Cpu } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useRef, useState } from 'react';
 import jsPDF from 'jspdf';
@@ -9,6 +9,9 @@ import html2canvas from 'html2canvas';
 import MedicalReportTemplate from '../components/MedicalReportTemplate';
 import { analyzeHealthWithGemini } from '../services/gemini';
 import HealthChatBot from '../components/HealthChatBot';
+import GenZIcon from '../components/GenZIcon';
+import confetti from 'canvas-confetti';
+import { useEffect } from 'react';
 
 const ResultsPage = () => {
     const { currentUser } = useAuth();
@@ -19,7 +22,35 @@ const ResultsPage = () => {
     const [isGenerating, setIsGenerating] = useState(false);
 
     const currentName = assessmentData.name || currentUser?.displayName || "User";
-    const formData = assessmentData.formData || {};
+
+    // Look for form data either in the nested object OR at the top level (historical records)
+    const formData = assessmentData.formData || assessmentData || {};
+
+    // Trigger celebration if risk is low
+    useEffect(() => {
+        const result = getResultSync();
+        if (result && result.riskLevel === "Low") {
+            const duration = 3 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+            const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+            const interval = setInterval(function () {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+                confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+            }, 250);
+
+            return () => clearInterval(interval);
+        }
+    }, []);
 
     // Use Gemini AI analysis if available, otherwise call the deterministic fallback engine
     const getResult = () => {
@@ -39,11 +70,51 @@ const ResultsPage = () => {
 
     // For synchronous rendering, we need the fallback to work inline
     const getResultSync = () => {
-        const aiResult = getResult();
-        if (aiResult) return aiResult;
+        // 1. If we have semi-complete data from a past record (e.g., from Dashboard)
+        // Check for both 'score' and 'riskScore' due to database vs navigation naming differences
+        const savedScore = assessmentData.riskScore !== undefined ? assessmentData.riskScore : assessmentData.score;
 
-        // Inline deterministic fallback (mirrors gemini.js fallback logic)
-        return generateLocalAnalysis();
+        if (savedScore !== undefined && savedScore !== null) {
+            const riskLevel = savedScore < 16 ? "Low" : savedScore <= 35 ? "Moderate" : "High";
+            return {
+                ...assessmentData,
+                score: savedScore,
+                riskLevel: riskLevel,
+                userName: assessmentData.name || currentUser?.displayName || "User",
+                date: assessmentData.timestamp?.toDate ? assessmentData.timestamp.toDate().toLocaleDateString() : new Date().toLocaleDateString(),
+                summary: assessmentData.summary || `Based on your historical diagnostic record, your biometric synthesis indicates a ${riskLevel} health risk level (${savedScore}%). This data is archived for clinical continuity.`,
+                // Regenerate details if missing so historical charts don't show zero
+                details: assessmentData.details || [
+                    { category: "Cardiovascular", risk: savedScore > 30 ? "Monitor" : "Optimal", score: Math.max(5, Math.min(100, savedScore - 5)) },
+                    { category: "Respiratory", risk: savedScore > 40 ? "Monitor" : "Optimal", score: Math.max(5, Math.min(100, savedScore - 10)) },
+                    { category: "Metabolic", risk: savedScore > 20 ? "Monitor" : "Optimal", score: Math.max(5, Math.min(100, savedScore + 5)) }
+                ],
+                recommendations: assessmentData.recommendations || [
+                    "Continue monitoring biometric trends regularly.",
+                    "Ensure consistent sleep and hydration for optimal recovery.",
+                    "Review these results with a healthcare provider if symptoms persist."
+                ],
+                dietOptions: assessmentData.dietOptions || [
+                    "Increase intake of leafy greens and antioxidants.",
+                    "Prioritize lean proteins and complex carbohydrates.",
+                    "Reduce processed sugars and sodium based on biometric focus."
+                ],
+                source: 'historical'
+            };
+        }
+
+        const aiResult = getResult();
+        const localFallback = generateLocalAnalysis();
+
+        if (aiResult) {
+            // Ensure dietOptions exist even if using an older AI result
+            return {
+                ...aiResult,
+                dietOptions: aiResult.dietOptions || localFallback.dietOptions
+            };
+        }
+
+        return localFallback;
     };
 
     const generateLocalAnalysis = () => {
@@ -56,9 +127,13 @@ const ResultsPage = () => {
 
         // ========== DETERMINISTIC RISK SCORE ==========
         let riskScore = 0;
-        if (symptoms.includes('None of the above') || symptoms.length === 0) {
+        const hasOther = formData.otherSymptoms?.trim().length > 0;
+
+        if ((symptoms.includes('None of the above') || symptoms.length === 0) && !hasOther) {
             riskScore = 0;
         }
+
+        if (hasOther) riskScore += 5;
 
         const symptomWeights = {
             'Chest Pain': 6, 'Shortness of Breath': 5, 'Fatigue': 3,
@@ -105,6 +180,24 @@ const ResultsPage = () => {
         if (formData.sleep === 'less_5') recommendations.push("Increase sleep to 7-8 hours to lower cortisol and cardiovascular risk.");
         if (formData.exercise === 'never') recommendations.push("Begin with 20 min brisk walking daily — reduces all-cause mortality by 20%.");
         if (formData.smoking === 'regular') recommendations.push("Initiate a smoking cessation plan to reduce respiratory and cardiovascular risk.");
+
+        // Simple keyword scanning for custom 'Other' symptoms
+        if (hasOther) {
+            const otherLower = formData.otherSymptoms.toLowerCase();
+            if (otherLower.includes('pain') || otherLower.includes('ache')) {
+                recommendations.push(`Regarding your "${formData.otherSymptoms}": Any persistent pain should be examined by a physician to rule out inflammation.`);
+            }
+            if (otherLower.includes('fever') || otherLower.includes('cold') || otherLower.includes('cough')) {
+                recommendations.push("For your reported respiratory/flu symptoms: Rest, hydrate, and monitor your temperature.");
+            }
+            if (otherLower.includes('stress') || otherLower.includes('anxiety') || otherLower.includes('mental')) {
+                recommendations.push("We noticed you mentioned stress-related symptoms. Consider professional mental health consultation.");
+            }
+            if (recommendations.length < 3) {
+                recommendations.push(`Our system logged your specific note: "${formData.otherSymptoms}". Discuss this specifically with your doctor.`);
+            }
+        }
+
         if (recommendations.length === 0) {
             recommendations.push("Maintain your balanced routine — your metrics are within healthy ranges.");
             recommendations.push("Schedule annual preventive health screening for your age group.");
@@ -124,6 +217,25 @@ const ResultsPage = () => {
             ? "Prioritize calcium and Vitamin D for bone density support."
             : "Build stress-management habits — try 5 min daily meditation.");
         tips.push("Eat colorful vegetables daily — aim for 5+ different colors per week.");
+
+        // ========== DIET OPTIONS ==========
+        const dietOptions = [];
+        if (symptoms.includes('Fatigue') || (hasOther && formData.otherSymptoms?.toLowerCase().includes('energy'))) {
+            dietOptions.push("Complex carbohydrates (oats, quinoa) for sustained energy.");
+            dietOptions.push("Iron-rich foods (spinach, lentils) for healthy oxygen transport.");
+        }
+        if (symptoms.includes('Frequent Urination') || (hasOther && formData.otherSymptoms?.toLowerCase().includes('sugar'))) {
+            dietOptions.push("Low glycemic index foods (whole grains) to stabilize blood sugar.");
+            dietOptions.push("High-fiber vegetables to improve metabolic processing.");
+        }
+        if (symptoms.includes('Headache') || symptoms.includes('Dizziness')) {
+            dietOptions.push("Magnesium-rich foods (almonds, pumpkin seeds) to reduce headache frequency.");
+            dietOptions.push("Electrolyte-balanced hydration to maintain proper neural function.");
+        }
+        if (dietOptions.length < 3) {
+            dietOptions.push("Omega-3 fatty acids (walnuts, chia seeds) for systemic anti-inflammation.");
+            dietOptions.push("High-quality protein (legumes, lean sources) for tissue repair.");
+        }
 
         // ========== SUMMARY ==========
         let summary = `Based on your ${symptoms.length} reported symptom${symptoms.length !== 1 ? 's' : ''} and lifestyle profile, your risk is ${riskLevel} (${riskScore}%). `;
@@ -167,6 +279,7 @@ const ResultsPage = () => {
                 { category: "Respiratory", risk: getRiskLabel(respScore), score: Math.min(100, respScore) },
                 { category: "Metabolic", risk: getRiskLabel(metaScore), score: Math.min(100, metaScore) }
             ],
+            dietOptions: dietOptions.slice(0, 4),
             source: 'fallback'
         };
     };
@@ -175,8 +288,8 @@ const ResultsPage = () => {
 
     const getRiskColor = (level) => {
         switch (level) {
-            case "Low": return "text-health-green bg-green-50 border-green-100";
-            case "Moderate": return "text-amber-600 bg-amber-50 border-amber-100";
+            case "Low": return "text-emerald-500 bg-emerald-50 border-emerald-100";
+            case "Moderate": return "text-amber-500 bg-amber-50 border-amber-100";
             case "High": return "text-rose-600 bg-rose-50 border-rose-100";
             default: return "text-slate-600 bg-slate-50 border-slate-100";
         }
@@ -184,10 +297,10 @@ const ResultsPage = () => {
 
     const getRiskIcon = (level) => {
         switch (level) {
-            case "Low": return <CheckCircle2 className="h-12 w-12 text-health-green" />;
-            case "Moderate": return <AlertTriangle className="h-12 w-12 text-amber-500" />;
-            case "High": return <ShieldAlert className="h-12 w-12 text-rose-500" />;
-            default: return <Info className="h-12 w-12 text-slate-400" />;
+            case "Low": return <GenZIcon icon={ShieldCheck} color="text-emerald-500" glowColor="bg-emerald-500/20" />;
+            case "Moderate": return <GenZIcon icon={AlertTriangle} color="text-amber-500" glowColor="bg-amber-500/20" />;
+            case "High": return <GenZIcon icon={ShieldAlert} color="text-rose-500" glowColor="bg-rose-500/20" />;
+            default: return <GenZIcon icon={Info} color="text-slate-500" glowColor="bg-slate-500/20" />;
         }
     };
 
@@ -330,16 +443,17 @@ const ResultsPage = () => {
                         </div>
                     </motion.div>
 
-                    {/* Recommendations */}
+                    {/* Recommendations & Diet */}
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="lg:col-span-7 space-y-6"
+                        className="lg:col-span-7 space-y-8"
                     >
-                        <div className="bg-white dark:bg-dark-card rounded-[2rem] p-8 shadow-lg border border-slate-100 dark:border-dark-border h-full">
-                            <h3 className="text-2xl font-bold text-slate-800 mb-8 flex items-center gap-3">
-                                <ShieldAlert className="text-primary-600" />
+                        {/* Precaution Card */}
+                        <div className="bg-white dark:bg-dark-card rounded-[2rem] p-8 shadow-lg border border-slate-100 dark:border-dark-border">
+                            <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-8 flex items-center gap-3">
+                                <span className="text-3xl">🛡️</span>
                                 Recommended Precautions
                             </h3>
                             <ul className="space-y-6">
@@ -354,11 +468,36 @@ const ResultsPage = () => {
                                         <div className="bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 rounded-full p-1.5 mt-1">
                                             <CheckCircle2 size={16} />
                                         </div>
-                                        <p className="text-slate-700 font-medium leading-relaxed">{rec}</p>
+                                        <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">{rec}</p>
                                     </motion.li>
                                 ))}
                             </ul>
                         </div>
+
+                        {/* Diet Plan Card */}
+                        {result.dietOptions && result.dietOptions.length > 0 && (
+                            <motion.div
+                                initial={{ opacity: 0, scale: 0.95 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.5 }}
+                                className="bg-white dark:bg-dark-card rounded-[2rem] p-8 shadow-lg border-2 border-primary-100 dark:border-primary-900/40 relative overflow-hidden"
+                            >
+                                <div className="absolute top-[-20%] right-[-10%] w-64 h-64 bg-primary-100/30 dark:bg-primary-900/10 blur-[60px] rounded-full pointer-events-none"></div>
+
+                                <h3 className="text-2xl font-black text-slate-800 dark:text-white mb-8 flex items-center gap-3 relative z-10">
+                                    <span className="text-3xl">🥗</span>
+                                    Personalized Diet Plan
+                                </h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                                    {result.dietOptions.map((diet, idx) => (
+                                        <div key={idx} className="bg-slate-50 dark:bg-dark-bg/40 p-5 rounded-2xl border border-slate-100 dark:border-dark-border flex items-start gap-3">
+                                            <div className="w-2 h-2 rounded-full bg-primary-500 mt-2 shrink-0"></div>
+                                            <p className="text-slate-700 dark:text-slate-300 text-sm font-bold leading-snug">{diet}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
                     </motion.div>
 
                     {/* Side Info / CTA */}

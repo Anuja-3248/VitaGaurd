@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, X, Bot, User, Loader2, Sparkles, Search, Cpu } from 'lucide-react';
+import { Send, X, Bot, User, Loader2, Sparkles, Search, Cpu, Stethoscope } from 'lucide-react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const HealthChatBot = ({ reportData }) => {
@@ -45,7 +45,7 @@ const HealthChatBot = ({ reportData }) => {
             const model = genAI.getGenerativeModel({
                 model: "gemini-1.5-flash",
                 generationConfig: {
-                    temperature: 0.8,
+                    temperature: 0.5,
                     maxOutputTokens: 500,
                 }
             });
@@ -58,15 +58,15 @@ const HealthChatBot = ({ reportData }) => {
                 - Risk: ${reportData?.riskLevel} (${reportData?.score}%)
                 - Summary: ${reportData?.summary}
                 - Recommendations: ${reportData?.recommendations?.join(', ')}
+                - Diet Options: ${reportData?.dietOptions?.join(', ')}
                 - Category Details: ${reportData?.details?.map(d => `${d.category}:${d.risk}`).join(', ')}
 
-                RULES:
-                1. DYNAMIC ANSWERS: Never repeat exactly what is in the report. Explain the "WHY" behind the results. 🧪
-                2. FOLLOW-UPS: If the user asks a follow-up, use the chat history to provide NEW information. Do not repeat previous answers. 🔄
-                3. PROFESSIONALISM & FORMALITIES: Be helpful, medical-focused, and clear. If the user says "thank you", "thanks", "hello", etc., respond with polite formalities (e.g., "You're very welcome!", "My pleasure!", "Greetings!"). 🙏
-                4. EMOJIS: Use appropriate health and friendly emojis in every response to make the interaction feel modern and supportive (e.g., 🩺, 🥗, 💧, 💪, ✨). 
-                5. NO SYSTEM NOTES: Do not mention API keys, engines, or technical status. 🤫
-                6. DISCLAIMER: Always end with a brief "Consult a professional for medical diagnosis. 🏥"
+                STRICT OPERATIONAL RULES:
+                1. NO REPETITION: Do not repeat facts from the report or previous answers. If they ask a follow-up, pivot to NEW insights.
+                2. STICK TO THE QUESTION: Give real, logical, medical-based answers. If they ask about food, talk about their specific dietary needs.
+                3. CLINICAL DEPTH: Explain the "WHY" behind suggestions using scientific reasoning.
+                4. NO FLUFF: Keep it concise and meaningful.
+                5. DISCLAIMER: Always end with: "Consult a professional for medical diagnosis. 🏥"
             `;
 
             const history = messages.map(m => `${m.role === 'assistant' ? 'AI' : 'User'}: ${m.content}`).join('\n');
@@ -119,20 +119,33 @@ const HealthChatBot = ({ reportData }) => {
     return (
         <>
             <motion.div
-                className="fixed bottom-12 right-12 z-50"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
+                className="fixed bottom-8 right-8 z-50"
+                initial={{ scale: 0, y: 100 }}
+                animate={{ scale: 1, y: 0 }}
+                whileHover={{ y: -5 }}
+                whileTap={{ scale: 0.95 }}
             >
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="flex items-center gap-3 bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl hover:bg-black transition-all active:scale-95 group border border-slate-700"
+                    className="flex items-center gap-4 bg-white dark:bg-dark-card p-2 pr-6 rounded-[2.5rem] sticker group border-4 border-slate-900 dark:border-white"
                 >
-                    <div className="bg-primary-500 p-2 rounded-xl group-hover:rotate-12 transition-transform">
-                        <Bot size={24} />
+                    <div className="relative">
+                        <div className="w-14 h-14 bg-gradient-to-br from-primary-400 to-health-cyber rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
+                            <span className="text-3xl">🤖</span>
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 bg-white dark:bg-dark-card p-1.5 rounded-full shadow-md border-2 border-slate-900">
+                            <span className="text-xs">🩺</span>
+                        </div>
                     </div>
                     <div className="flex flex-col items-start">
-                        <span className="font-bold text-sm leading-none">Health AI</span>
-                        <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Chat Support</span>
+                        <span className="font-black text-sm tracking-tight text-slate-900 dark:text-white">AI Doctor</span>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-health-emerald opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-health-emerald"></span>
+                            </span>
+                            <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Live Help</span>
+                        </div>
                     </div>
                 </button>
             </motion.div>
@@ -140,10 +153,10 @@ const HealthChatBot = ({ reportData }) => {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
-                        initial={{ opacity: 0, y: 50, scale: 0.95 }}
+                        initial={{ opacity: 0, y: 50, scale: 0.9, originY: 1, originX: 1 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 50, scale: 0.95 }}
-                        className="fixed bottom-12 right-12 w-[90vw] md:w-[480px] h-[680px] bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)] z-[60] flex flex-col overflow-hidden border border-slate-200"
+                        exit={{ opacity: 0, y: 50, scale: 0.9 }}
+                        className="fixed bottom-24 right-4 w-[95vw] md:w-[360px] h-[550px] max-h-[85vh] bg-white rounded-[2rem] shadow-[0_30px_90px_-20px_rgba(0,0,0,0.4)] z-[60] flex flex-col overflow-hidden border border-slate-200"
                     >
                         <div className="bg-slate-900 p-8 text-white relative">
                             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
@@ -177,8 +190,8 @@ const HealthChatBot = ({ reportData }) => {
                                     className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <div className={`p-5 rounded-3xl text-sm leading-relaxed ${msg.role === 'assistant'
-                                            ? 'bg-white text-slate-800 shadow-sm border border-slate-100 rounded-tl-none font-medium max-w-[90%]'
-                                            : 'bg-primary-600 text-white shadow-xl rounded-tr-none font-bold max-w-[85%]'
+                                        ? 'bg-white text-slate-800 shadow-sm border border-slate-100 rounded-tl-none font-medium max-w-[90%]'
+                                        : 'bg-primary-600 text-white shadow-xl rounded-tr-none font-bold max-w-[85%]'
                                         }`}>
                                         {msg.content}
                                     </div>
