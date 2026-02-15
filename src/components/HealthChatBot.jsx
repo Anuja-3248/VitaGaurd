@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, X, Bot, User, Loader2, Sparkles, Search, Cpu } from 'lucide-react';
+import { Send, X, Bot, User, Loader2, Sparkles, Search, Cpu, Stethoscope } from 'lucide-react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const HealthChatBot = ({ reportData }) => {
@@ -119,23 +119,33 @@ const HealthChatBot = ({ reportData }) => {
     return (
         <>
             <motion.div
-                className="fixed bottom-4 right-4 z-50"
-                initial={{ scale: 0, shadow: "0 0 0 rgba(0,0,0,0)" }}
-                animate={{ scale: 1 }}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+                className="fixed bottom-8 right-8 z-50"
+                initial={{ scale: 0, y: 100 }}
+                animate={{ scale: 1, y: 0 }}
+                whileHover={{ y: -5 }}
+                whileTap={{ scale: 0.95 }}
             >
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="flex items-center justify-center h-12 w-12 bg-slate-900 text-white rounded-full shadow-2xl hover:bg-black transition-all group border-2 border-primary-500/20"
-                    title="Live AI Health Assistant"
+                    className="flex items-center gap-4 bg-white dark:bg-dark-card p-2 pr-6 rounded-[2.5rem] sticker group border-4 border-slate-900 dark:border-white"
                 >
                     <div className="relative">
-                        <Bot size={24} />
-                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-health-emerald opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-health-emerald"></span>
-                        </span>
+                        <div className="w-14 h-14 bg-gradient-to-br from-primary-400 to-health-cyber rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
+                            <span className="text-3xl">🤖</span>
+                        </div>
+                        <div className="absolute -bottom-1 -right-1 bg-white dark:bg-dark-card p-1.5 rounded-full shadow-md border-2 border-slate-900">
+                            <span className="text-xs">🩺</span>
+                        </div>
+                    </div>
+                    <div className="flex flex-col items-start">
+                        <span className="font-black text-sm tracking-tight text-slate-900 dark:text-white">AI Doctor</span>
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                            <span className="relative flex h-2 w-2">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-health-emerald opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2 w-2 bg-health-emerald"></span>
+                            </span>
+                            <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Live Help</span>
+                        </div>
                     </div>
                 </button>
             </motion.div>
