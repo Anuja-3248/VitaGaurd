@@ -32,11 +32,11 @@ const LandingPage = () => {
             color: "from-blue-600 to-indigo-600"
         },
         "02": {
-            title: "Neural Analysis Engine",
-            subtitle: "Algorithmic Risk Assessment",
+            title: "Predictive Diagnostic Synthesis",
+            subtitle: "Advanced Analytical Framework",
             icon: <GenZIcon icon={Brain} color="text-cyan-500" glowColor="bg-cyan-500/20" />,
-            content: "Your data is processed through our Vita-Neural engine. We compare your symptoms against 10,000+ medical case studies to identify early-stage risk markers for cardiovascular, respiratory, and metabolic conditions.",
-            features: ["Pattern Recognition", "Medical Database Scanning", "Probability Scoring"],
+            content: "The heart of the VitaGuard protocol utilizes sophisticated computational logic to cross-examine your biometric markers. Our advanced analytical framework identifies subtle deviations in cardiovascular and metabolic patterns, providing a high-precision risk forecast.",
+            features: ["Computational Logic Review", "Dynamic Risk Projection", "Biometric Pattern Mapping"],
             color: "from-health-cyber to-blue-500"
         },
         "03": {
@@ -257,8 +257,8 @@ const LandingPage = () => {
                             {
                                 step: "02",
                                 icon: <GenZIcon icon={LineChart} color="text-white" glowColor="bg-white/20" />,
-                                title: "Neural Processing",
-                                desc: "Thousands of medical data points are scanned against your profile using our pro-logic models.",
+                                title: "Diagnostic Synthesis",
+                                desc: "Advanced computational logic maps your reported symptoms against clinical datasets to detect early-stage deviations.",
                                 color: "from-health-cyber to-blue-500",
                                 glow: "bg-cyan-400/20"
                             },
