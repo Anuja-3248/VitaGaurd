@@ -16,6 +16,7 @@ const DashboardPage = () => {
     const [assessments, setAssessments] = useState([]);
     const [userProfile, setUserProfile] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [showAllReports, setShowAllReports] = useState(false);
     const userName = currentUser?.displayName || "Guest";
 
     useEffect(() => {
@@ -237,14 +238,14 @@ const DashboardPage = () => {
                                 </>
                             )}
                             <div className="flex items-center gap-2 text-primary-600 bg-primary-50 px-4 py-2 rounded-xl text-xs font-black border border-primary-100 shadow-sm">
-                                <TrendingUp size={14} /> AI Analysis
+                                <TrendingUp size={14} /> Clinical Synthesis
                             </div>
                         </div>
                     </div>
 
                     <div className="h-[350px] w-full relative z-10">
                         {loading ? (
-                            <div className="h-full flex items-center justify-center text-slate-400 font-bold animate-pulse">Analyzing health data...</div>
+                            <div className="h-full flex items-center justify-center text-slate-400 font-bold animate-pulse">Synthesizing health data...</div>
                         ) : assessments.length < 2 ? (
                             <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-6">
                                 <div className="p-6 bg-slate-50 rounded-3xl opacity-50">
@@ -344,42 +345,60 @@ const DashboardPage = () => {
                     <div className="lg:col-span-2 space-y-8">
                         {/* Recent Assessments */}
                         <section className="glass-card rounded-[2.5rem] shadow-premium overflow-hidden border-white/60 dark:border-dark-border/40">
-                            <div className="p-8 border-b border-slate-50 dark:border-dark-border/50 flex justify-between items-center">
-                                <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Recent Assessments</h3>
-                                <button className="text-primary-600 hover:text-primary-700 font-bold text-sm tracking-tight flex items-center gap-1 group">
-                                    View Repository <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                            <div className="p-8 md:p-10 border-b border-slate-50 dark:border-dark-border/40 flex items-center justify-between">
+                                <div>
+                                    <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Diagnostic Repository</h2>
+                                    <p className="text-sm text-slate-400 font-bold mt-1">Authorized health record archive</p>
+                                </div>
+                                <button
+                                    onClick={() => setShowAllReports(!showAllReports)}
+                                    className="group flex items-center gap-2 text-xs font-black text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-4 py-2 rounded-full hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-all uppercase tracking-widest"
+                                >
+                                    {showAllReports ? 'Show Less' : `View All (${assessments.length})`} <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
                             </div>
                             <div className="divide-y divide-slate-50">
                                 {loading ? (
-                                    <div className="p-16 text-center text-slate-400 font-bold">Accessing medical records...</div>
+                                    <div className="p-16 text-center text-slate-400 font-bold flex flex-col items-center gap-4">
+                                        <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+                                        Synchronizing Diagnostic Database...
+                                    </div>
                                 ) : assessments.length === 0 ? (
                                     <div className="p-16 text-center text-slate-400">
-                                        <p className="text-lg font-bold text-slate-500 mb-2">No Reports Found</p>
-                                        <p className="text-sm">Your assessment history will appear here.</p>
+                                        <p className="text-lg font-bold text-slate-500 mb-2">Null Repository</p>
+                                        <p className="text-sm">No diagnostic records located in your clinical history.</p>
                                     </div>
                                 ) : (
-                                    assessments.slice(0, 5).map((item) => (
-                                        <div key={item.id} className="p-6 md:p-8 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                                    assessments.slice(0, showAllReports ? assessments.length : 3).map((item) => (
+                                        <Link
+                                            key={item.id}
+                                            to="/results"
+                                            state={{ ...item }}
+                                            className="p-6 md:p-8 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group border-b border-slate-50 dark:border-dark-border/10 last:border-0"
+                                        >
                                             <div className="flex items-center gap-6">
-                                                <div className="bg-slate-50 dark:bg-slate-800 p-3 rounded-2xl group-hover:bg-white dark:group-hover:bg-slate-700 transition-colors shadow-sm">
-                                                    <Activity className="text-primary-500" size={24} />
+                                                <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl group-hover:bg-white dark:group-hover:bg-slate-700 transition-all shadow-sm group-hover:shadow-md">
+                                                    <FileText className="text-primary-500" size={24} />
                                                 </div>
                                                 <div>
-                                                    <p className="font-black text-slate-900 dark:text-white text-lg">Health Risk Scan</p>
-                                                    <p className="text-sm text-slate-400 dark:text-slate-500 font-bold">{item.timestamp?.toDate ? item.timestamp.toDate().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
+                                                    <p className="font-black text-slate-900 dark:text-white text-lg">Biometric Synthesis Report</p>
+                                                    <p className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest mt-1">
+                                                        {item.timestamp?.toDate ? item.timestamp.toDate().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}
+                                                    </p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-8">
                                                 <div className="text-right hidden sm:block">
                                                     <p className={`text-sm font-black ${item.riskScore < 15 ? 'text-emerald-500' : item.riskScore < 30 ? 'text-amber-500' : 'text-rose-500'}`}>
-                                                        {item.riskScore < 15 ? 'Optimal Health' : item.riskScore < 30 ? 'Monitor Status' : 'Attention Required'}
+                                                        {item.riskScore < 15 ? 'Optimal (Category I)' : item.riskScore < 30 ? 'Observation (Category II)' : 'Alert (Category III)'}
                                                     </p>
-                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">AI Verified Result</p>
+                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Clinical Protocol Verified</p>
                                                 </div>
-                                                <ArrowRight size={22} className="text-slate-200 group-hover:text-primary-400 transition-colors group-hover:translate-x-1" />
+                                                <div className="p-2 rounded-full border border-slate-100 dark:border-slate-800 group-hover:bg-primary-600 group-hover:text-white transition-all">
+                                                    <ArrowRight size={18} className="translate-x-0 group-hover:translate-x-1 transition-transform" />
+                                                </div>
                                             </div>
-                                        </div>
+                                        </Link>
                                     ))
                                 )}
                             </div>
