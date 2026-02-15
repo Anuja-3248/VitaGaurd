@@ -73,12 +73,17 @@ const AssessmentPage = () => {
             const analysisResult = await analyzeHealthWithGemini(formData);
             const finalScore = analysisResult.data.score;
 
-            // 2. Save to Firebase (best effort, non-blocking)
+            // 2. Save COMPLETE report to Firebase for exact historical viewing
             if (currentUser) {
                 addDoc(collection(db, "assessments"), {
                     userId: currentUser.uid,
                     ...formData,
                     riskScore: finalScore,
+                    summary: analysisResult.data.summary,
+                    details: analysisResult.data.details,
+                    recommendations: analysisResult.data.recommendations,
+                    tips: analysisResult.data.tips,
+                    dietOptions: analysisResult.data.dietOptions,
                     aiSource: analysisResult.source,
                     timestamp: serverTimestamp()
                 }).then(() => {
