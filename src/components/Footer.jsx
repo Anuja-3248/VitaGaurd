@@ -65,19 +65,6 @@ const Footer = () => {
                     </div>
                 </div>
 
-                {/* Final Credits */}
-                <div className="border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
-                        <span>© {new Date().getFullYear()} VitaGuard System</span>
-                        <div className="h-1 w-1 bg-slate-700 rounded-full"></div>
-                        <span>Clinical AI Architecture</span>
-                    </div>
-
-                    <div className="flex gap-8">
-                        <Link to="/privacy" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors">Privacy Protocol</Link>
-                        <Link to="/terms" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors">Service Terms</Link>
-                    </div>
-                </div>
             </div>
         </footer>
     );
