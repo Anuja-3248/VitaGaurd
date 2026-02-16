@@ -115,7 +115,7 @@ const OnboardingModal = ({ onComplete }) => {
                             </div>
 
                             <button
-                                onClick={onComplete}
+                                onClick={handleLogin}
                                 className="w-full py-6 bg-blue-600 text-white rounded-3xl font-black hover:bg-blue-700 transition-all flex items-center justify-center gap-3 group shadow-xl shadow-blue-500/20"
                             >
                                 <span className="text-lg uppercase tracking-widest">Proceed to Platform</span>

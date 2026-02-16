@@ -21,9 +21,9 @@ export default {
                     900: '#162b79',
                 },
                 dark: {
-                    bg: '#0f172a',     /* Softer Navy/Slate background */
-                    card: '#1e293b',   /* Lighter card shade */
-                    border: '#334155', /* Visible but soft border */
+                    bg: '#0a0a0a',     /* Neutral 950 - Faint Black */
+                    card: '#171717',   /* Neutral 900 - Lighter Black */
+                    border: '#262626', /* Neutral 800 */
                     accent: '#3b82f6', /* Brighter blue for contrast */
                 },
                 health: {

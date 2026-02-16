@@ -5,18 +5,18 @@ const ThemeContext = createContext();
 export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider = ({ children }) => {
-    // Check local storage or system preference
+    // Force Dark Mode by default
     const [theme, setTheme] = useState(() => {
         if (typeof window !== 'undefined') {
             const savedTheme = localStorage.getItem('vitaguard-theme');
-            if (savedTheme) {
-                return savedTheme;
-            }
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            // If they have explicitly saved 'dark', keep it. 
+            // If they saved 'light', we can ignore it if you want to FORCE dark mode on everyone for this update.
+            // Or just default to 'dark' if nothing is saved.
+            if (savedTheme === 'dark') {
                 return 'dark';
             }
         }
-        return 'light';
+        return 'dark';
     });
 
     useEffect(() => {
