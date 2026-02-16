@@ -22,8 +22,11 @@ const LandingPage = () => {
 
         // Check if seen onboarding in this session
         const hasSeenOnboarding = sessionStorage.getItem('vitaGuard_onboarding_seen');
-        if (!hasSeenOnboarding && !location.state?.fromLogin) {
+        if (!hasSeenOnboarding && !location.state?.fromLogin && !currentUser) {
             setShowOnboarding(true);
+        } else if (currentUser) {
+            // If logged in, we mark onboarding as seen automatically
+            sessionStorage.setItem('vitaGuard_onboarding_seen', 'true');
         }
     }, [location]);
 
