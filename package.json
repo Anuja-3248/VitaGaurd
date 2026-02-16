@@ -20,18 +20,11 @@
     "lucide-react": "^0.344.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-<<<<<<< HEAD
-    "react-router-dom": "^6.22.2",
-    "recharts": "^3.7.0",
-    "react-hot-toast": "^2.4.1",
-    "@google/generative-ai": "^0.3.0"
-=======
     "react-firebase-hooks": "^5.1.1",
     "react-hot-toast": "^2.6.0",
     "react-router-dom": "^6.30.3",
     "recharts": "^3.7.0",
     "tailwind-merge": "^3.4.0"
->>>>>>> 15e747ece04064c77bc62c547b186cbaceb53b53
   },
   "devDependencies": {
     "@types/react": "^18.2.56",

@@ -68,45 +68,6 @@ const AssessmentPage = () => {
         e.preventDefault();
         setLoading(true);
 
-<<<<<<< HEAD
-        // 1. Calculate a semi-intelligent risk score based on inputs
-        let baseScore = 5;
-
-        // Age weight
-        const age = parseInt(formData.age);
-        if (age > 40) baseScore += 5;
-        if (age > 60) baseScore += 10;
-
-        // Symptom weight
-        baseScore += formData.symptoms.length * 7;
-
-        // Lifestyle weights
-        if (formData.smoking === 'regular') baseScore += 15;
-        if (formData.smoking === 'occasional') baseScore += 5;
-        if (formData.alcohol === 'high') baseScore += 10;
-        if (formData.exercise === 'never') baseScore += 10;
-        if (formData.sleep === 'less_5') baseScore += 8;
-
-        // Cap at 95, Floor at 5
-        const riskScore = Math.min(Math.max(baseScore, 5), 95);
-
-        // 2. Start the background save to Firebase (Best Effort)
-        if (currentUser) {
-            addDoc(collection(db, "assessments"), {
-                userId: currentUser.uid,
-                ...formData,
-                riskScore: riskScore,
-                timestamp: serverTimestamp()
-            }).then(() => {
-                console.log("Cloud Save Successful (Background)");
-            }).catch((err) => {
-                console.error("Cloud Save Failed (Background):", err);
-            });
-        }
-
-        // 3. Keep the user in the 'Processing' state for 2 seconds for UX
-        setTimeout(() => {
-=======
         try {
             // 1. Call Gemini AI for intelligent analysis (no random scores — 100% data-driven)
             const analysisResult = await analyzeHealthWithGemini(formData);
@@ -144,9 +105,8 @@ const AssessmentPage = () => {
             });
         } catch (error) {
             console.error("Assessment Error:", error);
->>>>>>> 15e747ece04064c77bc62c547b186cbaceb53b53
             setLoading(false);
-            // Navigate to results — the ResultsPage will use its local analysis engine
+            // Navigate to results — the ResultsPage will handle cases with missing scores
             navigate('/results', {
                 state: {
                     score: null,

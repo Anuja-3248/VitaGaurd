@@ -16,9 +16,6 @@ import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 
 import { AuthProvider } from './context/AuthContext';
-<<<<<<< HEAD
-import { Toaster } from 'react-hot-toast';
-=======
 import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
 
@@ -51,38 +48,10 @@ function AppContent() {
         </div>
     );
 }
->>>>>>> 15e747ece04064c77bc62c547b186cbaceb53b53
 
 function App() {
     return (
         <AuthProvider>
-<<<<<<< HEAD
-            <Toaster position="top-right" />
-            <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-                <div className="min-h-screen flex flex-col">
-                    <Navbar />
-
-                    <main className="flex-grow">
-                        <Routes>
-                            <Route path="/" element={<LandingPage />} />
-                            <Route path="/login" element={<LoginPage />} />
-                            <Route path="/signup" element={<SignupPage />} />
-
-                            {/* Protected Routes (mocked) */}
-                            <Route path="/dashboard" element={<DashboardPage />} />
-                            <Route path="/assessment" element={<AssessmentPage />} />
-                            <Route path="/results" element={<ResultsPage />} />
-                            <Route path="/profile" element={<ProfilePage />} />
-
-                            {/* Catch-all */}
-                            <Route path="*" element={<Navigate to="/" />} />
-                        </Routes>
-                    </main>
-
-                    <Footer />
-                </div>
-            </Router>
-=======
             <ThemeProvider>
                 <Toaster position="top-right" reverseOrder={false} />
                 <Router>
@@ -90,7 +59,6 @@ function App() {
                     <AppContent />
                 </Router>
             </ThemeProvider>
->>>>>>> 15e747ece04064c77bc62c547b186cbaceb53b53
         </AuthProvider>
     );
 }
