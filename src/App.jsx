@@ -15,9 +15,19 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
+
+const PrivateRoute = ({ children }) => {
+    const { currentUser } = useAuth();
+    return currentUser ? children : <Navigate to="/login" />;
+};
+
+const PublicRoute = ({ children }) => {
+    const { currentUser } = useAuth();
+    return currentUser ? <Navigate to="/" /> : children;
+};
 
 function AppContent() {
     const location = useLocation();
@@ -30,14 +40,56 @@ function AppContent() {
             <main className="flex-grow">
                 <Routes>
                     <Route path="/" element={<LandingPage />} />
-                    <Route path="/login" element={<LoginPage />} />
-                    <Route path="/signup" element={<SignupPage />} />
+                    <Route
+                        path="/login"
+                        element={
+                            <PublicRoute>
+                                <LoginPage />
+                            </PublicRoute>
+                        }
+                    />
+                    <Route
+                        path="/signup"
+                        element={
+                            <PublicRoute>
+                                <SignupPage />
+                            </PublicRoute>
+                        }
+                    />
 
-                    {/* Protected Routes (mocked) */}
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    <Route path="/assessment" element={<AssessmentPage />} />
-                    <Route path="/results" element={<ResultsPage />} />
-                    <Route path="/profile" element={<ProfilePage />} />
+                    {/* Protected Routes */}
+                    <Route
+                        path="/dashboard"
+                        element={
+                            <PrivateRoute>
+                                <DashboardPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/assessment"
+                        element={
+                            <PrivateRoute>
+                                <AssessmentPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/results"
+                        element={
+                            <PrivateRoute>
+                                <ResultsPage />
+                            </PrivateRoute>
+                        }
+                    />
+                    <Route
+                        path="/profile"
+                        element={
+                            <PrivateRoute>
+                                <ProfilePage />
+                            </PrivateRoute>
+                        }
+                    />
 
                     {/* Catch-all */}
                     <Route path="*" element={<Navigate to="/" />} />
