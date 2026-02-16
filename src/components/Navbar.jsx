@@ -116,19 +116,19 @@ const Navbar = () => {
 
                         {currentUser ? (
                             <div className="flex items-center space-x-4">
-                                <Link to="/dashboard" className="p-3 text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all relative group" title="Dashboard">
+                                <Link to="/dashboard" className="p-3 text-slate-600 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 hover:bg-white dark:hover:bg-white/10 rounded-xl transition-all relative group" title="Dashboard">
                                     <LayoutDashboard size={20} />
                                     <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-800 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">Dashboard</span>
                                 </Link>
-                                <Link to="/profile" className="flex items-center gap-3 bg-white dark:bg-dark-card px-4 py-2 rounded-2xl shadow-sm border border-slate-100 dark:border-dark-border hover:border-primary-200 transition-all text-slate-700 dark:text-slate-200 font-bold text-sm">
-                                    <div className="bg-primary-50 dark:bg-primary-900/10 p-1 rounded-lg">
-                                        <User size={16} className="text-primary-600 dark:text-primary-400" />
+                                <Link to="/profile" className="flex items-center gap-3 bg-white dark:bg-white/10 px-4 py-2 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:border-white/30 transition-all text-slate-700 dark:text-white font-bold text-sm">
+                                    <div className="bg-slate-100 dark:bg-white/20 p-1 rounded-lg">
+                                        <User size={16} className="text-slate-600 dark:text-white" />
                                     </div>
                                     Profile
                                 </Link>
                                 <button
                                     onClick={handleLogout}
-                                    className="p-3 text-slate-400 dark:text-slate-500 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all group relative"
+                                    className="p-3 text-slate-600 dark:text-white hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all group relative"
                                     title="Logout"
                                 >
                                     <LogOut size={20} />
