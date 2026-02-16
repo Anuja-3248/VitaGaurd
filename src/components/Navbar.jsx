@@ -18,8 +18,8 @@ const Navbar = () => {
 
     const navLinks = [
         { name: 'Home', path: '/', icon: <Home size={20} /> },
-        { name: 'How it works', path: '/how-it-works', icon: <Info size={20} /> },
-        { name: 'Features', path: '/features', icon: <Sparkles size={20} /> },
+        { name: 'How it works', path: '/#how-it-works', icon: <Info size={20} /> },
+        { name: 'Features', path: '/#features', icon: <Sparkles size={20} /> },
     ];
 
     const handleLogout = async () => {
@@ -32,25 +32,8 @@ const Navbar = () => {
 
     const handleNavClick = (path) => {
         setIsOpen(false);
-        if (path === '/') {
-            if (location.pathname === '/') {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                navigate('/');
-            }
-            return;
-        }
-
-        if (path.startsWith('/#')) {
-            const id = path.split('#')[1];
-            if (location.pathname === '/') {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
-                }
-            } else {
-                navigate(path);
-            }
+        if (path.startsWith('/#') || path === '/') {
+            navigate(path);
         } else {
             navigate(path);
         }
