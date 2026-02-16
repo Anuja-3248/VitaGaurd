@@ -9,8 +9,6 @@ import DashboardPage from './pages/DashboardPage';
 import AssessmentPage from './pages/AssessmentPage';
 import ResultsPage from './pages/ResultsPage';
 import ProfilePage from './pages/ProfilePage';
-import HowItWorksPage from './pages/HowItWorksPage';
-import FeaturesPage from './pages/FeaturesPage';
 
 // Components
 import Navbar from './components/Navbar';
@@ -34,8 +32,6 @@ function AppContent() {
                     <Route path="/" element={<LandingPage />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/signup" element={<SignupPage />} />
-                    <Route path="/how-it-works" element={<HowItWorksPage />} />
-                    <Route path="/features" element={<FeaturesPage />} />
 
                     {/* Protected Routes (mocked) */}
                     <Route path="/dashboard" element={<DashboardPage />} />
