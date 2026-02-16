@@ -66,11 +66,28 @@ const AssessmentPage = () => {
         e.preventDefault();
         setLoading(true);
 
-        // 1. Calculate the mock risk score immediately
-        const riskScore = Math.floor(Math.random() * 40) + 5;
+        // 1. Calculate a semi-intelligent risk score based on inputs
+        let baseScore = 5;
+
+        // Age weight
+        const age = parseInt(formData.age);
+        if (age > 40) baseScore += 5;
+        if (age > 60) baseScore += 10;
+
+        // Symptom weight
+        baseScore += formData.symptoms.length * 7;
+
+        // Lifestyle weights
+        if (formData.smoking === 'regular') baseScore += 15;
+        if (formData.smoking === 'occasional') baseScore += 5;
+        if (formData.alcohol === 'high') baseScore += 10;
+        if (formData.exercise === 'never') baseScore += 10;
+        if (formData.sleep === 'less_5') baseScore += 8;
+
+        // Cap at 95, Floor at 5
+        const riskScore = Math.min(Math.max(baseScore, 5), 95);
 
         // 2. Start the background save to Firebase (Best Effort)
-        // We do not 'await' this so the UI doesn't hang if the network is slow
         if (currentUser) {
             addDoc(collection(db, "assessments"), {
                 userId: currentUser.uid,
@@ -84,7 +101,7 @@ const AssessmentPage = () => {
             });
         }
 
-        // 3. Keep the user in the 'Processing' state for exactly 2 seconds for UX
+        // 3. Keep the user in the 'Processing' state for 2 seconds for UX
         setTimeout(() => {
             setLoading(false);
             navigate('/results', { state: { score: riskScore, name: formData.name, formData: formData } });

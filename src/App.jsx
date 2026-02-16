@@ -15,10 +15,12 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
 import { AuthProvider } from './context/AuthContext';
+import { Toaster } from 'react-hot-toast';
 
 function App() {
     return (
         <AuthProvider>
+            <Toaster position="top-right" />
             <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                 <div className="min-h-screen flex flex-col">
                     <Navbar />
