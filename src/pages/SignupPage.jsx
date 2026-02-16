@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, HeartPulse, User, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const SignupPage = () => {
     const [name, setName] = useState('');
@@ -18,9 +19,11 @@ const SignupPage = () => {
             setError('');
             setLoading(true);
             await signup(email, password, name);
+            toast.success('Account created successfully!');
             navigate('/dashboard');
         } catch (err) {
             setError('Failed to create an account. ' + err.message);
+            toast.error('Signup failed. Please try again.');
         } finally {
             setLoading(false);
         }

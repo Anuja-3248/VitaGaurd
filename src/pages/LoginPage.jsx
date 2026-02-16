@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, HeartPulse, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -17,9 +18,11 @@ const LoginPage = () => {
             setError('');
             setLoading(true);
             await login(email, password);
+            toast.success('Logged in successfully!');
             navigate('/dashboard');
         } catch (err) {
             setError('Failed to log in. Please check your credentials.');
+            toast.error('Login failed. Check your email or password.');
         } finally {
             setLoading(false);
         }
