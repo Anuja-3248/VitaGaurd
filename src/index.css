@@ -1,38 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Serif+Display:ital@0;1&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 font-sans antialiased;
+    @apply bg-slate-50 dark:bg-dark-bg text-slate-900 dark:text-[#e6edf3] font-sans antialiased selection:bg-primary-100 selection:text-primary-700 transition-colors duration-500;
+    font-family: 'Outfit', sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply text-slate-900 dark:text-white;
+  }
+
+  p {
+    @apply text-slate-600 dark:text-slate-300;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-xl;
+    @apply bg-white/70 dark:bg-dark-card/70 backdrop-blur-xl border border-white/40 dark:border-dark-border/40 shadow-glass dark:shadow-none transition-all duration-500;
   }
-  
-  .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg active:scale-95;
+
+  .glass-morphism {
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
   }
-  
-  .btn-secondary {
-    @apply bg-white text-primary-600 border-2 border-primary-600 hover:bg-primary-50 font-semibold py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105 active:scale-95;
+
+  .btn-premium {
+    @apply relative overflow-hidden bg-primary-600 text-white font-bold py-3.5 px-8 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] hover:shadow-glow shadow-lg flex items-center justify-center gap-2;
+  }
+
+  .btn-premium::after {
+    content: '';
+    @apply absolute top-0 left-[-100%] w-[50%] h-full bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-[-25deg] transition-all duration-700;
+  }
+
+  .btn-premium:hover::after {
+    left: 150%;
   }
 
   .section-title {
-    @apply text-3xl md:text-4xl font-bold text-slate-800 text-center mb-4;
+    @apply text-4xl md:text-5xl font-black text-slate-900 dark:text-white text-center mb-4 tracking-tight;
   }
 
   .section-subtitle {
-    @apply text-lg text-slate-600 text-center max-w-2xl mx-auto mb-12;
+    @apply text-lg text-slate-500 dark:text-slate-400 text-center max-w-2xl mx-auto mb-12 font-medium;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 dark:bg-primary-500 text-white font-bold py-2.5 px-6 rounded-xl transition-all duration-300 hover:bg-primary-700 dark:hover:bg-primary-600 hover:shadow-glow active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply bg-white dark:bg-dark-card/80 text-slate-700 dark:text-slate-200 font-bold py-2.5 px-6 rounded-xl border border-slate-200 dark:border-dark-border/80 transition-all duration-300 hover:bg-slate-50 dark:hover:bg-slate-800 active:scale-95 shadow-sm;
+  }
+
+  .sticker {
+    @apply relative flex items-center justify-center rounded-2xl bg-white/10 dark:bg-white/5 backdrop-blur-md border-2 border-slate-900/10 dark:border-white/20 transition-all duration-300 hover:border-primary-500 dark:hover:border-primary-400 hover:shadow-glow;
+    box-shadow: 4px 4px 0px 0px rgba(15, 23, 42, 0.05);
+  }
+
+  .dark .sticker {
+    box-shadow: 4px 4px 0px 0px rgba(255, 255, 255, 0.05);
+  }
+
+  .cyber-glass {
+    @apply bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-premium overflow-hidden;
+    background-image: radial-gradient(at top left, rgba(255, 255, 255, 0.4), transparent),
+      radial-gradient(at bottom right, rgba(99, 102, 241, 0.05), transparent);
+  }
+
+  .cartoon-shadow {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  .dark .cartoon-shadow {
+    box-shadow: 0 8px 30px rgba(255, 255, 255, 0.03);
   }
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -40,5 +99,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-300 rounded-full hover:bg-slate-400;
+  @apply bg-slate-300 rounded-full border-4 border-slate-100 hover:bg-slate-400;
+}
+
+/* Blur Blobs */
+.blur-blob {
+  @apply absolute rounded-full blur-[100px] opacity-20 pointer-events-none;
 }

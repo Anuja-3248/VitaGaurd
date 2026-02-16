@@ -101,6 +101,12 @@ const MedicalReportTemplate = React.forwardRef(({ result, formData }, ref) => {
                     ) : (
                         <p className="text-slate-400 italic">No specific symptoms reported.</p>
                     )}
+                    {formData?.otherSymptoms?.trim() && (
+                        <div className="w-full mt-4 p-4 bg-primary-50 rounded-xl border border-primary-100">
+                            <p className="text-[10px] font-black uppercase text-primary-600 mb-1 tracking-widest">User Described Symptoms:</p>
+                            <p className="text-sm text-slate-700 italic font-medium">"{formData.otherSymptoms}"</p>
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -112,22 +118,19 @@ const MedicalReportTemplate = React.forwardRef(({ result, formData }, ref) => {
                 <table className="w-full text-left">
                     <thead>
                         <tr className="text-xs uppercase text-slate-400 border-b">
-                            <th className="pb-4 font-black">Possible Condition</th>
+                            <th className="pb-4 font-black">Possible Indicator</th>
                             <th className="pb-4 font-black">Probability</th>
                             <th className="pb-4 font-black">Risk Level</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
-                        <tr>
-                            <td className="py-4 font-bold text-slate-800 leading-tight">Probable Viral Infection<br /><span className="text-[10px] font-medium text-slate-400">Based on clusters of observed metrics</span></td>
-                            <td className="py-4 font-mono font-bold text-primary-600">{result.score + 5}%</td>
-                            <td className="py-4"><span className="bg-amber-50 text-amber-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase border border-amber-100 italic">Moderate Risk</span></td>
-                        </tr>
-                        <tr>
-                            <td className="py-4 font-bold text-slate-800 leading-tight">Chronic Respiratory Response<br /><span className="text-[10px] font-medium text-slate-400">Low intensity indicators observed</span></td>
-                            <td className="py-4 font-mono font-bold text-primary-600">{Math.floor(result.score / 2.5)}%</td>
-                            <td className="py-4"><span className="bg-green-50 text-green-600 px-3 py-1 rounded-lg text-[10px] font-black uppercase border border-green-100 italic">Low Risk</span></td>
-                        </tr>
+                        {result.details.map((detail, idx) => (
+                            <tr key={idx}>
+                                <td className="py-4 font-bold text-slate-800 leading-tight">{detail.category} Stress Response<br /><span className="text-[10px] font-medium text-slate-400">Based on clusters of observed metrics</span></td>
+                                <td className="py-4 font-mono font-bold text-primary-600">{detail.score}%</td>
+                                <td className="py-4"><span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase border italic ${detail.risk === 'Low' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-amber-50 text-amber-600 border-amber-100'}`}>{detail.risk} Risk</span></td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
@@ -136,8 +139,8 @@ const MedicalReportTemplate = React.forwardRef(({ result, formData }, ref) => {
             <div className="mb-8 bg-primary-600 text-white p-8 rounded-[2.5rem] shadow-xl">
                 <h4 className="text-xs uppercase font-black tracking-[0.2em] mb-4 opacity-70">Official Summary</h4>
                 <p className="text-xl font-bold leading-relaxed">
-                    Based on your detailed data, you fall under the <span className="underline underline-offset-8">Moderate Risk Category</span>.
-                    Your symptoms suggest active biological stress. Immediate medical attention is not urgent for standard cases, but we strongly recommend self-monitoring and hydration over the next 48 hours.
+                    Based on your detailed data, you fall under the <span className="underline underline-offset-8">{result.riskLevel} Risk Category</span>.
+                    {result.summary}
                 </p>
             </div>
 
@@ -148,10 +151,9 @@ const MedicalReportTemplate = React.forwardRef(({ result, formData }, ref) => {
                         <CheckCircle2 size={16} /> Suggested Actions
                     </h4>
                     <ul className="text-sm space-y-3 text-green-800/80 font-medium">
-                        <li className="flex gap-2">• Increase fluid intake (3L daily)</li>
-                        <li className="flex gap-2">• Record temperature every 6 hours</li>
-                        <li className="flex gap-2">• Optimize sleep (minimum 7.5 hours)</li>
-                        <li className="flex gap-2">• Consult a specialist if no improvement</li>
+                        {result.recommendations.map((rec, i) => (
+                            <li key={i} className="flex gap-2">• {rec}</li>
+                        ))}
                     </ul>
                 </div>
                 {/* Emergency Warnings */}
@@ -166,6 +168,23 @@ const MedicalReportTemplate = React.forwardRef(({ result, formData }, ref) => {
                     </ul>
                 </div>
             </div>
+
+            {/* 5. Recommended Dietary Patterns */}
+            {result.dietOptions && result.dietOptions.length > 0 && (
+                <div className="mb-8 p-6 bg-slate-50 border border-slate-200 rounded-3xl">
+                    <h4 className="text-sm font-black text-slate-700 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <span className="text-lg">🥗</span> Recommended Dietary Patterns
+                    </h4>
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                        {result.dietOptions.map((diet, i) => (
+                            <div key={i} className="flex items-start gap-2 text-sm text-slate-600 font-medium">
+                                <span className="text-primary-500 font-black mt-0.5">•</span>
+                                <span>{diet}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* 7. Lifestyle & Preventive */}
             <div className="p-6 border-2 border-slate-50 rounded-3xl mb-8">
@@ -185,6 +204,20 @@ const MedicalReportTemplate = React.forwardRef(({ result, formData }, ref) => {
                     </div>
                 </div>
             </div>
+
+            {/* 8. Daily Health Tips */}
+            {result.tips && result.tips.length > 0 && (
+                <div className="p-6 bg-amber-50/50 rounded-3xl border border-amber-100 mb-8">
+                    <h4 className="text-sm font-black text-amber-700 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        💡 Personalized Daily Health Tips
+                    </h4>
+                    <ul className="text-sm space-y-3 text-amber-800/80 font-medium">
+                        {result.tips.map((tip, i) => (
+                            <li key={i} className="flex gap-2">✦ {tip}</li>
+                        ))}
+                    </ul>
+                </div>
+            )}
 
             {/* Footer / Page Number */}
             <div className="text-center text-[10px] text-slate-400 uppercase tracking-[0.3em] font-black pt-8 border-t">
