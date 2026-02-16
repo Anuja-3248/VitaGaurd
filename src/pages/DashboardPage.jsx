@@ -11,8 +11,11 @@ import { collection, query, where, getDocs, orderBy, limit, doc, getDoc } from '
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceArea } from 'recharts';
 import GenZIcon from '../components/GenZIcon';
 
+import { useTheme } from '../context/ThemeContext';
+
 const DashboardPage = () => {
     const { currentUser } = useAuth();
+    const { theme } = useTheme();
     const [assessments, setAssessments] = useState([]);
     const [userProfile, setUserProfile] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -87,25 +90,25 @@ const DashboardPage = () => {
                 ? (assessments[0].riskScore < 15 ? "text-emerald-500" : assessments[0].riskScore < 30 ? "text-amber-500" : "text-rose-500")
                 : "text-slate-400",
             bgColor: assessments.length > 0
-                ? (assessments[0].riskScore < 15 ? "bg-emerald-50" : assessments[0].riskScore < 30 ? "bg-amber-50" : "bg-rose-50")
-                : "bg-slate-50",
-            icon: <GenZIcon icon={ShieldCheck} color="text-emerald-500" glowColor="bg-emerald-500/20" />,
+                ? (assessments[0].riskScore < 15 ? "bg-emerald-50 dark:bg-emerald-500/10" : assessments[0].riskScore < 30 ? "bg-amber-50 dark:bg-amber-500/10" : "bg-rose-50 dark:bg-rose-500/10")
+                : "bg-slate-50 dark:bg-slate-800",
+            icon: <GenZIcon icon={ShieldCheck} color={assessments.length > 0 ? (assessments[0].riskScore < 15 ? "text-emerald-500" : assessments[0].riskScore < 30 ? "text-amber-500" : "text-rose-500") : "text-slate-400"} glowColor="bg-emerald-500/20" />,
             trend: assessments.length > 1 ? (assessments[0].riskScore < assessments[1].riskScore ? "improving" : "stable") : "baseline"
         },
         {
             label: "Last Checkup",
             value: assessments.length > 0 ? assessments[0].timestamp?.toDate?.().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : "Never",
-            color: "text-primary-600",
-            bgColor: "bg-primary-50",
-            icon: <GenZIcon icon={Calendar} color="text-primary-600" glowColor="bg-primary-600/20" />,
+            color: "text-amber-500",
+            bgColor: "bg-amber-50 dark:bg-amber-500/10",
+            icon: <GenZIcon icon={Calendar} color="text-amber-500" glowColor="bg-amber-500/20" />,
             trend: assessments.length > 0 ? "recent" : "pending"
         },
         {
             label: "Active Insights",
             value: assessments.length > 0 ? "3 Alerts" : "0 Alerts",
-            color: "text-health-cyber",
-            bgColor: "bg-cyan-50",
-            icon: <GenZIcon icon={Lightbulb} color="text-health-cyber" glowColor="bg-cyan-500/20" />,
+            color: "text-violet-500",
+            bgColor: "bg-violet-50 dark:bg-violet-500/10",
+            icon: <GenZIcon icon={Lightbulb} color="text-violet-500" glowColor="bg-violet-500/20" />,
             trend: "analyzing"
         }
     ];
@@ -124,11 +127,17 @@ const DashboardPage = () => {
     };
 
     return (
-        <div className="bg-slate-50 dark:bg-dark-bg min-h-screen pt-36 pb-12 px-4 relative overflow-hidden transition-colors duration-300">
+        <div className="bg-slate-50 dark:bg-neutral-950 min-h-screen pt-36 pb-12 px-4 relative overflow-hidden transition-colors duration-300">
             {/* Background Decorations */}
-            <div className="fixed inset-0 pointer-events-none z-0">
+            <div className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center overflow-hidden">
+                {/* Large Watermark Text */}
+                <h1 className="text-[12rem] font-bold text-black/5 dark:text-white/5 whitespace-nowrap select-none transform -rotate-12 scale-150 tracking-tighter">
+                    VitaGuard Intelligence
+                </h1>
+
+                {/* Subtle Glows */}
                 <div className="absolute top-[10%] left-[5%] w-[30%] h-[30%] bg-primary-100/30 dark:bg-primary-900/10 blur-[100px] rounded-full animate-float"></div>
-                <div className="absolute bottom-[5%] right-[5%] w-[25%] h-[25%] bg-health-cyber/5 dark:bg-health-cyber/2 blur-[80px] rounded-full animate-float" style={{ animationDelay: '-3s' }}></div>
+                <div className="absolute bottom-[5%] right-[5%] w-[25%] h-[25%] bg-health-cyber/5 dark:bg-health-cyber/5 blur-[80px] rounded-full animate-float" style={{ animationDelay: '-3s' }}></div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -138,7 +147,7 @@ const DashboardPage = () => {
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="glass-card mb-10 overflow-hidden group shadow-premium"
+                        className="glass-card mb-10 overflow-hidden group shadow-premium border border-white/60 dark:border-white/20"
                     >
                         <div className="bg-gradient-to-r from-primary-600 via-primary-500 to-health-violet p-1">
                             <div className="bg-white dark:bg-dark-card rounded-[1.4rem] p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -147,10 +156,10 @@ const DashboardPage = () => {
                                         <User size={32} />
                                     </div>
                                     <div>
-                                        <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight mb-1">
+                                        <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight mb-1">
                                             Complete Your Health Profile
                                         </h2>
-                                        <p className="text-slate-500 dark:text-slate-400 font-medium max-w-lg">
+                                        <p className="text-slate-500 dark:text-slate-400 font-normal max-w-lg">
                                             Unlock high-precision AI risk detection by providing your baseline metrics.
                                         </p>
                                     </div>
@@ -172,16 +181,17 @@ const DashboardPage = () => {
                 >
                     <motion.div variants={itemVariants}>
 
-                        <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tighter leading-none">
-                            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-health-cyber">{userName}</span>
+                        <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white tracking-tighter leading-none">
+                            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500">{userName}</span>
                         </h1>
-                        <p className="text-lg text-slate-500 dark:text-slate-400 mt-3 font-medium">Your health insights are updated and ready for review.</p>
+                        <p className="text-lg text-slate-500 dark:text-slate-400 mt-3 font-normal">Your health insights are updated and ready for review.</p>
                     </motion.div>
 
                     <motion.div variants={itemVariants}>
-                        <Link to="/assessment" className="btn-premium group px-8 py-4 shadow-glow">
-                            <Plus size={20} className="mr-2 group-hover:rotate-90 transition-transform duration-300" />
-                            New Assessment
+                        <Link to="/assessment" className="relative group px-8 py-4 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-bold shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center overflow-hidden">
+                            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                            <Plus size={20} className="mr-2 group-hover:rotate-90 transition-transform duration-300 relative z-10" />
+                            <span className="relative z-10">New Assessment</span>
                         </Link>
                     </motion.div>
                 </motion.div>
@@ -193,26 +203,34 @@ const DashboardPage = () => {
                     animate="visible"
                     className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
                 >
-                    {stats.map((stat, idx) => (
-                        <motion.div
-                            key={idx}
-                            variants={itemVariants}
-                            className="glass-card p-6 rounded-[2rem] hover:shadow-glow transition-all duration-500 group border-white/60"
-                        >
-                            <div className="flex items-center gap-5">
-                                <div className={`${stat.bgColor} ${stat.color} p-4 rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-300`}>
-                                    {stat.icon}
+                    {stats.map((stat, idx) => {
+                        const cardStyles = [
+                            "bg-emerald-50/60 dark:bg-emerald-900/10 border-emerald-100 dark:border-emerald-500/20 hover:shadow-emerald-500/10", // Risk
+                            "bg-amber-50/60 dark:bg-amber-900/10 border-amber-100 dark:border-amber-500/20 hover:shadow-amber-500/10",     // Checkup
+                            "bg-violet-50/60 dark:bg-violet-900/10 border-violet-100 dark:border-violet-500/20 hover:shadow-violet-500/10"   // Insights
+                        ];
+
+                        return (
+                            <motion.div
+                                key={idx}
+                                variants={itemVariants}
+                                className={`glass-card p-6 rounded-[2rem] hover:shadow-glow transition-all duration-500 group border ${cardStyles[idx]}`}
+                            >
+                                <div className="flex items-center gap-5">
+                                    <div className={`${stat.bgColor} ${stat.color} p-4 rounded-2xl shadow-sm group-hover:scale-110 transition-transform duration-300`}>
+                                        {stat.icon}
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
+                                        <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{stat.value}</p>
+                                    </div>
+                                    <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <ArrowRight size={18} className="text-slate-300" />
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">{stat.label}</p>
-                                    <p className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{stat.value}</p>
-                                </div>
-                                <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <ArrowRight size={18} className="text-slate-300" />
-                                </div>
-                            </div>
-                        </motion.div>
-                    ))}
+                            </motion.div>
+                        );
+                    })}
                 </motion.div>
 
                 {/* Health Trend Chart */}
@@ -220,14 +238,14 @@ const DashboardPage = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="glass-card p-8 md:p-10 rounded-[2.5rem] shadow-premium mb-12 border-white/60 relative overflow-hidden"
+                    className="glass-card p-8 md:p-10 rounded-[2.5rem] shadow-premium mb-12 border border-indigo-100 dark:border-indigo-500/20 bg-indigo-50/40 dark:bg-indigo-900/5 relative overflow-hidden"
                 >
                     <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/5 blur-3xl rounded-full -mr-32 -mt-32"></div>
 
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10 relative z-10">
                         <div>
-                            <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Risk Analytics Trend</h3>
-                            <p className="text-slate-500 dark:text-slate-400 font-medium">Visualizing your progress over the last 7 scans.</p>
+                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Risk Analytics Trend</h3>
+                            <p className="text-slate-500 dark:text-slate-400 font-normal">Visualizing your progress over the last 7 scans.</p>
                         </div>
                         <div className="flex flex-wrap gap-3">
                             {assessments.length >= 2 && (
@@ -280,10 +298,10 @@ const DashboardPage = () => {
                                             const item = chartData[index];
                                             return (
                                                 <g transform={`translate(${x},${y})`}>
-                                                    <text x={0} y={0} dy={16} textAnchor="middle" fill="#64748b" style={{ fontSize: '10px', fontWeight: '800' }}>
+                                                    <text x={0} y={0} dy={16} textAnchor="middle" fill={theme === 'dark' ? '#cbd5e1' : '#64748b'} style={{ fontSize: '10px', fontWeight: '500' }}>
                                                         {item?.displayDate}
                                                     </text>
-                                                    <text x={0} y={0} dy={28} textAnchor="middle" fill="#94a3b8" style={{ fontSize: '8px', fontWeight: '400' }}>
+                                                    <text x={0} y={0} dy={28} textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#94a3b8'} style={{ fontSize: '8px', fontWeight: '400' }}>
                                                         {item?.displayTime}
                                                     </text>
                                                 </g>
@@ -294,7 +312,7 @@ const DashboardPage = () => {
                                     <YAxis
                                         axisLine={false}
                                         tickLine={false}
-                                        tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 600 }}
+                                        tick={{ fill: theme === 'dark' ? '#94a3b8' : '#94a3b8', fontSize: 10, fontWeight: 500 }}
                                     />
                                     <Tooltip
                                         content={({ active, payload }) => {
@@ -344,15 +362,15 @@ const DashboardPage = () => {
                     {/* Main Content Area */}
                     <div className="lg:col-span-2 space-y-8">
                         {/* Recent Assessments */}
-                        <section className="glass-card rounded-[2.5rem] shadow-premium overflow-hidden border-white/60 dark:border-dark-border/40">
-                            <div className="p-8 md:p-10 border-b border-slate-50 dark:border-dark-border/40 flex items-center justify-between">
+                        <section className="glass-card rounded-[2.5rem] shadow-premium overflow-hidden border border-cyan-100 dark:border-cyan-500/20 bg-cyan-50/40 dark:bg-cyan-900/5">
+                            <div className="p-8 md:p-10 border-b border-cyan-100 dark:border-cyan-500/10 flex items-center justify-between">
                                 <div>
-                                    <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Diagnostic Repository</h2>
-                                    <p className="text-sm text-slate-400 font-bold mt-1">Authorized health record archive</p>
+                                    <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Diagnostic Repository</h2>
+                                    <p className="text-sm text-slate-400 font-normal mt-1">Authorized health record archive</p>
                                 </div>
                                 <button
                                     onClick={() => setShowAllReports(!showAllReports)}
-                                    className="group flex items-center gap-2 text-xs font-black text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-4 py-2 rounded-full hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-all uppercase tracking-widest"
+                                    className="group flex items-center gap-2 text-xs font-bold text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 px-4 py-2 rounded-full hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-all uppercase tracking-widest"
                                 >
                                     {showAllReports ? 'Show Less' : `View All (${assessments.length})`} <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
@@ -377,22 +395,22 @@ const DashboardPage = () => {
                                             className="p-6 md:p-8 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group border-b border-slate-50 dark:border-dark-border/10 last:border-0"
                                         >
                                             <div className="flex items-center gap-6">
-                                                <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl group-hover:bg-white dark:group-hover:bg-slate-700 transition-all shadow-sm group-hover:shadow-md">
-                                                    <FileText className="text-primary-500" size={24} />
+                                                <div className="bg-indigo-50 dark:bg-indigo-500/10 p-4 rounded-2xl group-hover:bg-indigo-100 dark:group-hover:bg-indigo-500/20 transition-all shadow-sm group-hover:shadow-md">
+                                                    <FileText className="text-indigo-500" size={24} />
                                                 </div>
                                                 <div>
-                                                    <p className="font-black text-slate-900 dark:text-white text-lg">Biometric Synthesis Report</p>
-                                                    <p className="text-xs text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest mt-1">
+                                                    <p className="font-bold text-slate-900 dark:text-white text-lg">Biometric Synthesis Report</p>
+                                                    <p className="text-xs text-slate-400 dark:text-slate-300 font-medium uppercase tracking-widest mt-1">
                                                         {item.timestamp?.toDate ? item.timestamp.toDate().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}
                                                     </p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-8">
                                                 <div className="text-right hidden sm:block">
-                                                    <p className={`text-sm font-black ${item.riskScore < 15 ? 'text-emerald-500' : item.riskScore < 30 ? 'text-amber-500' : 'text-rose-500'}`}>
+                                                    <p className={`text-sm font-bold ${item.riskScore < 15 ? 'text-emerald-500' : item.riskScore < 30 ? 'text-amber-500' : 'text-rose-500'}`}>
                                                         {item.riskScore < 15 ? 'Optimal (Category I)' : item.riskScore < 30 ? 'Observation (Category II)' : 'Alert (Category III)'}
                                                     </p>
-                                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1">Clinical Protocol Verified</p>
+                                                    <p className="text-[10px] font-medium text-slate-400 uppercase tracking-[0.2em] mt-1">Clinical Protocol Verified</p>
                                                 </div>
                                                 <div className="p-2 rounded-full border border-slate-100 dark:border-slate-800 group-hover:bg-primary-600 group-hover:text-white transition-all">
                                                     <ArrowRight size={18} className="translate-x-0 group-hover:translate-x-1 transition-transform" />
@@ -434,8 +452,8 @@ const DashboardPage = () => {
                     {/* Sidebar Area */}
                     <div className="space-y-8">
                         {/* Risk Categories */}
-                        <section className="glass-card rounded-[2.5rem] p-8 shadow-premium border-white/60">
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight mb-8">Risk Metrics</h3>
+                        <section className="glass-card rounded-[2.5rem] p-8 shadow-premium border border-rose-100 dark:border-rose-500/20 bg-rose-50/40 dark:bg-rose-900/5">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-8">Risk Metrics</h3>
                             <div className="space-y-8">
                                 {latestDetails.map((risk, idx) => {
                                     const score = risk.score || 0;
@@ -462,16 +480,16 @@ const DashboardPage = () => {
                         </section>
 
                         {/* Smart Nav */}
-                        <section className="glass-card rounded-[2.5rem] p-8 shadow-premium border-white/60 dark:border-dark-border/40">
-                            <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight mb-6">Gateway</h3>
+                        <section className="glass-card rounded-[2.5rem] p-8 shadow-premium border border-orange-100 dark:border-orange-500/20 bg-orange-50/40 dark:bg-orange-900/5">
+                            <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Gateway</h3>
                             <div className="grid grid-cols-2 gap-4">
-                                <Link to="/profile" className="flex flex-col items-center gap-3 p-5 bg-slate-50/50 dark:bg-slate-800/50 rounded-3xl hover:bg-white dark:hover:bg-slate-700 hover:shadow-glow transition-all duration-300 border border-transparent hover:border-primary-100 group">
-                                    <div className="bg-white dark:bg-dark-card p-3 rounded-2xl shadow-sm text-primary-500 group-hover:scale-110 transition-transform"><User size={22} /></div>
-                                    <span className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Profile</span>
+                                <Link to="/profile" className="flex flex-col items-center gap-3 p-5 bg-slate-50/50 dark:bg-slate-800/50 rounded-3xl hover:bg-white dark:hover:bg-slate-700 hover:shadow-glow transition-all duration-300 border border-transparent hover:border-orange-200 group">
+                                    <div className="bg-white dark:bg-dark-card p-3 rounded-2xl shadow-sm text-orange-500 group-hover:scale-110 transition-transform"><User size={22} /></div>
+                                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Profile</span>
                                 </Link>
-                                <Link to="/results" className="flex flex-col items-center gap-3 p-5 bg-slate-50/50 dark:bg-slate-800/50 rounded-3xl hover:bg-white dark:hover:bg-slate-700 hover:shadow-glow transition-all duration-300 border border-transparent hover:border-health-cyber group">
-                                    <div className="bg-white dark:bg-dark-card p-3 rounded-2xl shadow-sm text-health-cyber group-hover:scale-110 transition-transform"><FileText size={22} /></div>
-                                    <span className="text-xs font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">Reports</span>
+                                <Link to="/results" className="flex flex-col items-center gap-3 p-5 bg-slate-50/50 dark:bg-slate-800/50 rounded-3xl hover:bg-white dark:hover:bg-slate-700 hover:shadow-glow transition-all duration-300 border border-transparent hover:border-violet-200 group">
+                                    <div className="bg-white dark:bg-dark-card p-3 rounded-2xl shadow-sm text-violet-500 group-hover:scale-110 transition-transform"><FileText size={22} /></div>
+                                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Reports</span>
                                 </Link>
                             </div>
                         </section>

@@ -164,7 +164,7 @@ const AssessmentPage = () => {
                     ))}
                 </div>
 
-                <div className="bg-white rounded-[2rem] shadow-xl border border-slate-100 p-8 md:p-12">
+                <div className="bg-white dark:bg-dark-card rounded-[2rem] shadow-xl border border-slate-100 dark:border-white/10 p-8 md:p-12">
                     <AnimatePresence mode="wait">
                         {step === 1 && (
                             <motion.div
@@ -175,35 +175,35 @@ const AssessmentPage = () => {
                                 className="space-y-6"
                             >
                                 <div>
-                                    <h2 className="text-2xl font-bold text-slate-800 mb-2">Tell us about yourself</h2>
-                                    <p className="text-slate-500 mb-8">This data helps us calibrate the risk models for your demographic.</p>
+                                    <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Tell us about yourself</h2>
+                                    <p className="text-slate-500 dark:text-slate-400 mb-8">This data helps us calibrate the risk models for your demographic.</p>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="md:col-span-2">
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Full Name</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
                                         <input
                                             type="text"
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             placeholder="John Doe"
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Age</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Age</label>
                                         <input
                                             type="number"
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             placeholder="e.g. 25"
                                             value={formData.age}
                                             onChange={(e) => setFormData({ ...formData, age: e.target.value })}
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Gender</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Gender</label>
                                         <select
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             value={formData.gender}
                                             onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                                         >
@@ -214,20 +214,20 @@ const AssessmentPage = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Height (cm)</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Height (cm)</label>
                                         <input
                                             type="number"
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             placeholder="175"
                                             value={formData.height}
                                             onChange={(e) => setFormData({ ...formData, height: e.target.value })}
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Weight (kg)</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Weight (kg)</label>
                                         <input
                                             type="number"
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             placeholder="70"
                                             value={formData.weight}
                                             onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
@@ -316,9 +316,9 @@ const AssessmentPage = () => {
 
                                 <div className="space-y-6">
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Sleep Duration</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Sleep Duration</label>
                                         <select
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             value={formData.sleep}
                                             onChange={(e) => setFormData({ ...formData, sleep: e.target.value })}
                                         >
@@ -330,9 +330,9 @@ const AssessmentPage = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Exercise Frequency</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Exercise Frequency</label>
                                         <select
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             value={formData.exercise}
                                             onChange={(e) => setFormData({ ...formData, exercise: e.target.value })}
                                         >
@@ -345,9 +345,9 @@ const AssessmentPage = () => {
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label className="block text-sm font-bold text-slate-700 mb-2">Smoking Status</label>
+                                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Smoking Status</label>
                                             <select
-                                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                                className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                                 value={formData.smoking}
                                                 onChange={(e) => setFormData({ ...formData, smoking: e.target.value })}
                                             >
@@ -359,9 +359,9 @@ const AssessmentPage = () => {
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-bold text-slate-700 mb-2">Alcohol Consumption</label>
+                                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Alcohol Consumption</label>
                                             <select
-                                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                                className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                                 value={formData.alcohol}
                                                 onChange={(e) => setFormData({ ...formData, alcohol: e.target.value })}
                                             >

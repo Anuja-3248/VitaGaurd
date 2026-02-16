@@ -57,7 +57,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-dark-bg/70 backdrop-blur-xl border-b border-white/20 dark:border-dark-border/50 transition-all duration-300">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-neutral-950/70 backdrop-blur-xl border-b border-white/20 dark:border-white/10 transition-all duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
@@ -76,16 +76,24 @@ const Navbar = () => {
                             {navLinks.map((link) => (
                                 <motion.button
                                     key={link.name}
-                                    whileHover={{ scale: 1.1, backgroundColor: theme === 'dark' ? 'rgba(51, 65, 85, 0.5)' : 'rgba(255,255,255,1)' }}
-                                    whileTap={{ scale: 0.95 }}
+                                    initial="collapsed"
+                                    whileHover="expanded"
                                     onClick={() => handleNavClick(link.path)}
-                                    className="p-3 text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-white dark:hover:bg-slate-700 rounded-xl transition-colors relative group"
-                                    title={link.name}
+                                    className="flex items-center gap-0 hover:gap-2 px-3 py-2 text-slate-500 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all h-10"
                                 >
-                                    {link.icon}
-                                    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">
+                                    <div className="flex items-center justify-center">
+                                        {link.icon}
+                                    </div>
+                                    <motion.span
+                                        variants={{
+                                            collapsed: { width: 0, opacity: 0, display: "none" },
+                                            expanded: { width: "auto", opacity: 1, display: "block" }
+                                        }}
+                                        transition={{ duration: 0.2, ease: "easeInOut" }}
+                                        className="whitespace-nowrap font-bold text-sm overflow-hidden"
+                                    >
                                         {link.name}
-                                    </span>
+                                    </motion.span>
                                 </motion.button>
                             ))}
 
