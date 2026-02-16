@@ -165,7 +165,7 @@ const LandingPage = () => {
 
 
                             <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl lg:text-7xl font-normal text-slate-900 dark:text-white leading-[1.1] mb-8 tracking-tighter" style={{ fontFamily: "'DM Serif Display', serif" }}>
-                                Health Risk <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-health-cyber">Detection</span> Reimagined.
+                                Prevention <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-health-cyber">Begins With</span> Prediction
                             </motion.h1>
 
                             <motion.p variants={itemVariants} className="text-xl text-slate-500 dark:text-slate-400 mb-12 max-w-xl lg:mx-0 mx-auto leading-relaxed font-medium">
