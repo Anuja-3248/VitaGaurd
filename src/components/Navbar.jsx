@@ -25,6 +25,9 @@ const Navbar = () => {
     const handleLogout = async () => {
         try {
             await signOut(auth);
+            // Clear onboarding flag so they see the splash screen again
+            sessionStorage.removeItem('vitaGuard_onboarding_seen');
+            navigate('/');
         } catch (error) {
             console.error('Logout error:', error);
         }
