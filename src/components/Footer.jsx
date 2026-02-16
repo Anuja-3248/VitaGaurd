@@ -1,68 +1,82 @@
 import { Link } from 'react-router-dom';
-import { HeartPulse, Github, Twitter, Linkedin, Mail } from 'lucide-react';
+import { HeartPulse, Mail, Phone, ExternalLink } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Footer = () => {
     return (
-        <footer className="bg-slate-900 text-slate-300 pt-16 pb-8">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
-                    {/* Brand */}
-                    <div className="col-span-1 md:col-span-1">
-                        <Link to="/" className="flex items-center space-x-2 mb-6">
-                            <HeartPulse className="h-8 w-8 text-primary-400" />
-                            <span className="text-2xl font-bold text-white italic">VitaGuard</span>
+        <footer className="bg-slate-900 text-slate-300 pt-24 pb-12 relative overflow-hidden">
+            {/* Background Decoration */}
+            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-600/5 blur-[120px] rounded-full -mr-32 -mt-32"></div>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div className="flex flex-col md:flex-row justify-between items-start gap-16 mb-16">
+                    {/* Brand & Mission */}
+                    <div className="max-w-md">
+                        <Link to="/" className="flex items-center space-x-2 mb-8 group">
+                            <div className="bg-primary-600 p-2 rounded-xl shadow-glow transition-transform group-hover:scale-110">
+                                <HeartPulse className="h-6 w-6 text-white" />
+                            </div>
+                            <span className="text-3xl font-black text-white tracking-tighter italic">VitaGuard</span>
                         </Link>
-                        <p className="text-slate-400 mb-6">
-                            Empowering early health detection through intelligent symptom analysis and risk prediction.
+                        <h3 className="text-xl font-bold text-white mb-4">Precision Preventive Intelligence</h3>
+                        <p className="text-slate-400 leading-relaxed font-medium">
+                            VitaGuard is a next-generation diagnostic companion that bridges the gap between raw health data and clinical intelligence. We utilize sophisticated AI protocols to detect early-stage risk markers, empowering individuals to take proactive control of their medical future.
                         </p>
-                        <div className="flex space-x-4">
-                            <a href="#" className="hover:text-primary-400 transition-colors"><Twitter size={20} /></a>
-                            <a href="#" className="hover:text-primary-400 transition-colors"><Linkedin size={20} /></a>
-                            <a href="#" className="hover:text-primary-400 transition-colors"><Github size={20} /></a>
-                        </div>
                     </div>
 
-                    {/* Quick Links */}
-                    <div>
-                        <h3 className="text-white font-bold mb-6">Quick Links</h3>
-                        <ul className="space-y-4">
-                            <li><Link to="/" className="hover:text-primary-400 transition-colors">Home</Link></li>
-                            <li><a href="#how-it-works" className="hover:text-primary-400 transition-colors">How It Works</a></li>
-                            <li><a href="#features" className="hover:text-primary-400 transition-colors">Features</a></li>
-                            <li><Link to="/assessment" className="hover:text-primary-400 transition-colors">Start Assessment</Link></li>
-                        </ul>
-                    </div>
+                    {/* Contact Section */}
+                    <div className="w-full md:w-auto">
+                        <div className="bg-white/5 backdrop-blur-md rounded-[2rem] p-6 md:p-8 border border-white/10 shadow-2xl">
+                            <h4 className="text-sm font-black text-primary-400 uppercase tracking-[0.3em] mb-6">Get In Touch</h4>
+                            <p className="text-white text-lg font-bold mb-6 max-w-[220px]">
+                                Have any questions? Contact Anuja Pawar.
+                            </p>
 
-                    {/* Support */}
-                    <div>
-                        <h3 className="text-white font-bold mb-6">Support</h3>
-                        <ul className="space-y-4">
-                            <li><a href="#" className="hover:text-primary-400 transition-colors">Help Center</a></li>
-                            <li><a href="#" className="hover:text-primary-400 transition-colors">Privacy Policy</a></li>
-                            <li><a href="#" className="hover:text-primary-400 transition-colors">Terms of Service</a></li>
-                            <li><a href="#" className="hover:text-primary-400 transition-colors">Contact Us</a></li>
-                        </ul>
-                    </div>
+                            <div className="space-y-5">
+                                <motion.a
+                                    href="mailto:anujap2222@gmail.com"
+                                    whileHover={{ x: 10 }}
+                                    className="flex items-center gap-4 group"
+                                >
+                                    <div className="bg-slate-800 p-2.5 rounded-xl group-hover:bg-primary-600 transition-colors">
+                                        <Mail size={18} className="text-primary-400 group-hover:text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Email Address</p>
+                                        <p className="text-white font-bold group-hover:text-primary-400 transition-colors">anujap2222@gmail.com</p>
+                                    </div>
+                                </motion.a>
 
-                    {/* Newsletter */}
-                    <div>
-                        <h3 className="text-white font-bold mb-6">Stay Updated</h3>
-                        <p className="text-slate-400 mb-4 text-sm">Get the latest health insights and updates.</p>
-                        <div className="flex">
-                            <input
-                                type="email"
-                                placeholder="Enter email"
-                                className="bg-slate-800 border-none rounded-l-lg px-4 py-2 w-full focus:ring-1 focus:ring-primary-400 outline-none"
-                            />
-                            <button className="bg-primary-600 hover:bg-primary-700 text-white rounded-r-lg px-4 py-2 transition-colors">
-                                <Mail size={20} />
-                            </button>
+                                <motion.a
+                                    href="tel:+918010030919"
+                                    whileHover={{ x: 10 }}
+                                    className="flex items-center gap-3 group"
+                                >
+                                    <div className="bg-slate-800 p-2.5 rounded-xl group-hover:bg-primary-600 transition-colors">
+                                        <Phone size={18} className="text-primary-400 group-hover:text-white" />
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Direct Contact</p>
+                                        <p className="text-white font-bold group-hover:text-primary-400 transition-colors">+91 80100 30919</p>
+                                    </div>
+                                </motion.a>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="border-t border-slate-800 pt-8 text-center text-sm text-slate-500">
-                    <p>© {new Date().getFullYear()} VitaGuard System. Built for early risk detection. For educational purposes only.</p>
+                {/* Final Credits */}
+                <div className="border-t border-white/5 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-[0.2em] text-slate-500">
+                        <span>© {new Date().getFullYear()} VitaGuard System</span>
+                        <div className="h-1 w-1 bg-slate-700 rounded-full"></div>
+                        <span>Clinical AI Architecture</span>
+                    </div>
+
+                    <div className="flex gap-8">
+                        <Link to="/privacy" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors">Privacy Protocol</Link>
+                        <Link to="/terms" className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 hover:text-white transition-colors">Service Terms</Link>
+                    </div>
                 </div>
             </div>
         </footer>

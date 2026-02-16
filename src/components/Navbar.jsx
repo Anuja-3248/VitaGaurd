@@ -1,89 +1,157 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, HeartPulse, User } from 'lucide-react';
+import { Menu, X, Home, Info, Sparkles, LayoutDashboard, LogOut, Sun, Moon, Zap, User, HeartPulse } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import { signOut } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const Navbar = () => {
-    const { currentUser, logout } = useAuth();
-    const [isOpen, setIsOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
-    const location = useLocation();
+    const { currentUser } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+    const [isOpen, setIsOpen] = useState(false);
+    const location = useLocation();
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
     const navLinks = [
-        { name: 'Home', path: '/' },
-        { name: 'How It Works', path: '/#how-it-works' },
-        { name: 'Features', path: '/#features' },
+        { name: 'Home', path: '/', icon: <Home size={20} /> },
+        { name: 'How it works', path: '/#how-it-works', icon: <Info size={20} /> },
+        { name: 'Features', path: '/#features', icon: <Sparkles size={20} /> },
     ];
 
     const handleLogout = async () => {
         try {
-            await logout();
-            navigate('/');
+            await signOut(auth);
         } catch (error) {
-            console.error("Failed to log out", error);
+            console.error('Logout error:', error);
+        }
+    };
+
+    const handleNavClick = (path) => {
+        setIsOpen(false);
+        if (path === '/') {
+            if (location.pathname === '/') {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                navigate('/');
+            }
+            return;
+        }
+
+        if (path.startsWith('/#')) {
+            const id = path.split('#')[1];
+            if (location.pathname === '/') {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }
+            } else {
+                navigate(path);
+            }
+        } else {
+            navigate(path);
         }
     };
 
     return (
-        <nav className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-md shadow-md py-2' : 'bg-transparent py-4'}`}>
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-neutral-950/70 backdrop-blur-xl border-b border-white/20 dark:border-white/10 transition-all duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center space-x-2">
-                        <HeartPulse className="h-8 w-8 text-primary-600" />
-                        <span className="text-2xl font-bold bg-gradient-to-r from-primary-600 to-health-teal bg-clip-text text-transparent italic">
+                    <Link to="/" className="flex items-center space-x-2 group">
+                        <div className="bg-primary-600 p-2 rounded-xl shadow-glow group-hover:rotate-12 transition-transform duration-300 flex items-center justify-center h-10 w-10">
+                            <Zap className="h-6 w-6 text-white" fill="currentColor" />
+                        </div>
+                        <span className="text-2xl font-black bg-gradient-to-r from-primary-700 via-primary-600 to-health-cyber bg-clip-text text-transparent tracking-tight">
                             VitaGuard
                         </span>
                     </Link>
 
-                    {/* Desktop Links */}
-                    <div className="hidden md:flex items-center space-x-8">
-                        {navLinks.map((link) => (
-                            <a
-                                key={link.name}
-                                href={link.path}
-                                className="text-slate-600 hover:text-primary-600 font-medium transition-colors"
+                    {/* Desktop Links - Symbols Only */}
+                    <div className="hidden md:flex items-center space-x-10">
+                        <div className="flex items-center space-x-2 bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-200/50 dark:border-slate-700/50">
+                            {navLinks.map((link) => (
+                                <motion.button
+                                    key={link.name}
+                                    initial="collapsed"
+                                    whileHover="expanded"
+                                    onClick={() => handleNavClick(link.path)}
+                                    className="flex items-center gap-0 hover:gap-2 px-3 py-2 text-slate-500 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all h-10"
+                                >
+                                    <div className="flex items-center justify-center">
+                                        {link.icon}
+                                    </div>
+                                    <motion.span
+                                        variants={{
+                                            collapsed: { width: 0, opacity: 0, display: "none" },
+                                            expanded: { width: "auto", opacity: 1, display: "block" }
+                                        }}
+                                        transition={{ duration: 0.2, ease: "easeInOut" }}
+                                        className="whitespace-nowrap font-bold text-sm overflow-hidden"
+                                    >
+                                        {link.name}
+                                    </motion.span>
+                                </motion.button>
+                            ))}
+
+                            {/* Theme Toggle Button */}
+                            <motion.button
+                                whileHover={{ scale: 1.1, backgroundColor: theme === 'dark' ? 'rgba(30, 41, 59, 0.8)' : 'rgba(255,255,255,1)' }}
+                                whileTap={{ scale: 0.95 }}
+                                onClick={toggleTheme}
+                                className="p-3 text-slate-500 dark:text-slate-400 hover:text-amber-500 dark:hover:text-amber-400 rounded-xl transition-colors relative group"
+                                title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
                             >
-                                {link.name}
-                            </a>
-                        ))}
+                                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                                <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-800 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">
+                                    {theme === 'dark' ? 'Light' : 'Dark'}
+                                </span>
+                            </motion.button>
+                        </div>
+
+                        <div className="h-8 w-px bg-slate-200 dark:bg-slate-700 mx-2"></div>
 
                         {currentUser ? (
-                            <div className="flex items-center space-x-6">
-                                <Link to="/dashboard" className="text-slate-600 hover:text-primary-600 font-medium transition-colors">Dashboard</Link>
-                                <Link to="/profile" className="flex items-center gap-2 text-slate-600 hover:text-primary-600 font-medium bg-slate-50 px-3 py-1.5 rounded-xl transition-all border border-slate-100 italic">
-                                    <User size={16} className="text-primary-600" />
+                            <div className="flex items-center space-x-4">
+                                <Link to="/dashboard" className="p-3 text-slate-500 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all relative group" title="Dashboard">
+                                    <LayoutDashboard size={20} />
+                                    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-800 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">Dashboard</span>
+                                </Link>
+                                <Link to="/profile" className="flex items-center gap-3 bg-white dark:bg-dark-card px-4 py-2 rounded-2xl shadow-sm border border-slate-100 dark:border-dark-border hover:border-primary-200 transition-all text-slate-700 dark:text-slate-200 font-bold text-sm">
+                                    <div className="bg-primary-50 dark:bg-primary-900/10 p-1 rounded-lg">
+                                        <User size={16} className="text-primary-600 dark:text-primary-400" />
+                                    </div>
                                     Profile
                                 </Link>
                                 <button
                                     onClick={handleLogout}
-                                    className="bg-slate-100 text-slate-700 px-4 py-2 rounded-full hover:bg-slate-200 transition-all"
+                                    className="p-3 text-slate-400 dark:text-slate-500 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all group relative"
+                                    title="Logout"
                                 >
-                                    Logout
+                                    <LogOut size={20} />
+                                    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-rose-600 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">Logout</span>
                                 </button>
                             </div>
                         ) : (
                             <div className="flex items-center space-x-4">
-                                <Link to="/login" className="text-slate-600 hover:text-primary-600 font-medium">Login</Link>
-                                <Link to="/signup" className="btn-primary py-2 px-6">Sign Up</Link>
+                                <Link to="/login" className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 font-bold text-sm">Login</Link>
+                                <Link to="/signup" className="btn-primary py-2.5 px-6 text-sm">Sign Up</Link>
                             </div>
                         )}
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <div className="md:hidden">
-                        <button onClick={toggleMenu} className="text-slate-600 hover:text-primary-600">
+                    <div className="md:hidden flex items-center gap-4">
+                        <button
+                            onClick={toggleTheme}
+                            className="p-2 text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700"
+                        >
+                            {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                        </button>
+                        <button onClick={toggleMenu} className="p-2 text-slate-600 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700">
                             {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
                         </button>
                     </div>
@@ -92,31 +160,43 @@ const Navbar = () => {
 
             {/* Mobile Menu */}
             {isOpen && (
-                <div className="md:hidden bg-white shadow-lg absolute w-full top-full left-0 animate-fade-in">
-                    <div className="px-4 pt-2 pb-6 space-y-2">
-                        {navLinks.map((link) => (
-                            <a
-                                key={link.name}
-                                href={link.path}
-                                className="block px-3 py-2 text-slate-600 hover:text-primary-600 font-medium"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                {link.name}
-                            </a>
-                        ))}
-                        <hr className="my-2 border-slate-100" />
-                        {currentUser ? (
-                            <>
-                                <Link to="/dashboard" className="block px-3 py-2 text-slate-600 rounded-lg hover:bg-slate-50" onClick={() => setIsOpen(false)}>Dashboard</Link>
-                                <Link to="/profile" className="block px-3 py-2 text-primary-600 font-bold rounded-lg bg-primary-50" onClick={() => setIsOpen(false)}>Health Profile</Link>
-                                <button onClick={() => { handleLogout(); setIsOpen(false); }} className="w-full text-left px-3 py-2 text-slate-600">Logout</button>
-                            </>
-                        ) : (
-                            <>
-                                <Link to="/login" className="block px-3 py-2 text-slate-600" onClick={() => setIsOpen(false)}>Login</Link>
-                                <Link to="/signup" className="block px-3 py-2 text-primary-600 font-bold" onClick={() => setIsOpen(false)}>Sign Up</Link>
-                            </>
-                        )}
+                <div className="md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl shadow-2xl absolute w-[90%] left-[5%] top-20 rounded-[2.5rem] border border-slate-100 dark:border-dark-border overflow-hidden animate-fade-in z-[110]">
+                    <div className="p-8 space-y-4">
+                        <div className="grid grid-cols-3 gap-4 mb-8">
+                            {navLinks.map((link) => (
+                                <button
+                                    key={link.name}
+                                    onClick={() => handleNavClick(link.path)}
+                                    className="flex flex-col items-center justify-center p-4 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 hover:bg-primary-50 dark:hover:bg-primary-900/20 hover:border-primary-100 transition-all group"
+                                >
+                                    <div className="text-slate-400 dark:text-slate-500 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors mb-2">
+                                        {link.icon}
+                                    </div>
+                                    <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">{link.name}</span>
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="space-y-3 pt-4 border-t border-slate-100">
+                            {currentUser ? (
+                                <>
+                                    <Link to="/dashboard" className="flex items-center gap-4 p-4 text-slate-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800" onClick={() => setIsOpen(false)}>
+                                        <LayoutDashboard size={20} /> Dashboard
+                                    </Link>
+                                    <Link to="/profile" className="flex items-center gap-4 p-4 text-primary-600 font-black rounded-2xl bg-primary-50 dark:bg-primary-900/20" onClick={() => setIsOpen(false)}>
+                                        <User size={20} /> My Health Profile
+                                    </Link>
+                                    <button onClick={() => { handleLogout(); setIsOpen(false); }} className="flex items-center gap-4 w-full p-4 text-rose-500 font-bold hover:bg-rose-50 dark:hover:bg-rose-900/10 rounded-2xl transition-colors">
+                                        <LogOut size={20} /> Logout
+                                    </button>
+                                </>
+                            ) : (
+                                <div className="grid grid-cols-2 gap-4">
+                                    <Link to="/login" className="btn-secondary py-4 text-center" onClick={() => setIsOpen(false)}>Login</Link>
+                                    <Link to="/signup" className="btn-primary py-4 text-center" onClick={() => setIsOpen(false)}>Sign Up</Link>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

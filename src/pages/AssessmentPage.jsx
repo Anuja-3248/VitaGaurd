@@ -5,6 +5,7 @@ import { HeartPulse, ChevronRight, ChevronLeft, Activity, Info, Loader2 } from '
 
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
+import { analyzeHealthWithGemini } from '../services/gemini';
 import { useAuth } from '../context/AuthContext';
 
 const AssessmentPage = () => {
@@ -18,6 +19,7 @@ const AssessmentPage = () => {
         height: '',
         weight: '',
         symptoms: [],
+        otherSymptoms: '',
         sleep: '',
         exercise: '',
         smoking: '',
@@ -66,6 +68,7 @@ const AssessmentPage = () => {
         e.preventDefault();
         setLoading(true);
 
+<<<<<<< HEAD
         // 1. Calculate a semi-intelligent risk score based on inputs
         let baseScore = 5;
 
@@ -103,9 +106,55 @@ const AssessmentPage = () => {
 
         // 3. Keep the user in the 'Processing' state for 2 seconds for UX
         setTimeout(() => {
+=======
+        try {
+            // 1. Call Gemini AI for intelligent analysis (no random scores — 100% data-driven)
+            const analysisResult = await analyzeHealthWithGemini(formData);
+            const finalScore = analysisResult.data.score;
+
+            // 2. Save COMPLETE report to Firebase for exact historical viewing
+            if (currentUser) {
+                addDoc(collection(db, "assessments"), {
+                    userId: currentUser.uid,
+                    ...formData,
+                    riskScore: finalScore,
+                    summary: analysisResult.data.summary,
+                    details: analysisResult.data.details,
+                    recommendations: analysisResult.data.recommendations,
+                    tips: analysisResult.data.tips,
+                    dietOptions: analysisResult.data.dietOptions,
+                    aiSource: analysisResult.source,
+                    timestamp: serverTimestamp()
+                }).then(() => {
+                    console.log("Cloud Save Successful (Background)");
+                }).catch((err) => {
+                    console.error("Cloud Save Failed (Background):", err);
+                });
+            }
+
+            // 3. Navigate to results with the full AI analysis
             setLoading(false);
-            navigate('/results', { state: { score: riskScore, name: formData.name, formData: formData } });
-        }, 2000);
+            navigate('/results', {
+                state: {
+                    score: finalScore,
+                    name: formData.name,
+                    formData: formData,
+                    aiAnalysis: analysisResult
+                }
+            });
+        } catch (error) {
+            console.error("Assessment Error:", error);
+>>>>>>> 15e747ece04064c77bc62c547b186cbaceb53b53
+            setLoading(false);
+            // Navigate to results — the ResultsPage will use its local analysis engine
+            navigate('/results', {
+                state: {
+                    score: null,
+                    name: formData.name,
+                    formData: formData
+                }
+            });
+        }
     };
 
     const steps = [
@@ -135,7 +184,7 @@ const AssessmentPage = () => {
     }
 
     return (
-        <div className="bg-slate-50 min-h-screen pt-24 pb-20 px-4">
+        <div className="bg-slate-50 min-h-screen pt-36 pb-20 px-4">
             <div className="max-w-3xl mx-auto">
                 {/* Progress Stepper */}
                 <div className="mb-12 flex justify-between relative">
@@ -155,7 +204,7 @@ const AssessmentPage = () => {
                     ))}
                 </div>
 
-                <div className="bg-white rounded-[2rem] shadow-xl border border-slate-100 p-8 md:p-12">
+                <div className="bg-white dark:bg-dark-card rounded-[2rem] shadow-xl border border-slate-100 dark:border-white/10 p-8 md:p-12">
                     <AnimatePresence mode="wait">
                         {step === 1 && (
                             <motion.div
@@ -166,35 +215,35 @@ const AssessmentPage = () => {
                                 className="space-y-6"
                             >
                                 <div>
-                                    <h2 className="text-2xl font-bold text-slate-800 mb-2">Tell us about yourself</h2>
-                                    <p className="text-slate-500 mb-8">This data helps us calibrate the risk models for your demographic.</p>
+                                    <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Tell us about yourself</h2>
+                                    <p className="text-slate-500 dark:text-slate-400 mb-8">This data helps us calibrate the risk models for your demographic.</p>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="md:col-span-2">
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Full Name</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
                                         <input
                                             type="text"
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             placeholder="John Doe"
                                             value={formData.name}
                                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Age</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Age</label>
                                         <input
                                             type="number"
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             placeholder="e.g. 25"
                                             value={formData.age}
                                             onChange={(e) => setFormData({ ...formData, age: e.target.value })}
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Gender</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Gender</label>
                                         <select
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             value={formData.gender}
                                             onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                                         >
@@ -205,20 +254,20 @@ const AssessmentPage = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Height (cm)</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Height (cm)</label>
                                         <input
                                             type="number"
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             placeholder="175"
                                             value={formData.height}
                                             onChange={(e) => setFormData({ ...formData, height: e.target.value })}
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Weight (kg)</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Weight (kg)</label>
                                         <input
                                             type="number"
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             placeholder="70"
                                             value={formData.weight}
                                             onChange={(e) => setFormData({ ...formData, weight: e.target.value })}
@@ -242,15 +291,22 @@ const AssessmentPage = () => {
                                 className="space-y-6"
                             >
                                 <div>
-                                    <h2 className="text-2xl font-bold text-slate-800 mb-2">Are you experiencing any of these?</h2>
-                                    <p className="text-slate-500 mb-8">Select all that apply. Be as accurate as possible.</p>
+                                    <h2 className="text-2xl font-bold text-slate-800 mb-2">What Symptoms are you facing?</h2>
+                                    <p className="text-slate-500 mb-8">Select all that apply and describe any others below.</p>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
                                     {['Chest Pain', 'Shortness of Breath', 'Fatigue', 'Dizziness', 'Persistent Cough', 'Nausea', 'Frequent Urination', 'Headache'].map((s) => (
                                         <button
                                             key={s}
-                                            onClick={() => toggleSymptom(s)}
+                                            onClick={() => {
+                                                if (formData.symptoms.includes(s)) {
+                                                    setFormData({ ...formData, symptoms: formData.symptoms.filter(sym => sym !== s) });
+                                                } else {
+                                                    setFormData({ ...formData, symptoms: [...formData.symptoms, s] });
+                                                }
+                                            }}
+                                            type="button"
                                             className={`p-4 rounded-2xl text-left border-2 transition-all ${formData.symptoms.includes(s) ? 'border-primary-600 bg-primary-50 text-primary-900' : 'border-slate-100 bg-slate-50 text-slate-600 hover:border-slate-300'}`}
                                         >
                                             <div className="flex justify-between items-center">
@@ -261,9 +317,26 @@ const AssessmentPage = () => {
                                     ))}
                                 </div>
 
+                                <div className="mt-8">
+                                    <label className="block text-sm font-bold text-slate-700 mb-2">Other Symptoms (Describe below)</label>
+                                    <textarea
+                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none resize-none"
+                                        rows="3"
+                                        placeholder="Tell us about any other discomfort or symptoms you're feeling..."
+                                        value={formData.otherSymptoms}
+                                        onChange={(e) => setFormData({ ...formData, otherSymptoms: e.target.value })}
+                                    ></textarea>
+                                </div>
+
                                 <div className="flex gap-4 pt-6">
                                     <button onClick={handleBack} className="flex-1 btn-secondary py-4">Back</button>
-                                    <button onClick={handleNext} className="flex-[2] btn-primary py-4">Continue to Lifestyle</button>
+                                    <button
+                                        onClick={handleNext}
+                                        disabled={formData.symptoms.length === 0 && !formData.otherSymptoms.trim()}
+                                        className="flex-[2] btn-primary py-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        Continue to Lifestyle
+                                    </button>
                                 </div>
                             </motion.div>
                         )}
@@ -283,9 +356,9 @@ const AssessmentPage = () => {
 
                                 <div className="space-y-6">
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Sleep Duration</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Sleep Duration</label>
                                         <select
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             value={formData.sleep}
                                             onChange={(e) => setFormData({ ...formData, sleep: e.target.value })}
                                         >
@@ -297,9 +370,9 @@ const AssessmentPage = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-bold text-slate-700 mb-2">Exercise Frequency</label>
+                                        <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Exercise Frequency</label>
                                         <select
-                                            className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                            className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                             value={formData.exercise}
                                             onChange={(e) => setFormData({ ...formData, exercise: e.target.value })}
                                         >
@@ -312,9 +385,9 @@ const AssessmentPage = () => {
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div>
-                                            <label className="block text-sm font-bold text-slate-700 mb-2">Smoking Status</label>
+                                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Smoking Status</label>
                                             <select
-                                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                                className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                                 value={formData.smoking}
                                                 onChange={(e) => setFormData({ ...formData, smoking: e.target.value })}
                                             >
@@ -326,9 +399,9 @@ const AssessmentPage = () => {
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-bold text-slate-700 mb-2">Alcohol Consumption</label>
+                                            <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Alcohol Consumption</label>
                                             <select
-                                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+                                                className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none dark:text-white"
                                                 value={formData.alcohol}
                                                 onChange={(e) => setFormData({ ...formData, alcohol: e.target.value })}
                                             >

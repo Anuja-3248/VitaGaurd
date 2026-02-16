@@ -91,7 +91,7 @@ const ProfilePage = () => {
     }
 
     return (
-        <div className="bg-slate-50 min-h-screen pt-24 pb-12 px-4">
+        <div className="bg-slate-50 dark:bg-dark-bg min-h-screen pt-36 pb-12 px-4 transition-colors duration-300">
             <div className="max-w-3xl mx-auto">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
@@ -99,7 +99,7 @@ const ProfilePage = () => {
                         <Link to="/dashboard" className="flex items-center gap-2 text-slate-500 hover:text-primary-600 transition-colors mb-2 text-sm font-medium">
                             <ArrowLeft size={16} /> Back to Dashboard
                         </Link>
-                        <h1 className="text-3xl font-bold text-slate-800">My Health Profile</h1>
+                        <h1 className="text-3xl font-bold text-slate-800 dark:text-white">My Health Profile</h1>
                         <p className="text-slate-500 mt-1">Manage your baseline health parameters for accurate AI analysis.</p>
                     </div>
                     <div className="bg-primary-100 p-4 rounded-3xl text-primary-600 hidden md:block">
@@ -118,7 +118,7 @@ const ProfilePage = () => {
                     </motion.div>
                 )}
 
-                <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl overflow-hidden">
+                <div className="bg-white dark:bg-dark-card rounded-[2.5rem] border border-slate-100 dark:border-white/10 shadow-xl overflow-hidden">
                     <form onSubmit={handleSubmit} className="p-8 md:p-12 space-y-8">
 
                         {/* Basic Info Section */}
@@ -127,7 +127,7 @@ const ProfilePage = () => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                                         <User size={16} className="text-primary-500" /> Full Name
                                     </label>
                                     <input
@@ -135,12 +135,12 @@ const ProfilePage = () => {
                                         name="displayName"
                                         value={profile.displayName}
                                         onChange={handleChange}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium"
+                                        className="w-full bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium dark:text-white"
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                                         <Mail size={16} className="text-primary-500" /> Email Address
                                     </label>
                                     <input
@@ -154,7 +154,7 @@ const ProfilePage = () => {
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
                                 <div>
-                                    <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                                         <Calendar size={16} className="text-primary-500" /> Age
                                     </label>
                                     <input
@@ -163,17 +163,17 @@ const ProfilePage = () => {
                                         value={profile.age}
                                         onChange={handleChange}
                                         placeholder="e.g. 25"
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium"
+                                        className="w-full bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium dark:text-white"
                                         required
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-slate-700 mb-2">Gender</label>
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Gender</label>
                                     <select
                                         name="gender"
                                         value={profile.gender}
                                         onChange={handleChange}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium"
+                                        className="w-full bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium dark:text-white"
                                         required
                                     >
                                         <option value="">Select Gender</option>
@@ -183,14 +183,14 @@ const ProfilePage = () => {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                                         <Droplets size={16} className="text-primary-500" /> Blood Group
                                     </label>
                                     <select
                                         name="bloodGroup"
                                         value={profile.bloodGroup}
                                         onChange={handleChange}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium"
+                                        className="w-full bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium dark:text-white"
                                     >
                                         <option value="">Unknown</option>
                                         <option value="A+">A+</option>
@@ -211,7 +211,7 @@ const ProfilePage = () => {
                             <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] border-b pb-4">Physical Composition</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="relative">
-                                    <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                                         <Ruler size={16} className="text-primary-500" /> Height (cm)
                                     </label>
                                     <input
@@ -220,12 +220,12 @@ const ProfilePage = () => {
                                         value={profile.height}
                                         onChange={handleChange}
                                         placeholder="e.g. 175"
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium"
+                                        className="w-full bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium dark:text-white"
                                         required
                                     />
                                 </div>
                                 <div className="relative">
-                                    <label className="block text-sm font-bold text-slate-700 mb-2 flex items-center gap-2">
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
                                         <Weight size={16} className="text-primary-500" /> Weight (kg)
                                     </label>
                                     <input
@@ -234,7 +234,7 @@ const ProfilePage = () => {
                                         value={profile.weight}
                                         onChange={handleChange}
                                         placeholder="e.g. 70"
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium"
+                                        className="w-full bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium dark:text-white"
                                         required
                                     />
                                 </div>
@@ -245,14 +245,14 @@ const ProfilePage = () => {
                         <section className="space-y-6 pt-4">
                             <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] border-b pb-4">Medical Background</h3>
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide opacity-70">Past Medical History</label>
+                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wide opacity-70">Past Medical History</label>
                                 <textarea
                                     name="medicalHistory"
                                     value={profile.medicalHistory}
                                     onChange={handleChange}
                                     rows="3"
                                     placeholder="e.g. Past surgeries, allergies, or long-term conditions (Diabetes, Asthma, etc.)"
-                                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium resize-none"
+                                    className="w-full bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl px-5 py-3 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all font-medium resize-none dark:text-white"
                                 ></textarea>
                             </div>
                         </section>

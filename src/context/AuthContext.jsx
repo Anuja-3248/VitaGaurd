@@ -35,13 +35,36 @@ export function AuthProvider({ children }) {
     }
 
     useEffect(() => {
+        let isMounted = true;
+
+        // Safety timeout to prevent permanent white screen
+        const timeout = setTimeout(() => {
+            if (isMounted && loading) {
+                console.warn('Auth loading timed out. Proceeding anyway.');
+                setLoading(false);
+            }
+        }, 3000);
+
         const unsubscribe = onAuthStateChanged(auth, (user) => {
-            setCurrentUser(user);
-            setLoading(false);
+            if (isMounted) {
+                setCurrentUser(user);
+                setLoading(false);
+                clearTimeout(timeout);
+            }
+        }, (error) => {
+            console.error('Auth state error:', error);
+            if (isMounted) {
+                setLoading(false);
+                clearTimeout(timeout);
+            }
         });
 
-        return unsubscribe;
-    }, []);
+        return () => {
+            isMounted = false;
+            unsubscribe();
+            clearTimeout(timeout);
+        };
+    }, [loading]);
 
     const value = {
         currentUser,
@@ -52,7 +75,7 @@ export function AuthProvider({ children }) {
 
     return (
         <AuthContext.Provider value={value}>
-            {!loading && children}
+            {children}
         </AuthContext.Provider>
     );
 }
