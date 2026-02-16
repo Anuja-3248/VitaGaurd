@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, HeartPulse, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -11,6 +11,7 @@ const LoginPage = () => {
     const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -18,7 +19,11 @@ const LoginPage = () => {
             setError('');
             setLoading(true);
             await login(email, password);
-            navigate('/dashboard');
+            if (location.state?.fromKnowMore) {
+                navigate('/', { state: { fromLogin: true } });
+            } else {
+                navigate('/dashboard');
+            }
         } catch (err) {
             setError('Failed to log in. Please check your credentials.');
         } finally {

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { ShieldCheck, Activity, LineChart, Lock, ArrowRight, CheckCircle2, X, Microscope, Database, FileText, Brain, HeartPulse } from 'lucide-react';
 import GenZIcon from '../components/GenZIcon';
 import OnboardingModal from '../components/OnboardingModal';
@@ -10,19 +10,24 @@ const LandingPage = () => {
     const { currentUser } = useAuth();
     const [activeStep, setActiveStep] = useState(null);
     const [showOnboarding, setShowOnboarding] = useState(false);
+    const location = useLocation();
 
     useEffect(() => {
-        // Temporarily forcing to true so you can see it! 
-        // We will turn the "remember me" logic back on once you like the design.
-        setShowOnboarding(true);
+        // If we just logged in, prevent the modal from flashing/showing again
+        if (location.state?.fromLogin) {
+            setShowOnboarding(false);
+        } else {
+            // Otherwise, always show the onboarding splash screen
+            setShowOnboarding(true);
+        }
 
-        /* 
+        /*
         const hasSeenOnboarding = sessionStorage.getItem('vitaGuard_onboarding_seen');
         if (!hasSeenOnboarding) {
             setShowOnboarding(true);
         }
         */
-    }, []);
+    }, [location]);
 
     const completeOnboarding = () => {
         setShowOnboarding(false);
