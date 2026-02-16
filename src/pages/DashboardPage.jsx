@@ -75,12 +75,7 @@ const DashboardPage = () => {
         };
     });
 
-    // Extract detailed metrics from the latest assessment
-    const latestDetails = assessments.length > 0 && assessments[0].details ? assessments[0].details : [
-        { category: "Cardiovascular", risk: "N/A", score: 0 },
-        { category: "Respiratory", risk: "N/A", score: 0 },
-        { category: "Metabolic", risk: "N/A", score: 0 }
-    ];
+
 
     const stats = [
         {
@@ -451,48 +446,7 @@ const DashboardPage = () => {
 
                     {/* Sidebar Area */}
                     <div className="space-y-8">
-                        {/* Risk Categories */}
-                        <section className="glass-card rounded-[2.5rem] p-8 shadow-premium border border-rose-100 dark:border-rose-500/20 bg-rose-50/40 dark:bg-rose-900/5">
-                            <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-8">Risk Metrics</h3>
-                            <div className="space-y-8">
-                                {latestDetails.map((risk, idx) => {
-                                    const score = risk.score || 0;
-                                    const color = score > 40 ? "bg-rose-500" : score > 20 ? "bg-amber-500" : "bg-emerald-500";
-                                    return (
-                                        <div key={idx} className="group">
-                                            <div className="flex justify-between items-center mb-3">
-                                                <span className="text-slate-700 dark:text-slate-300 font-black text-sm">{risk.category}</span>
-                                                <span className={`text-[10px] font-black uppercase tracking-widest ${score > 40 ? 'text-rose-500' : score > 20 ? 'text-amber-500' : 'text-emerald-500'}`}>
-                                                    {risk.risk || (score > 40 ? 'Elevated' : score > 20 ? 'Moderate' : 'Optimal')}
-                                                </span>
-                                            </div>
-                                            <div className="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2.5 overflow-hidden">
-                                                <motion.div
-                                                    initial={{ width: 0 }}
-                                                    whileInView={{ width: `${score}%` }}
-                                                    className={`${color} h-full rounded-full shadow-sm`}
-                                                ></motion.div>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
-                            </div>
-                        </section>
 
-                        {/* Smart Nav */}
-                        <section className="glass-card rounded-[2.5rem] p-8 shadow-premium border border-orange-100 dark:border-orange-500/20 bg-orange-50/40 dark:bg-orange-900/5">
-                            <h3 className="text-xl font-bold text-slate-900 dark:text-white tracking-tight mb-6">Gateway</h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                <Link to="/profile" className="flex flex-col items-center gap-3 p-5 bg-slate-50/50 dark:bg-slate-800/50 rounded-3xl hover:bg-white dark:hover:bg-slate-700 hover:shadow-glow transition-all duration-300 border border-transparent hover:border-orange-200 group">
-                                    <div className="bg-white dark:bg-dark-card p-3 rounded-2xl shadow-sm text-orange-500 group-hover:scale-110 transition-transform"><User size={22} /></div>
-                                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Profile</span>
-                                </Link>
-                                <Link to="/results" className="flex flex-col items-center gap-3 p-5 bg-slate-50/50 dark:bg-slate-800/50 rounded-3xl hover:bg-white dark:hover:bg-slate-700 hover:shadow-glow transition-all duration-300 border border-transparent hover:border-violet-200 group">
-                                    <div className="bg-white dark:bg-dark-card p-3 rounded-2xl shadow-sm text-violet-500 group-hover:scale-110 transition-transform"><FileText size={22} /></div>
-                                    <span className="text-xs font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Reports</span>
-                                </Link>
-                            </div>
-                        </section>
 
                         {/* System Lock */}
                         <div className="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800/50 rounded-3xl p-6 flex items-center gap-4">

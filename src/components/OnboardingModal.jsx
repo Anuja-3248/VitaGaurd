@@ -9,7 +9,9 @@ const OnboardingModal = ({ onComplete }) => {
 
     const handleLogin = () => {
         onComplete();
-        navigate('/login');
+        // If the user is on the 'info' view, they came via "Know More"
+        const fromKnowMore = view === 'info';
+        navigate('/login', { state: { fromKnowMore } });
     };
 
     return (
