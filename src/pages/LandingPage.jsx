@@ -68,7 +68,7 @@ const LandingPage = () => {
         "03": {
             title: "Clinical Synthesis",
             subtitle: "Intelligent Action Planning",
-            icon: <GenZIcon icon={FileText} color="text-slate-800" glowColor="bg-slate-800/20" />,
+            icon: <GenZIcon icon={FileText} color="text-slate-800 dark:text-slate-100" glowColor="bg-slate-800/20 dark:bg-slate-100/10" />,
             content: "The final output is a clinical-grade risk report. Our AI generates personalized precautions and calculates a 'Severity Score' to help you determine if immediate medical consultation is required.",
             features: ["Risk Level Classification", "Custom Precautions", "PDF Health Documentation"],
             color: "from-slate-800 to-slate-900"
@@ -284,7 +284,7 @@ const LandingPage = () => {
                                         viewport={{ once: true }}
                                         className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter mb-6"
                                     >
-                                        Precision <span className="italic text-primary-600">Workflow</span>
+                                        Precision <span className="italic text-primary-600 dark:text-primary-400">Workflow</span>
                                     </motion.h2>
                                     <motion.p
                                         initial={{ opacity: 0, y: 20 }}
@@ -334,7 +334,7 @@ const LandingPage = () => {
                                             onClick={() => setActiveStep(item.step)}
                                         >
                                             {/* Step Indicator Shadow */}
-                                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[8rem] font-black text-slate-50 opacity-[0.03] select-none group-hover:opacity-[0.07] transition-opacity duration-700">
+                                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[8rem] font-black text-slate-900 dark:text-slate-100 opacity-[0.03] dark:opacity-[0.05] select-none group-hover:opacity-[0.07] transition-opacity duration-700">
                                                 {item.step}
                                             </div>
 
@@ -349,7 +349,7 @@ const LandingPage = () => {
 
                                                 <div className="mb-4">
                                                     <div className="flex flex-col items-center">
-                                                        <span className="text-[10px] font-black text-primary-600 uppercase tracking-widest bg-primary-50 px-3 py-1 rounded-full mb-3 inline-block">Stage {item.step}</span>
+                                                        <span className="text-[10px] font-black text-primary-600 dark:text-primary-400 uppercase tracking-widest bg-primary-50 dark:bg-primary-900/30 px-3 py-1 rounded-full mb-3 inline-block">Stage {item.step}</span>
                                                         <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{item.title}</h3>
                                                     </div>
                                                 </div>
@@ -359,7 +359,7 @@ const LandingPage = () => {
                                                 </p>
 
                                                 {/* Action Label */}
-                                                <div className="mt-6 text-primary-600 text-xs font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
+                                                <div className="mt-6 text-primary-600 dark:text-primary-400 text-xs font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
                                                     View Protocol Details <ArrowRight size={14} />
                                                 </div>
 
@@ -407,9 +407,9 @@ const LandingPage = () => {
                                                 { icon: <GenZIcon icon={ShieldCheck} color="text-primary-600" />, title: "Early Warnings", desc: "Prevent serious illness with proactive health indicators." }
                                             ].map((feature, idx) => (
                                                 <div key={idx} className="flex items-start gap-4">
-                                                    <div className="bg-white dark:bg-dark-card p-3 rounded-xl shadow-sm mt-1">{feature.icon}</div>
+                                                    <div className="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm mt-1">{feature.icon}</div>
                                                     <div>
-                                                        <h4 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">{feature.title}</h4>
+                                                        <h4 className="text-xl font-bold text-slate-800 dark:text-white mb-1">{feature.title}</h4>
                                                         <p className="text-slate-600 dark:text-slate-300">{feature.desc}</p>
                                                     </div>
                                                 </div>
