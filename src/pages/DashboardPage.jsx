@@ -219,9 +219,7 @@ const DashboardPage = () => {
                                         <p className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
                                         <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{stat.value}</p>
                                     </div>
-                                    <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <ArrowRight size={18} className="text-slate-300" />
-                                    </div>
+
                                 </div>
                             </motion.div>
                         );
