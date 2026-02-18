@@ -102,11 +102,6 @@ function AppContent() {
                 } else if (!hasSeenOnboarding) {
                     // Returning user who hasn't finished onboarding but didn't just log in
                     setShowOnboarding(true);
-                } else {
-                    // Onboarding is done, safe to go to dashboard if at root
-                    if (location.pathname === '/' && !location.hash) {
-                        navigate('/dashboard', { replace: true });
-                    }
                 }
             }
         }
@@ -125,8 +120,7 @@ function AppContent() {
         if (currentUser) {
             sessionStorage.removeItem('vitaGuard_just_logged_in');
             sessionStorage.setItem(`vitaGuard_onboarding_active_${currentUser.uid}`, 'true');
-            // After the four boxes, enter the internal home page (Dashboard)
-            navigate('/dashboard');
+            // We stay on the Home Page now as requested, instead of navigating to dashboard
         }
         setShowOnboarding(false);
     };
