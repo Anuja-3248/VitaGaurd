@@ -10,6 +10,7 @@ import DashboardPage from './pages/DashboardPage';
 import AssessmentPage from './pages/AssessmentPage';
 import ResultsPage from './pages/ResultsPage';
 import ProfilePage from './pages/ProfilePage';
+import RemindersPage from './pages/RemindersPage';
 
 // Components
 import Navbar from './components/Navbar';
@@ -78,6 +79,8 @@ function AppContent() {
     const navigate = useNavigate();
     const hideNavAndFooter = ['/login', '/signup'].includes(location.pathname);
 
+
+
     // Enhanced logic for onboarding and splash persistence
     useEffect(() => {
         if (!loading) {
@@ -99,9 +102,6 @@ function AppContent() {
                         setShowIntro(false);
                         setShowOnboarding(true);
                     }
-                } else if (!hasSeenOnboarding) {
-                    // Returning user who hasn't finished onboarding but didn't just log in
-                    setShowOnboarding(true);
                 }
             }
         }
@@ -119,6 +119,7 @@ function AppContent() {
     const handleOnboardingComplete = () => {
         if (currentUser) {
             sessionStorage.removeItem('vitaGuard_just_logged_in');
+            sessionStorage.removeItem('vita_gateway_passed');
             sessionStorage.setItem(`vitaGuard_onboarding_active_${currentUser.uid}`, 'true');
             // We stay on the Home Page now as requested, instead of navigating to dashboard
         }
@@ -206,6 +207,14 @@ function AppContent() {
                                             element={
                                                 <PrivateRoute>
                                                     <ProfilePage />
+                                                </PrivateRoute>
+                                            }
+                                        />
+                                        <Route
+                                            path="/reminders"
+                                            element={
+                                                <PrivateRoute>
+                                                    <RemindersPage />
                                                 </PrivateRoute>
                                             }
                                         />

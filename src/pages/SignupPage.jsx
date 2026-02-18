@@ -49,10 +49,10 @@ const SignupPage = () => {
                 <div className="relative z-10 p-12 flex flex-col justify-between w-full">
                     <div>
                         <Link to="/" className="inline-flex items-center space-x-3 mb-16">
-                            <div className="bg-blue-600 p-2.5 rounded-lg">
+                            <div className="bg-blue-600 p-2.5 rounded-xl">
                                 <HeartPulse className="h-6 w-6 text-white" />
                             </div>
-                            <span className="text-2xl font-semibold text-white">VitaGuard</span>
+                            <span className="text-2xl font-bold text-white">VitaGuard</span>
                         </Link>
 
                         <div className="space-y-6 max-w-lg">
