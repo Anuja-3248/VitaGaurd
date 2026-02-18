@@ -216,7 +216,7 @@ const DashboardPage = () => {
                                         {stat.icon}
                                     </div>
                                     <div>
-                                        <p className="text-xs font-semibold text-slate-400 dark:text-slate-400 uppercase tracking-widest mb-1">{stat.label}</p>
+                                        <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">{stat.label}</p>
                                         <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{stat.value}</p>
                                     </div>
 
@@ -277,7 +277,7 @@ const DashboardPage = () => {
                                             <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
                                         </linearGradient>
                                     </defs>
-                                    <CartesianGrid strokeDasharray="8 8" vertical={false} stroke="#e2e8f0" />
+                                    <CartesianGrid strokeDasharray="8 8" vertical={false} stroke={theme === 'dark' ? '#334155' : '#e2e8f0'} />
 
                                     <ReferenceArea y1={0} y2={15} fill="#ecfdf5" fillOpacity={0.4} />
                                     <ReferenceArea y1={15} y2={30} fill="#fff7ed" fillOpacity={0.4} />
@@ -323,7 +323,7 @@ const DashboardPage = () => {
                                                             <div className={`text-3xl font-black ${color}`}>{score}%</div>
                                                             <div className="h-10 w-[1px] bg-slate-100"></div>
                                                             <div>
-                                                                <p className="text-[10px] font-black text-slate-400 uppercase">Risk Level</p>
+                                                                <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase">Risk Level</p>
                                                                 <p className={`text-xs font-black ${color}`}>{status}</p>
                                                             </div>
                                                         </div>
@@ -403,9 +403,9 @@ const DashboardPage = () => {
                                                     <p className={`text-sm font-bold ${item.riskScore < 15 ? 'text-emerald-500' : item.riskScore < 30 ? 'text-amber-500' : 'text-rose-500'}`}>
                                                         {item.riskScore < 15 ? 'Optimal (Category I)' : item.riskScore < 30 ? 'Observation (Category II)' : 'Alert (Category III)'}
                                                     </p>
-                                                    <p className="text-[10px] font-medium text-slate-400 uppercase tracking-[0.2em] mt-1">Clinical Protocol Verified</p>
+                                                    <p className="text-[10px] font-medium text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] mt-1">Clinical Protocol Verified</p>
                                                 </div>
-                                                <div className="p-2 rounded-full border border-slate-100 dark:border-slate-800 group-hover:bg-primary-600 group-hover:text-white transition-all">
+                                                <div className="p-2 rounded-full border border-slate-100 dark:border-slate-800 group-hover:bg-primary-600 group-hover:text-white transition-all text-slate-400 dark:text-slate-300">
                                                     <ArrowRight size={18} className="translate-x-0 group-hover:translate-x-1 transition-transform" />
                                                 </div>
                                             </div>
