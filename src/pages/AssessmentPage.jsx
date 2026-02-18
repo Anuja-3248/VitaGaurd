@@ -74,29 +74,33 @@ const AssessmentPage = () => {
             const finalScore = analysisResult.data.score;
 
             // 2. Save COMPLETE report to Firebase for exact historical viewing
+            let savedId = null;
             if (currentUser) {
-                addDoc(collection(db, "assessments"), {
-                    userId: currentUser.uid,
-                    ...formData,
-                    riskScore: finalScore,
-                    summary: analysisResult.data.summary,
-                    details: analysisResult.data.details,
-                    recommendations: analysisResult.data.recommendations,
-                    tips: analysisResult.data.tips,
-                    dietOptions: analysisResult.data.dietOptions,
-                    aiSource: analysisResult.source,
-                    timestamp: serverTimestamp()
-                }).then(() => {
-                    console.log("Cloud Save Successful (Background)");
-                }).catch((err) => {
-                    console.error("Cloud Save Failed (Background):", err);
-                });
+                try {
+                    const docRef = await addDoc(collection(db, "assessments"), {
+                        userId: currentUser.uid,
+                        ...formData,
+                        riskScore: finalScore,
+                        summary: analysisResult.data.summary,
+                        details: analysisResult.data.details,
+                        recommendations: analysisResult.data.recommendations,
+                        tips: analysisResult.data.tips,
+                        dietOptions: analysisResult.data.dietOptions,
+                        aiSource: analysisResult.source,
+                        timestamp: serverTimestamp()
+                    });
+                    savedId = docRef.id;
+                    console.log("Cloud Save Successful with ID:", savedId);
+                } catch (err) {
+                    console.error("Cloud Save Failed:", err);
+                }
             }
 
-            // 3. Navigate to results with the full AI analysis
+            // 3. Navigate to results with the full AI analysis and the saved ID
             setLoading(false);
             navigate('/results', {
                 state: {
+                    id: savedId,
                     score: finalScore,
                     name: formData.name,
                     formData: formData,
