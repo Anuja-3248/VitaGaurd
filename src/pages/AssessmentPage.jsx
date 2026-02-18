@@ -133,8 +133,8 @@ const AssessmentPage = () => {
                 >
                     <HeartPulse className="text-primary-600 h-16 w-16" />
                 </motion.div>
-                <h2 className="text-3xl font-bold text-slate-800 mb-4">Analyzing Your Risks...</h2>
-                <p className="text-slate-500 text-center max-w-md">Our AI system is processing your symptoms and lifestyle data to provide precise health insights.</p>
+                <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-4">Analyzing Your Risks...</h2>
+                <p className="text-slate-500 dark:text-slate-400 text-center max-w-md">Our AI system is processing your symptoms and lifestyle data to provide precise health insights.</p>
                 <div className="mt-12 flex items-center gap-2 text-primary-600 font-bold">
                     <Loader2 className="animate-spin" size={20} />
                     Calculating Analysis...
@@ -251,8 +251,8 @@ const AssessmentPage = () => {
                                 className="space-y-6"
                             >
                                 <div>
-                                    <h2 className="text-2xl font-bold text-slate-800 mb-2">What Symptoms are you facing?</h2>
-                                    <p className="text-slate-500 mb-8">Select all that apply and describe any others below.</p>
+                                    <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">What Symptoms are you facing?</h2>
+                                    <p className="text-slate-500 dark:text-slate-400 mb-8">Select all that apply and describe any others below.</p>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
@@ -267,7 +267,7 @@ const AssessmentPage = () => {
                                                 }
                                             }}
                                             type="button"
-                                            className={`p-4 rounded-2xl text-left border-2 transition-all ${formData.symptoms.includes(s) ? 'border-primary-600 bg-primary-50 text-primary-900' : 'border-slate-100 bg-slate-50 text-slate-600 hover:border-slate-300'}`}
+                                            className={`p-4 rounded-2xl text-left border-2 transition-all ${formData.symptoms.includes(s) ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/30 text-primary-900 dark:text-primary-100' : 'border-slate-100 dark:border-neutral-800 bg-slate-50 dark:bg-neutral-900 text-slate-600 dark:text-slate-300 hover:border-slate-300 dark:hover:border-neutral-700'}`}
                                         >
                                             <div className="flex justify-between items-center">
                                                 <span className="font-bold">{s}</span>
@@ -278,9 +278,9 @@ const AssessmentPage = () => {
                                 </div>
 
                                 <div className="mt-8">
-                                    <label className="block text-sm font-bold text-slate-700 mb-2">Other Symptoms (Describe below)</label>
+                                    <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2">Other Symptoms (Describe below)</label>
                                     <textarea
-                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none resize-none"
+                                        className="w-full px-4 py-3 bg-slate-50 dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none resize-none dark:text-white"
                                         rows="3"
                                         placeholder="Tell us about any other discomfort or symptoms you're feeling..."
                                         value={formData.otherSymptoms}
@@ -310,8 +310,8 @@ const AssessmentPage = () => {
                                 className="space-y-6"
                             >
                                 <div>
-                                    <h2 className="text-2xl font-bold text-slate-800 mb-2">Lifestyle & Habits</h2>
-                                    <p className="text-slate-500 mb-8">Almost there! We need a few more details about your daily routine.</p>
+                                    <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Lifestyle & Habits</h2>
+                                    <p className="text-slate-500 dark:text-slate-400 mb-8">Almost there! We need a few more details about your daily routine.</p>
                                 </div>
 
                                 <div className="space-y-6">

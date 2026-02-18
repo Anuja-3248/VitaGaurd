@@ -19,11 +19,8 @@ const LoginPage = () => {
             setError('');
             setLoading(true);
             await login(email, password);
-            if (location.state?.fromKnowMore) {
-                navigate('/', { state: { fromLogin: true } });
-            } else {
-                navigate('/dashboard');
-            }
+            // Always redirect to home page after login as requested
+            navigate('/', { state: { fromLogin: true } });
         } catch (err) {
             setError('Failed to log in. Please check your credentials.');
         } finally {

@@ -25,6 +25,9 @@ const Navbar = () => {
     const handleLogout = async () => {
         try {
             await signOut(auth);
+            // Clear onboarding flag so they see the splash screen again
+            sessionStorage.removeItem('vitaGuard_onboarding_seen');
+            navigate('/');
         } catch (error) {
             console.error('Logout error:', error);
         }
@@ -32,25 +35,8 @@ const Navbar = () => {
 
     const handleNavClick = (path) => {
         setIsOpen(false);
-        if (path === '/') {
-            if (location.pathname === '/') {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                navigate('/');
-            }
-            return;
-        }
-
-        if (path.startsWith('/#')) {
-            const id = path.split('#')[1];
-            if (location.pathname === '/') {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
-                }
-            } else {
-                navigate(path);
-            }
+        if (path.startsWith('/#') || path === '/') {
+            navigate(path);
         } else {
             navigate(path);
         }
@@ -74,27 +60,18 @@ const Navbar = () => {
                     <div className="hidden md:flex items-center space-x-10">
                         <div className="flex items-center space-x-2 bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-200/50 dark:border-slate-700/50">
                             {navLinks.map((link) => (
-                                <motion.button
+                                <button
                                     key={link.name}
-                                    initial="collapsed"
-                                    whileHover="expanded"
                                     onClick={() => handleNavClick(link.path)}
-                                    className="flex items-center gap-0 hover:gap-2 px-3 py-2 text-slate-500 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all h-10"
+                                    className="p-3 text-slate-500 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all relative group"
                                 >
                                     <div className="flex items-center justify-center">
                                         {link.icon}
                                     </div>
-                                    <motion.span
-                                        variants={{
-                                            collapsed: { width: 0, opacity: 0, display: "none" },
-                                            expanded: { width: "auto", opacity: 1, display: "block" }
-                                        }}
-                                        transition={{ duration: 0.2, ease: "easeInOut" }}
-                                        className="whitespace-nowrap font-bold text-sm overflow-hidden"
-                                    >
+                                    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-800 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">
                                         {link.name}
-                                    </motion.span>
-                                </motion.button>
+                                    </span>
+                                </button>
                             ))}
 
                             {/* Theme Toggle Button */}
