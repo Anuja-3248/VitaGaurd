@@ -544,8 +544,8 @@ const ResultsPage = () => {
                                             <Lightbulb className="text-amber-500" size={24} />
                                         </div>
                                         <div>
-                                            <h3 className="text-2xl font-black text-slate-800 tracking-tight">Daily Health Tips</h3>
-                                            <p className="text-slate-400 text-sm font-medium">Personalized suggestions to improve your health daily</p>
+                                            <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight">Daily Health Tips</h3>
+                                            <p className="text-slate-400 dark:text-slate-400 text-sm font-medium">Personalized suggestions to improve your health daily</p>
                                         </div>
                                         {result.source === 'gemini' && (
                                             <div className="ml-auto hidden md:flex items-center gap-2 bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-violet-100 dark:border-violet-800/50">
@@ -566,7 +566,7 @@ const ResultsPage = () => {
                                                 <div className="bg-gradient-to-br from-primary-500 to-health-cyber text-white rounded-xl p-2.5 mt-0.5 shadow-sm group-hover:scale-110 transition-transform">
                                                     <span className="text-sm font-black">{idx + 1}</span>
                                                 </div>
-                                                <p className="text-slate-700 font-medium leading-relaxed">{tip}</p>
+                                                <p className="text-slate-700 dark:text-slate-300 font-medium leading-relaxed">{tip}</p>
                                             </motion.div>
                                         ))}
                                     </div>
