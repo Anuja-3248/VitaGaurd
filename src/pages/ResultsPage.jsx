@@ -1,7 +1,7 @@
 // Forced refresh for chatbot visibility check
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ShieldAlert, ShieldCheck, CheckCircle2, AlertTriangle, ArrowLeft, Download, Share2, Info, Loader2, Lightbulb, Sparkles, Cpu } from 'lucide-react';
+import { ShieldAlert, ShieldCheck, CheckCircle2, AlertTriangle, ArrowLeft, Download, Info, Loader2, Lightbulb, Sparkles, Cpu } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useRef, useState } from 'react';
 import jsPDF from 'jspdf';
@@ -370,9 +370,7 @@ const ResultsPage = () => {
                             {result.source === 'gemini' ? <Sparkles size={14} /> : <Cpu size={14} />}
                             {result.source === 'gemini' ? 'Gemini AI' : 'Local Engine'}
                         </div>
-                        <button className="p-2 bg-white dark:bg-dark-card rounded-xl border border-slate-200 dark:border-dark-border text-slate-400 dark:text-slate-500 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                            <Share2 size={20} />
-                        </button>
+
                         <button
                             onClick={handleDownloadPDF}
                             disabled={isGenerating}
