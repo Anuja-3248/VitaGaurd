@@ -3,13 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { ShieldCheck, Activity, LineChart, Lock, ArrowRight, CheckCircle2, X, Microscope, Database, FileText, Brain, HeartPulse } from 'lucide-react';
 import GenZIcon from '../components/GenZIcon';
-import OnboardingModal from '../components/OnboardingModal';
 import { useAuth } from '../context/AuthContext';
 
 const LandingPage = () => {
     const { currentUser } = useAuth();
     const [activeStep, setActiveStep] = useState(null);
-    const [showOnboarding, setShowOnboarding] = useState(false);
     const location = useLocation();
 
     const [visibleSection, setVisibleSection] = useState('hero'); // 'hero', 'protocol', 'features'
@@ -19,21 +17,7 @@ const LandingPage = () => {
         if (hash === 'how-it-works') setVisibleSection('protocol');
         else if (hash === 'features') setVisibleSection('features');
         else setVisibleSection('hero');
-
-        // Check if seen onboarding in this session
-        const hasSeenOnboarding = sessionStorage.getItem('vitaGuard_onboarding_seen');
-        if (!hasSeenOnboarding && !location.state?.fromLogin && !currentUser) {
-            setShowOnboarding(true);
-        } else if (currentUser) {
-            // If logged in, we mark onboarding as seen automatically
-            sessionStorage.setItem('vitaGuard_onboarding_seen', 'true');
-        }
     }, [location]);
-
-    const completeOnboarding = () => {
-        setShowOnboarding(false);
-        sessionStorage.setItem('vitaGuard_onboarding_seen', 'true');
-    };
 
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -77,12 +61,7 @@ const LandingPage = () => {
 
     return (
         <div className="overflow-x-hidden bg-white dark:bg-dark-bg selection:bg-primary-100 selection:text-primary-700 transition-colors duration-300">
-            {/* Onboarding Flow */}
-            <AnimatePresence>
-                {showOnboarding && (
-                    <OnboardingModal onComplete={completeOnboarding} />
-                )}
-            </AnimatePresence>
+
 
             {/* Modal Overlay */}
             <AnimatePresence>

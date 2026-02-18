@@ -24,9 +24,16 @@ const Navbar = () => {
 
     const handleLogout = async () => {
         try {
+            const uid = currentUser?.uid;
             await signOut(auth);
-            // Clear onboarding flag so they see the splash screen again
-            sessionStorage.removeItem('vitaGuard_onboarding_seen');
+            // Clear all session flags so they see the startup splash and onboarding flow again
+            sessionStorage.removeItem('vitaGuard_startup_passed');
+            sessionStorage.removeItem('vitaGuard_splash_passed');
+            sessionStorage.removeItem('vita_gateway_passed');
+            if (uid) {
+                sessionStorage.removeItem(`vitaGuard_onboarding_active_${uid}`);
+                sessionStorage.removeItem(`vitaGuard_intro_active_${uid}`);
+            }
             navigate('/');
         } catch (error) {
             console.error('Logout error:', error);
