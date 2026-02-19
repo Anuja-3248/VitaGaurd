@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Mail, Lock, HeartPulse, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -36,13 +37,14 @@ const LoginPage = () => {
             setError('');
             setLoading(true);
             await login(email, password);
-            // Set flag to trigger cinematic intro after successful login
+            toast.success('Logged in successfully!');
             sessionStorage.setItem('vitaGuard_just_logged_in', 'true');
             // Force a clean redirect to root to ensure App.jsx picks up the new logged-in state
             window.location.href = '/';
         } catch (err) {
             console.error("Login Error:", err);
             setError(getErrorMessage(err.code));
+            toast.error('Login failed. Check your email or password.');
         } finally {
             setLoading(false);
         }

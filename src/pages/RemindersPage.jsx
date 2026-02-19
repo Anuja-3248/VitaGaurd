@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { db } from '../firebase';
+import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { toast } from 'react-hot-toast';
 
 const formatTime12h = (time24) => {
@@ -29,6 +31,64 @@ const RemindersPage = () => {
 
     const [isAdding, setIsAdding] = useState(false);
     const [newReminder, setNewReminder] = useState({ title: '', time: '08:00', type: 'routine', frequency: 'Daily' });
+    const [streak, setStreak] = useState(0);
+    const [activeDays, setActiveDays] = useState(0);
+    const [loadingStats, setLoadingStats] = useState(true);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            if (!currentUser) return;
+            try {
+                const q = query(
+                    collection(db, "assessments"),
+                    where("userId", "==", currentUser.uid)
+                );
+                const querySnapshot = await getDocs(q);
+                const assessments = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                // Calculate Streak & Active Days
+                const dates = assessments
+                    .map(a => a.timestamp?.toDate ? a.timestamp.toDate() : (a.timestamp?.seconds ? new Date(a.timestamp.seconds * 1000) : null))
+                    .filter(d => d && !isNaN(d.getTime()))
+                    .map(d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime());
+
+                const uniqueDates = [...new Set(dates)].sort((a, b) => b - a);
+                setActiveDays(uniqueDates.length);
+
+                if (uniqueDates.length > 0) {
+                    const today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime();
+                    const yesterday = today - 86400000;
+
+                    if (uniqueDates[0] >= yesterday) {
+                        let currentCheck = uniqueDates[0];
+                        let currentStreak = 0;
+                        for (let i = 0; i < uniqueDates.length; i++) {
+                            if (uniqueDates[i] === currentCheck) {
+                                currentStreak++;
+                                currentCheck -= 86400000;
+                            } else {
+                                break;
+                            }
+                        }
+                        setStreak(currentStreak);
+                    } else {
+                        setStreak(0);
+                    }
+                } else {
+                    setStreak(0);
+                }
+            } catch (error) {
+                console.error("Error fetching stats:", error);
+            } finally {
+                setLoadingStats(false);
+            }
+        };
+
+        fetchStats();
+    }, [currentUser]);
 
     useEffect(() => {
         if (currentUser) {
@@ -209,8 +269,14 @@ const RemindersPage = () => {
                         <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-8 rounded-[2.5rem] shadow-xl shadow-indigo-500/20">
                             <TrendingUp className="text-white/30 mb-4" size={32} />
                             <h3 className="text-2xl font-black text-white tracking-tighter mb-2">Clinical Streak</h3>
-                            <p className="text-white/60 text-sm font-medium mb-6">You've responded to clinical alerts for 5 consecutive days. High synchronization achieved.</p>
-                            <div className="text-5xl font-black text-white">05 <span className="text-sm font-bold opacity-50 uppercase tracking-widest">Days</span></div>
+                            <p className="text-white/60 text-sm font-medium mb-6">
+                                {streak > 0
+                                    ? `You've responded to clinical alerts for ${streak} consecutive days. High synchronization achieved.`
+                                    : "Complete a daily assessment to start your clinical synchronization streak."}
+                            </p>
+                            <div className="text-5xl font-black text-white">
+                                {String(streak).padStart(2, '0')} <span className="text-sm font-bold opacity-50 uppercase tracking-widest">Days</span>
+                            </div>
                         </div>
 
                         <div className="bg-white/5 border border-white/5 p-8 rounded-[2rem]">
@@ -221,13 +287,15 @@ const RemindersPage = () => {
                                     <span>{reminders.length}</span>
                                 </div>
                                 <div className="flex justify-between items-center text-sm font-bold">
-                                    <span className="text-slate-400">Critical Alerts</span>
-                                    <span className="text-rose-500">{reminders.filter(r => r.type === 'vital').length}</span>
+                                    <span className="text-slate-400">Diagnostic History</span>
+                                    <span>{activeDays} Active Days</span>
                                 </div>
                                 <div className="w-full h-1 bg-white/5 rounded-full overflow-hidden mt-4">
-                                    <div className="h-full bg-blue-500 w-[70%]" />
+                                    <div className="h-full bg-blue-500" style={{ width: streak > 0 ? '100%' : '20%' }} />
                                 </div>
-                                <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest text-center mt-2">72% Compliance Rate</p>
+                                <p className="text-[10px] text-slate-600 font-black uppercase tracking-widest text-center mt-2">
+                                    {streak > 0 ? "Synchronization Stable" : "Waiting for Neural Input"}
+                                </p>
                             </div>
                         </div>
                     </div>

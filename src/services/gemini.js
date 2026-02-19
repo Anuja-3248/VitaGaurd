@@ -39,6 +39,10 @@ function buildPrompt(formData) {
         ? symptomsList.join(', ')
         : 'None reported';
 
+    const regions = formData.bodyRegions && formData.bodyRegions.length > 0
+        ? formData.bodyRegions.join(', ')
+        : 'None specified';
+
     const sleepMap = {
         'less_5': 'Less than 5 hours',
         '5_7': '5-7 hours',
@@ -76,73 +80,79 @@ function buildPrompt(formData) {
         bmiInfo = `${bmi} (${bmiCategory})`;
     }
 
-    return `You are a clinical health AI assistant for a preventive healthcare platform called VitaGuard. Analyze the following patient data and provide a structured, evidence-based health risk assessment.
+    return `You are an advanced AI medical risk assessment engine integrated with a visual body mapping system.
     
+    The user has selected specific body regions and symptom types from a visual human body interface (simulated via form data here).
+
     PATIENT DATA:
     - Name: ${formData.name || 'Anonymous'}
     - Age: ${formData.age || 'Not provided'}
+    - Gender: ${formData.gender || 'Not provided'}
     - BMI: ${bmiInfo}
+    - Affected Body Regions: ${regions}
     - Reported Symptoms: ${symptoms}
     - Sleep Duration: ${sleepMap[formData.sleep] || 'Not provided'}
     - Exercise Frequency: ${exerciseMap[formData.exercise] || 'Not provided'}
     - Smoking Status: ${smokingMap[formData.smoking] || 'Not provided'}
     - Alcohol Consumption: ${alcoholMap[formData.alcohol] || 'Not provided'}
     
-    STRICT SCORING CRITERIA:
-    1. ZERO SYMPTOMS + GOOD HABITS: If the user reports "None" for symptoms AND has good sleep (7-9h)/exercise (Regular/Daily) AND is a non-smoker, the riskScore MUST be below 15 (Low Risk).
-    2. RISK SCORING (5-95):
-       - 5-15 (Low): Healthy baseline, no major symptoms, proactive habits.
-       - 16-35 (Moderate): Minor lifestyle risks (poor sleep/no exercise) or 1-2 mild symptoms (Fatigue/Headache).
-       - 36+ (High): Significant symptoms (Chest Pain, Shortness of Breath) or multiple chronic lifestyle risks.
-    3. CLINICAL REASONING: Be objective. Do not default to high risk just for "safety"—be accurate to the data provided.
-    
-    INSTRUCTIONS:
-    - Generate a riskScore (5-95) and riskLevel (Low < 16, Moderate 16-35, High > 35).
-    - Provide 4 clinical recommendations based ONLY on their reported data.
-    - Provide 4 daily tips personalized to their age and lifestyle.
-    - Calculate sub-category risk scores (0-100) for Cardiovascular, Respiratory, and Metabolic health.
-    - Write a 2-3 sentence summary that references their EXACT metrics and interpreted custom symptoms.
-    
-    SPECIAL CRITERIA FOR CUSTOM SYMPTOMS:
-    - If the patient provides custom text in 'Reported Symptoms', prioritize its interpretation. 
-    - For example, 'fever' should trigger respiratory/metabolic concern. 'stress' should trigger lifestyle tips. 
-    - Reference their specific typed words in the recommendations.
-    
-    IMPORTANT: Respond ONLY with valid JSON in the following exact format. No markdown, no code fences, no extra text:
-{
-    "riskScore": <number 5-75>,
-    "riskLevel": "<Low|Moderate|High>",
-    "summary": "<A 2-3 sentence personalized clinical summary referencing actual patient data>",
-    "recommendations": [
-        "<specific recommendation 1>",
-        "<specific recommendation 2>",
-        "<specific recommendation 3>",
-        "<specific recommendation 4>"
-    ],
-    "tips": [
-        "<personalized daily health tip 1>",
-        "<personalized daily health tip 2>",
-        "<personalized daily health tip 3>",
-        "<personalized daily health tip 4>"
-    ],
-    "details": [
-        { "category": "Cardiovascular", "risk": "<Low|Moderate|Elevated>", "score": <number 0-100> },
-        { "category": "Respiratory", "risk": "<Low|Moderate|Elevated>", "score": <number 0-100> },
-        { "category": "Metabolic", "risk": "<Low|Moderate|Elevated>", "score": <number 0-100> }
-    ],
-    "dietOptions": [
-        "<personalized diet recommendation 1>",
-        "<personalized diet recommendation 2>",
-        "<personalized diet recommendation 3>",
-        "<personalized diet recommendation 4>"
-    ]
-}
+    YOUR TASK:
+    1. Analyze selected body areas and associated symptom severity.
+    2. Correlate anatomical relationships between selected regions.
+    3. Detect patterns indicating systemic or emergency conditions.
+    4. Calculate:
+       - Overall Health Risk Score (0–100)
+       - Risk Level: LOW / MODERATE / HIGH / CRITICAL
+       - Emergency Flag: YES / NO
+       - Confidence Level (percentage)
 
-QUALITY GUIDELINES (STRICT):
-1. NO REPETITION: Each recommendation and tip must be unique. Do not repeat the same advice in different words.
-2. CLINICAL DEPTH: Provide logical, evidence-based answers. Use specific nutrients (e.g., 'Magnesium for muscle cramps') rather than generic 'Eat healthy'.
-3. DIET FOCUS: Tailor diet options to their symptoms (e.g., if acid reflux is mentioned, avoid spicy foods).
-4. CONCISE & LOGICAL: Stick to the question. Do not provide fluff.`;
+    5. If multiple body regions are selected, evaluate whether they are connected anatomically or neurologically.
+
+    6. Identify:
+       - Top 3 Possible Conditions (ranked by probability)
+       - Immediate Red-Flag Warnings (if any)
+
+    IMPORTANT: Respond ONLY with valid JSON in the following exact format. No markdown, no code fences, no extra text:
+    {
+        "riskScore": <number 0-100>,
+        "riskLevel": "<Low|Moderate|High|Critical>",
+        "emergencyFlag": <boolean>,
+        "confidenceLevel": "<e.g. 95%>",
+        "summary": "<Risk Summary text>",
+        "regionsAnalysis": "<Explain how selected body parts may be related>",
+        "possibleConditions": ["<Condition 1>", "<Condition 2>", "<Condition 3>"],
+        "redFlags": ["<Warning 1>", "<Warning 2>", "None"],
+        "recommendations": [
+            "<Immediate step 1>",
+            "<Specialist recommendation>",
+            "<Lifestyle precaution 1>",
+            "<Lifestyle precaution 2>"
+        ],
+        "riskProjection": "<Briefly explain what may happen if untreated>",
+        "tips": [
+            "<personalized daily health tip 1>",
+            "<personalized daily health tip 2>",
+            "<personalized daily health tip 3>",
+            "<personalized daily health tip 4>"
+        ],
+        "details": [
+            { "category": "Cardiovascular", "risk": "<Low|Moderate|Elevated>", "score": <number 0-100> },
+            { "category": "Respiratory", "risk": "<Low|Moderate|Elevated>", "score": <number 0-100> },
+            { "category": "Metabolic", "risk": "<Low|Moderate|Elevated>", "score": <number 0-100> }
+        ],
+        "dietOptions": [
+            "<personalized diet recommendation 1>",
+            "<personalized diet recommendation 2>",
+            "<personalized diet recommendation 3>",
+            "<personalized diet recommendation 4>"
+        ]
+    }
+    
+    RULES:
+    - Do NOT provide definitive medical diagnosis. Use terms like "Possible indications of..." or "Symptoms align with...".
+    - Be medically cautious.
+    - If symptoms suggest life-threatening condition, strongly advise emergency care in 'redFlags' and 'recommendations'.
+    - Keep explanations concise but medically logical.`;
 }
 
 /**
@@ -183,11 +193,17 @@ export async function analyzeHealthWithGemini(formData) {
             source: 'gemini',
             data: {
                 riskLevel: parsed.riskLevel || 'Moderate',
-                score: Math.min(75, Math.max(5, parsed.riskScore)),
+                score: Math.min(100, Math.max(0, parsed.riskScore)),
                 date: new Date().toLocaleDateString(),
                 userName: formData.name || 'User',
                 summary: parsed.summary,
-                recommendations: parsed.recommendations.slice(0, 4),
+                emergencyFlag: parsed.emergencyFlag,
+                confidenceLevel: parsed.confidenceLevel,
+                regionsAnalysis: parsed.regionsAnalysis,
+                possibleConditions: parsed.possibleConditions || [],
+                redFlags: parsed.redFlags || [],
+                riskProjection: parsed.riskProjection,
+                recommendations: parsed.recommendations,
                 tips: parsed.tips?.slice(0, 4) || [],
                 details: parsed.details.slice(0, 3),
                 dietOptions: parsed.dietOptions?.slice(0, 4) || []
@@ -220,24 +236,39 @@ export async function analyzeHealthWithGemini(formData) {
 function generateFallbackAnalysis(formData) {
     const symptoms = formData.symptoms || [];
     const age = parseInt(formData.age) || 25;
-    const weight = parseFloat(formData.weight) || 0;
     const height = parseFloat(formData.height) || 170;
+    const weight = parseFloat(formData.weight) || 0;
 
     // Calculate BMI
     const heightM = height / 100;
-    const bmi = weight > 0 ? weight / (heightM * heightM) : 22; // Default healthy BMI
+    const bmi = weight > 0 ? weight / (heightM * heightM) : 22;
 
     // ========== CALCULATE DETERMINISTIC RISK SCORE ==========
-    let riskScore = 0; // Absolute healthy baseline
+    let riskScore = 8; // Global baseline for tracking
     const hasOther = formData.otherSymptoms?.trim().length > 0;
 
-    // If perfectly healthy with no symptoms, keep it at 0
-    if ((symptoms.includes('None of the above') || symptoms.length === 0) && !hasOther) {
-        riskScore = 0;
-    }
+    // Body weight contribution
+    if (hasOther) riskScore += 7;
+    if (formData.symptoms && formData.symptoms.length > 0) riskScore += 5;
+    if (formData.bodyRegions && formData.bodyRegions.length > 0) riskScore += 5;
 
-    // Base score bump for custom symptoms
-    if (hasOther) riskScore += 5;
+    // Body Region weights (Advanced Medical Mapping)
+    const regionWeights = {
+        'head_cranium': 4, 'face_eyes': 5, 'throat_thyroid': 3, 'head_back': 4,
+        'chest_upper': 8, 'chest_lower': 7, 'abdomen_upper': 5, 'abdomen_lower': 4,
+        'pelvis_groin': 5, 'shoulder_l': 3, 'shoulder_r': 3, 'bicep_l': 2, 'bicep_r': 2,
+        'forearm_l': 2, 'forearm_r': 2, 'hand_l': 2, 'hand_r': 2,
+        'thigh_l': 2, 'thigh_r': 2, 'knee_l': 3, 'knee_r': 3,
+        'shin_l': 2, 'shin_r': 2, 'foot_l': 3, 'foot_r': 3,
+        'neck_back': 3, 'upper_back_traps': 4, 'mid_back_spine': 7,
+        'lumbar_lower_back': 6, 'renal_flank_l': 8, 'renal_flank_r': 8,
+        'glutes_pelvis': 3, 'hamstring_l': 2, 'hamstring_r': 2,
+        'calf_l': 2, 'calf_r': 2, 'heel_l': 2, 'heel_r': 2
+    };
+
+    (formData.bodyRegions || []).forEach(r => {
+        riskScore += regionWeights[r] || 2;
+    });
 
     // Symptom-based scoring
     const symptomWeights = {
@@ -407,15 +438,23 @@ function generateFallbackAnalysis(formData) {
     // ========== GENERATE SUMMARY ==========
     let summary = '';
     const totalSymptomCount = symptoms.length + (hasOther ? 1 : 0);
+    const hasRegions = formData.bodyRegions && formData.bodyRegions.length > 0;
+
     if (riskLevel === "High") {
-        summary = `Based on your ${totalSymptomCount} reported symptom${totalSymptomCount !== 1 ? 's' : ''} and lifestyle profile, your overall health risk is categorized as High (${riskScore}%). `;
-        summary += "We strongly recommend scheduling a consultation with a healthcare professional to discuss diagnostic testing and a personalized care plan.";
+        summary = `ALERT: High-priority risk detected (${riskScore}%). `;
+        if (hasRegions) summary += `Your mapping of ${formData.bodyRegions.length} anatomical zone(s) correlates with reported indicators. `;
+        summary += "Immediate medical consultation is advised to rule out severe underlying pathologies.";
     } else if (riskLevel === "Moderate") {
-        summary = `Your health profile shows ${totalSymptomCount} symptom${totalSymptomCount !== 1 ? 's' : ''} that, combined with your lifestyle factors, place you in the Moderate risk category (${riskScore}%). `;
-        summary += "While not immediately critical, proactive lifestyle changes and symptom monitoring can significantly reduce your long-term risk.";
+        summary = `Diagnostic signal: Moderate risk confirmed (${riskScore}%). `;
+        if (totalSymptomCount > 0) summary += `The combination of ${totalSymptomCount} reported symptom(s) and biometric data indicates a need for monitoring. `;
+        summary += "We recommend lifestyle adjustments and a routine clinical check-up.";
     } else {
-        summary = `With ${totalSymptomCount === 0 ? 'no reported symptoms' : totalSymptomCount + ' symptom' + (totalSymptomCount !== 1 ? 's' : '')} and a generally healthy lifestyle, your risk profile is Low (${riskScore}%). `;
-        summary += "Continue maintaining your current habits and stay consistent with regular preventive check-ups.";
+        summary = `Status: Stable / Low Risk (${riskScore}%). `;
+        if (totalSymptomCount === 0 && !hasRegions) {
+            summary += "Your biometric profile is within normal parameters with no active symptoms reported.";
+        } else {
+            summary += "Minor indicators are present but currently fall within a safe monitoring range.";
+        }
     }
 
     // ========== CALCULATE CATEGORY SCORES ==========
