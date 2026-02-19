@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, X, Bot, User, Loader2, Sparkles, Search, Cpu, Stethoscope } from 'lucide-react';
+import { Send, X, Bot, User, Loader2, Sparkles, Search, Cpu, Stethoscope, History } from 'lucide-react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { db } from '../firebase';
+import { collection, query, orderBy, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const HealthChatBot = ({ reportData }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -20,18 +22,67 @@ const HealthChatBot = ({ reportData }) => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
+    // Load Chat History from Firestore
+    useEffect(() => {
+        const loadHistory = async () => {
+            if (!reportData?.id) return;
+
+            try {
+                const chatRef = collection(db, "assessments", reportData.id, "chat");
+                const q = query(chatRef, orderBy("timestamp", "asc"));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    const loadedMessages = querySnapshot.docs.map(doc => ({
+                        ...doc.data(),
+                        timestamp: doc.data().timestamp?.toDate() || new Date()
+                    }));
+                    setMessages(loadedMessages);
+                } else {
+                    // Default Greeting if no history
+                    setMessages([
+                        {
+                            role: 'assistant',
+                            content: `Hello ${reportData?.userName || 'User'}! 👋 I've analyzed your health profile. You have a ${reportData?.riskLevel} risk status (${reportData?.score}% severity). How can I assist you with these results today? ✨`,
+                            timestamp: new Date()
+                        }
+                    ]);
+                }
+            } catch (error) {
+                console.error("Error loading chat history:", error);
+            }
+        };
+
+        loadHistory();
+    }, [reportData?.id]);
+
     useEffect(() => {
         if (isOpen) {
             scrollToBottom();
         }
     }, [messages, isOpen]);
 
+    const saveMessageToFirestore = async (role, content) => {
+        if (!reportData?.id) return;
+        try {
+            await addDoc(collection(db, "assessments", reportData.id, "chat"), {
+                role,
+                content,
+                timestamp: serverTimestamp()
+            });
+        } catch (error) {
+            console.error("Error saving message to Firestore:", error);
+        }
+    };
+
     const handleSend = async () => {
         if (!input.trim() || isLoading) return;
 
         const userMessage = input.trim();
         setInput('');
-        setMessages(prev => [...prev, { role: 'user', content: userMessage, timestamp: new Date() }]);
+        const newMessage = { role: 'user', content: userMessage, timestamp: new Date() };
+        setMessages(prev => [...prev, newMessage]);
+        saveMessageToFirestore('user', userMessage);
         setIsLoading(true);
 
         try {
@@ -76,11 +127,13 @@ const HealthChatBot = ({ reportData }) => {
             const response = await result.response;
             const text = response.text().trim();
 
-            setMessages(prev => [...prev, {
+            const aiMessage = {
                 role: 'assistant',
                 content: text,
                 timestamp: new Date()
-            }]);
+            };
+            setMessages(prev => [...prev, aiMessage]);
+            saveMessageToFirestore('assistant', text);
         } catch (error) {
             console.error("AI Error:", error);
             generateSmartLocalResponse(userMessage);
@@ -107,11 +160,13 @@ const HealthChatBot = ({ reportData }) => {
         }
 
         setTimeout(() => {
+            const assistantContent = response + "\n\n(Consult a professional for medical diagnosis. 🏥)";
             setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: response + "\n\n(Consult a professional for medical diagnosis. 🏥)",
+                content: assistantContent,
                 timestamp: new Date()
             }]);
+            saveMessageToFirestore('assistant', assistantContent);
             setIsLoading(false);
         }, 1200);
     };

@@ -272,84 +272,86 @@ const DashboardPage = () => {
                                 <Link to="/assessment" className="btn-premium py-3 px-6 text-sm">Start Assessment</Link>
                             </div>
                         ) : (
-                            <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={0}>
-                                <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                    <defs>
-                                        <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
-                                            <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.15} />
-                                            <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
-                                        </linearGradient>
-                                    </defs>
-                                    <CartesianGrid strokeDasharray="8 8" vertical={false} stroke={theme === 'dark' ? '#334155' : '#e2e8f0'} />
+                            <div className="w-full h-full" style={{ minHeight: '300px' }}>
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                        <defs>
+                                            <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                                                <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.15} />
+                                                <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
+                                            </linearGradient>
+                                        </defs>
+                                        <CartesianGrid strokeDasharray="8 8" vertical={false} stroke={theme === 'dark' ? '#334155' : '#e2e8f0'} />
 
-                                    <ReferenceArea y1={0} y2={15} fill="#ecfdf5" fillOpacity={0.4} />
-                                    <ReferenceArea y1={15} y2={30} fill="#fff7ed" fillOpacity={0.4} />
-                                    <ReferenceArea y1={30} y2={100} fill="#fff1f2" fillOpacity={0.4} />
+                                        <ReferenceArea y1={0} y2={15} fill="#ecfdf5" fillOpacity={0.4} />
+                                        <ReferenceArea y1={15} y2={30} fill="#fff7ed" fillOpacity={0.4} />
+                                        <ReferenceArea y1={30} y2={100} fill="#fff1f2" fillOpacity={0.4} />
 
-                                    <XAxis
-                                        dataKey="id"
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={({ x, y, payload, index }) => {
-                                            const item = chartData[index];
-                                            return (
-                                                <g transform={`translate(${x},${y})`}>
-                                                    <text x={0} y={0} dy={16} textAnchor="middle" fill={theme === 'dark' ? '#cbd5e1' : '#64748b'} style={{ fontSize: '10px', fontWeight: '500' }}>
-                                                        {item?.displayDate}
-                                                    </text>
-                                                    <text x={0} y={0} dy={28} textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#94a3b8'} style={{ fontSize: '8px', fontWeight: '400' }}>
-                                                        {item?.displayTime}
-                                                    </text>
-                                                </g>
-                                            );
-                                        }}
-                                        height={50}
-                                    />
-                                    <YAxis
-                                        axisLine={false}
-                                        tickLine={false}
-                                        tick={{ fill: theme === 'dark' ? '#94a3b8' : '#94a3b8', fontSize: 10, fontWeight: 500 }}
-                                    />
-                                    <Tooltip
-                                        content={({ active, payload }) => {
-                                            if (active && payload && payload.length) {
-                                                const score = payload[0].value;
-                                                const status = score < 15 ? "Excellent" : score < 30 ? "Monitor" : "Warning";
-                                                const color = score < 15 ? "text-emerald-500" : score < 30 ? "text-amber-500" : "text-rose-500";
+                                        <XAxis
+                                            dataKey="id"
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={({ x, y, payload, index }) => {
+                                                const item = chartData[index];
                                                 return (
-                                                    <div className="glass-card p-5 rounded-[1.5rem] shadow-2xl border-white animate-slide-up">
-                                                        <div className="flex justify-between items-start mb-3">
-                                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{payload[0].payload?.displayDate || 'N/A'}</p>
-                                                            <p className="text-[10px] font-bold text-primary-500">{payload[0].payload?.displayTime}</p>
-                                                        </div>
-                                                        <div className="flex items-center gap-4">
-                                                            <div className={`text-3xl font-black ${color}`}>{score}%</div>
-                                                            <div className="h-10 w-[1px] bg-slate-100"></div>
-                                                            <div>
-                                                                <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase">Risk Level</p>
-                                                                <p className={`text-xs font-black ${color}`}>{status}</p>
+                                                    <g transform={`translate(${x},${y})`}>
+                                                        <text x={0} y={0} dy={16} textAnchor="middle" fill={theme === 'dark' ? '#cbd5e1' : '#64748b'} style={{ fontSize: '10px', fontWeight: '500' }}>
+                                                            {item?.displayDate}
+                                                        </text>
+                                                        <text x={0} y={0} dy={28} textAnchor="middle" fill={theme === 'dark' ? '#94a3b8' : '#94a3b8'} style={{ fontSize: '8px', fontWeight: '400' }}>
+                                                            {item?.displayTime}
+                                                        </text>
+                                                    </g>
+                                                );
+                                            }}
+                                            height={50}
+                                        />
+                                        <YAxis
+                                            axisLine={false}
+                                            tickLine={false}
+                                            tick={{ fill: theme === 'dark' ? '#94a3b8' : '#94a3b8', fontSize: 10, fontWeight: 500 }}
+                                        />
+                                        <Tooltip
+                                            content={({ active, payload }) => {
+                                                if (active && payload && payload.length) {
+                                                    const score = payload[0].value;
+                                                    const status = score < 15 ? "Excellent" : score < 30 ? "Monitor" : "Warning";
+                                                    const color = score < 15 ? "text-emerald-500" : score < 30 ? "text-amber-500" : "text-rose-500";
+                                                    return (
+                                                        <div className="glass-card p-5 rounded-[1.5rem] shadow-2xl border-white animate-slide-up">
+                                                            <div className="flex justify-between items-start mb-3">
+                                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{payload[0].payload?.displayDate || 'N/A'}</p>
+                                                                <p className="text-[10px] font-bold text-primary-500">{payload[0].payload?.displayTime}</p>
+                                                            </div>
+                                                            <div className="flex items-center gap-4">
+                                                                <div className={`text-3xl font-black ${color}`}>{score}%</div>
+                                                                <div className="h-10 w-[1px] bg-slate-100"></div>
+                                                                <div>
+                                                                    <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase">Risk Level</p>
+                                                                    <p className={`text-xs font-black ${color}`}>{status}</p>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                );
-                                            }
-                                            return null;
-                                        }}
-                                        cursor={{ stroke: '#4f46e5', strokeWidth: 2, strokeDasharray: '6 6' }}
-                                    />
-                                    <Area
-                                        type="monotone"
-                                        dataKey="score"
-                                        stroke="#4f46e5"
-                                        strokeWidth={4}
-                                        fillOpacity={1}
-                                        fill="url(#colorScore)"
-                                        dot={{ r: 6, fill: '#fff', stroke: '#4f46e5', strokeWidth: 3 }}
-                                        activeDot={{ r: 8, fill: '#4f46e5', stroke: '#fff', strokeWidth: 4, shadow: '0 0 15px rgba(79, 70, 229, 0.4)' }}
-                                        animationDuration={1500}
-                                    />
-                                </AreaChart>
-                            </ResponsiveContainer>
+                                                    );
+                                                }
+                                                return null;
+                                            }}
+                                            cursor={{ stroke: '#4f46e5', strokeWidth: 2, strokeDasharray: '6 6' }}
+                                        />
+                                        <Area
+                                            type="monotone"
+                                            dataKey="score"
+                                            stroke="#4f46e5"
+                                            strokeWidth={4}
+                                            fillOpacity={1}
+                                            fill="url(#colorScore)"
+                                            dot={{ r: 6, fill: '#fff', stroke: '#4f46e5', strokeWidth: 3 }}
+                                            activeDot={{ r: 8, fill: '#4f46e5', stroke: '#fff', strokeWidth: 4, shadow: '0 0 15px rgba(79, 70, 229, 0.4)' }}
+                                            animationDuration={1500}
+                                        />
+                                    </AreaChart>
+                                </ResponsiveContainer>
+                            </div>
                         )}
                     </div>
                 </motion.section>

@@ -39,8 +39,7 @@ export function AuthProvider({ children }) {
 
         // Safety timeout to prevent permanent white screen
         const timeout = setTimeout(() => {
-            if (isMounted && loading) {
-                console.warn('Auth loading timed out. Proceeding anyway.');
+            if (isMounted) {
                 setLoading(false);
             }
         }, 3000);
@@ -64,10 +63,11 @@ export function AuthProvider({ children }) {
             unsubscribe();
             clearTimeout(timeout);
         };
-    }, [loading]);
+    }, []);
 
     const value = {
         currentUser,
+        loading,
         signup,
         login,
         logout
