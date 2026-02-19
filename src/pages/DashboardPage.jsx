@@ -219,10 +219,7 @@ const DashboardPage = () => {
                                         <p className="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">{stat.label}</p>
                                         <p className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">{stat.value}</p>
                                     </div>
-<<<<<<< HEAD
-=======
 
->>>>>>> 001acdb2cdf3bf81d78ea4cd25fae10171516557
                                 </div>
                             </motion.div>
                         );
