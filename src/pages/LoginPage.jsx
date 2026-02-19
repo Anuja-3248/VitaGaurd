@@ -49,7 +49,12 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen flex bg-neutral-950">
+        <div className="clinical-purple-theme min-h-screen flex selection:bg-purple-500/30 selection:text-white">
+            {/* Background Orbs */}
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
+                <div className="glow-orb bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" />
+            </div>
             {/* Left Side - Welcome Panel with Image */}
             <div className="hidden lg:flex lg:w-1/2 bg-neutral-900 relative overflow-hidden">
                 {/* Warm, personal health-related background image */}

@@ -56,7 +56,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-neutral-950/70 backdrop-blur-xl border-b border-white/20 dark:border-white/10 transition-all duration-300">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0010]/40 backdrop-blur-2xl border-b border-white/10 transition-all duration-300">
             <AnimatePresence>
                 {isProfileOpen && (
                     <ProfileDropdown

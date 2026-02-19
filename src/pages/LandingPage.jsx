@@ -4,6 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ShieldCheck, Activity, LineChart, Lock, ArrowRight, CheckCircle2, X, Microscope, Database, FileText, Brain, HeartPulse } from 'lucide-react';
 import GenZIcon from '../components/GenZIcon';
 import { useAuth } from '../context/AuthContext';
+import AnimatedRobot from '../components/AnimatedRobot';
 
 const LandingPage = () => {
     const { currentUser } = useAuth();
@@ -146,8 +147,11 @@ const LandingPage = () => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.4, ease: "easeInOut" }}
                     >
-                        {/* Hero Section */}
-                        <section className="relative min-h-[80vh] flex items-center pt-28 pb-20 z-10">
+                        {/* Hero Section - Dark Purple Theme */}
+                        <section className="relative min-h-[100vh] flex items-center pt-28 pb-20 z-10 bg-[#0a0010]" style={{ background: 'linear-gradient(135deg, #0a0010 0%, #0d0020 50%, #120028 100%)' }}>
+                            {/* Purple glow orbs */}
+                            <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-purple-700/20 blur-[120px] rounded-full pointer-events-none" />
+                            <div className="absolute bottom-1/4 right-1/3 w-[300px] h-[300px] bg-purple-500/10 blur-[80px] rounded-full pointer-events-none" />
                             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative w-full">
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                                     <motion.div
@@ -156,24 +160,22 @@ const LandingPage = () => {
                                         variants={containerVariants}
                                         className="text-center lg:text-left"
                                     >
-
-
-                                        <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl lg:text-7xl font-normal text-slate-900 dark:text-white leading-[1.1] mb-8 tracking-tighter" style={{ fontFamily: "'DM Serif Display', serif" }}>
-                                            Prevention <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-health-cyber">Begins With</span> Prediction
+                                        <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl lg:text-7xl font-normal text-white leading-[1.1] mb-8 tracking-tighter" style={{ fontFamily: "'DM Serif Display', serif" }}>
+                                            Prevention <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-300">Begins With</span> Prediction
                                         </motion.h1>
 
-                                        <motion.p variants={itemVariants} className="text-xl text-slate-500 dark:text-slate-400 mb-12 max-w-xl lg:mx-0 mx-auto leading-relaxed font-medium">
+                                        <motion.p variants={itemVariants} className="text-xl text-slate-300 mb-12 max-w-xl lg:mx-0 mx-auto leading-relaxed font-medium">
                                             Bridge the gap between symptoms and clinical certainty. VitaGuard utilizes advanced diagnostic synthesis to map your biometric patterns, identifying subtle health shifts with technical precision.
                                         </motion.p>
 
                                         <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
-                                            <Link to={currentUser ? "/dashboard" : "/signup"} className="btn-premium group text-lg px-10 py-5 text-center shadow-xl shadow-primary-500/20">
+                                            <Link to={currentUser ? "/dashboard" : "/signup"} className="group text-lg px-10 py-5 text-center bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-2xl transition-all shadow-xl shadow-purple-500/30 flex items-center justify-center gap-2">
                                                 {currentUser ? "Go to Dashboard" : "Get Started Free"}
                                                 <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
                                             </Link>
                                             <button
                                                 onClick={() => window.location.hash = '#features'}
-                                                className="btn-secondary group text-lg px-10 py-5 text-center"
+                                                className="group text-lg px-10 py-5 text-center bg-white/10 text-white border border-white/20 rounded-2xl font-bold hover:bg-white/20 transition-all backdrop-blur-md flex items-center justify-center gap-2"
                                             >
                                                 Explore Features
                                             </button>
@@ -181,52 +183,15 @@ const LandingPage = () => {
 
                                     </motion.div>
 
-                                    <motion.div
-                                        className="relative lg:h-[600px] flex items-center justify-center"
-                                        initial={{ scale: 0.9, opacity: 0 }}
-                                        animate={{ scale: 1, opacity: 1 }}
-                                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-                                    >
-                                        <div className="relative z-10 group">
-                                            <div className="absolute -inset-4 bg-gradient-to-tr from-primary-400 to-health-cyber rounded-[2.5rem] blur-2xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
-                                            <div className="glass-card p-3 rounded-[2.5rem] shadow-glass relative">
-                                                <img
-                                                    src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800"
-                                                    alt="Doctor using tablet"
-                                                    className="rounded-[2rem] shadow-inner w-full h-[500px] object-cover"
-                                                />
-                                                {/* Floater UI 1 - Precision */}
-                                                <motion.div
-                                                    animate={{ y: [0, -12, 0] }}
-                                                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                                    className="absolute -top-6 -right-12 bg-white dark:bg-dark-card p-5 rounded-[2rem] shadow-premium border-2 border-primary-100 dark:border-dark-border flex items-center gap-4 z-30"
-                                                >
-                                                    <div className="bg-emerald-50 dark:bg-emerald-900/20 p-2.5 rounded-xl shadow-sm border border-emerald-100 dark:border-emerald-800/50">
-                                                        <Activity className="text-emerald-500 h-6 w-6" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[10px] uppercase font-black text-slate-400 dark:text-slate-500 tracking-widest mb-0.5">Protocol</p>
-                                                        <p className="text-xl font-black text-primary-900 dark:text-white leading-none">98.4% <span className="text-xs font-bold text-slate-400 dark:text-slate-500 ml-1">Precision</span></p>
-                                                    </div>
-                                                </motion.div>
+                                    <div className="relative lg:h-[600px] flex items-center justify-center">
+                                        {/* Purple glow behind robot */}
+                                        <div className="absolute inset-0 bg-purple-600/20 blur-[100px] rounded-full" />
 
-                                                {/* Floater UI 2 - Status */}
-                                                <motion.div
-                                                    animate={{ y: [0, 12, 0] }}
-                                                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                                                    className="absolute -bottom-8 -left-12 bg-white dark:bg-dark-card p-5 rounded-[2rem] shadow-premium border-2 border-primary-100 dark:border-dark-border flex items-center gap-4 z-30"
-                                                >
-                                                    <div className="bg-primary-50 dark:bg-primary-900/20 p-2.5 rounded-xl shadow-sm border border-primary-100 dark:border-primary-800/50">
-                                                        <ShieldCheck className="text-primary-600 dark:text-primary-400 h-6 w-6" />
-                                                    </div>
-                                                    <div>
-                                                        <p className="text-[10px] uppercase font-black text-slate-400 dark:text-slate-500 tracking-widest mb-0.5">Trust Score</p>
-                                                        <p className="text-xl font-black text-primary-900 dark:text-white leading-none italic tracking-tighter">Verified <span className="text-xs font-bold text-health-cyber ml-1">✓</span></p>
-                                                    </div>
-                                                </motion.div>
-                                            </div>
+                                        {/* Animated Robot - self-contained, no external URL */}
+                                        <div className="relative z-10 w-full max-w-[520px]">
+                                            <AnimatedRobot />
                                         </div>
-                                    </motion.div>
+                                    </div>
                                 </div>
                             </div>
                         </section>
@@ -445,21 +410,21 @@ const LandingPage = () => {
                             </h2>
 
                             <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-                                Join our network of over 12,000+ individuals utilizing <span className="text-white font-bold">Predictive Synthesis</span> to stay ahead of metabolic and cardiovascular risks.
+                                Access a sophisticated diagnostic suite designed to detect early-stage <span className="text-white font-bold">Cardiovascular, Respiratory, and Metabolic</span> risk factors before they escalate.
                             </p>
 
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                                <div className="p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
-                                    <div className="text-primary-400 font-black text-3xl mb-2">45s</div>
-                                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Rapid Analysis</div>
+                                <div className="p-8 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
+                                    <div className="text-primary-400 font-black text-3xl mb-2">3-Factor</div>
+                                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Diagnostic Mapping</div>
                                 </div>
-                                <div className="p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
-                                    <div className="text-emerald-400 font-black text-3xl mb-2">100%</div>
-                                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Private & Anonymous</div>
+                                <div className="p-8 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
+                                    <div className="text-emerald-400 font-black text-3xl mb-2">Dynamic</div>
+                                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Severity Scoring</div>
                                 </div>
-                                <div className="p-6 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
-                                    <div className="text-health-cyber font-black text-3xl mb-2">24/7</div>
-                                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Global Access</div>
+                                <div className="p-8 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
+                                    <div className="text-health-cyber font-black text-3xl mb-2">Clinical</div>
+                                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">PDF Documentation</div>
                                 </div>
                             </div>
 
