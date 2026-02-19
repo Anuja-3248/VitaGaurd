@@ -1,20 +1,24 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, Home, Info, Sparkles, LayoutDashboard, LogOut, Sun, Moon, Zap, User, HeartPulse } from 'lucide-react';
+import { Menu, X, Home, Info, Sparkles, LayoutDashboard, LogOut, Sun, Moon, User, HeartPulse, Bell } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
 
+import ProfileDropdown from './ProfileDropdown';
+
 const Navbar = () => {
     const { currentUser } = useAuth();
     const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
     const location = useLocation();
 
     const toggleMenu = () => setIsOpen(!isOpen);
+    const toggleProfile = () => setIsProfileOpen(!isProfileOpen);
 
     const navLinks = [
         { name: 'Home', path: '/', icon: <Home size={20} /> },
@@ -24,7 +28,19 @@ const Navbar = () => {
 
     const handleLogout = async () => {
         try {
+            const uid = currentUser?.uid;
             await signOut(auth);
+            // Clear all session flags so they see the startup splash and onboarding flow again
+            sessionStorage.removeItem('vitaGuard_startup_passed');
+            sessionStorage.removeItem('vitaGuard_splash_passed');
+            sessionStorage.removeItem('vita_gateway_passed');
+            if (uid) {
+                sessionStorage.removeItem(`vitaGuard_onboarding_active_${uid}`);
+                sessionStorage.removeItem(`vitaGuard_intro_active_${uid}`);
+            }
+            setIsProfileOpen(false);
+            // Force full redirect to "Page 1" (Splash Screen)
+            window.location.href = '/';
         } catch (error) {
             console.error('Logout error:', error);
         }
@@ -32,25 +48,8 @@ const Navbar = () => {
 
     const handleNavClick = (path) => {
         setIsOpen(false);
-        if (path === '/') {
-            if (location.pathname === '/') {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } else {
-                navigate('/');
-            }
-            return;
-        }
-
-        if (path.startsWith('/#')) {
-            const id = path.split('#')[1];
-            if (location.pathname === '/') {
-                const element = document.getElementById(id);
-                if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
-                }
-            } else {
-                navigate(path);
-            }
+        if (path.startsWith('/#') || path === '/') {
+            navigate(path);
         } else {
             navigate(path);
         }
@@ -58,14 +57,24 @@ const Navbar = () => {
 
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-neutral-950/70 backdrop-blur-xl border-b border-white/20 dark:border-white/10 transition-all duration-300">
+            <AnimatePresence>
+                {isProfileOpen && (
+                    <ProfileDropdown
+                        isOpen={isProfileOpen}
+                        onClose={() => setIsProfileOpen(false)}
+                        onLogout={handleLogout}
+                    />
+                )}
+            </AnimatePresence>
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center space-x-2 group">
-                        <div className="bg-primary-600 p-2 rounded-xl shadow-glow group-hover:rotate-12 transition-transform duration-300 flex items-center justify-center h-10 w-10">
-                            <Zap className="h-6 w-6 text-white" fill="currentColor" />
+                    <Link to="/" className="flex items-center space-x-3 group">
+                        <div className="bg-blue-600 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-300 flex items-center justify-center">
+                            <HeartPulse className="h-5 w-5 text-white" />
                         </div>
-                        <span className="text-2xl font-black bg-gradient-to-r from-primary-700 via-primary-600 to-health-cyber bg-clip-text text-transparent tracking-tight">
+                        <span className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
                             VitaGuard
                         </span>
                     </Link>
@@ -74,27 +83,18 @@ const Navbar = () => {
                     <div className="hidden md:flex items-center space-x-10">
                         <div className="flex items-center space-x-2 bg-slate-100/50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-200/50 dark:border-slate-700/50">
                             {navLinks.map((link) => (
-                                <motion.button
+                                <button
                                     key={link.name}
-                                    initial="collapsed"
-                                    whileHover="expanded"
                                     onClick={() => handleNavClick(link.path)}
-                                    className="flex items-center gap-0 hover:gap-2 px-3 py-2 text-slate-500 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all h-10"
+                                    className="p-3 text-slate-500 dark:text-white hover:text-primary-600 dark:hover:text-primary-300 hover:bg-white dark:hover:bg-slate-800 rounded-xl transition-all relative group"
                                 >
                                     <div className="flex items-center justify-center">
                                         {link.icon}
                                     </div>
-                                    <motion.span
-                                        variants={{
-                                            collapsed: { width: 0, opacity: 0, display: "none" },
-                                            expanded: { width: "auto", opacity: 1, display: "block" }
-                                        }}
-                                        transition={{ duration: 0.2, ease: "easeInOut" }}
-                                        className="whitespace-nowrap font-bold text-sm overflow-hidden"
-                                    >
+                                    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-800 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest whitespace-nowrap">
                                         {link.name}
-                                    </motion.span>
-                                </motion.button>
+                                    </span>
+                                </button>
                             ))}
 
                             {/* Theme Toggle Button */}
@@ -120,20 +120,16 @@ const Navbar = () => {
                                     <LayoutDashboard size={20} />
                                     <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-800 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">Dashboard</span>
                                 </Link>
-                                <Link to="/profile" className="flex items-center gap-3 bg-white dark:bg-white/10 px-4 py-2 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:border-white/30 transition-all text-slate-700 dark:text-white font-bold text-sm">
+                                <button
+                                    onClick={toggleProfile}
+                                    className="flex items-center gap-3 bg-white dark:bg-white/10 px-4 py-2 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:border-white/30 transition-all text-slate-700 dark:text-white font-bold text-sm"
+                                >
                                     <div className="bg-slate-100 dark:bg-white/20 p-1 rounded-lg">
                                         <User size={16} className="text-slate-600 dark:text-white" />
                                     </div>
                                     Profile
-                                </Link>
-                                <button
-                                    onClick={handleLogout}
-                                    className="p-3 text-slate-600 dark:text-white hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all group relative"
-                                    title="Logout"
-                                >
-                                    <LogOut size={20} />
-                                    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-rose-600 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">Logout</span>
                                 </button>
+
                             </div>
                         ) : (
                             <div className="flex items-center space-x-4">
@@ -183,12 +179,19 @@ const Navbar = () => {
                                     <Link to="/dashboard" className="flex items-center gap-4 p-4 text-slate-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800" onClick={() => setIsOpen(false)}>
                                         <LayoutDashboard size={20} /> Dashboard
                                     </Link>
-                                    <Link to="/profile" className="flex items-center gap-4 p-4 text-primary-600 font-black rounded-2xl bg-primary-50 dark:bg-primary-900/20" onClick={() => setIsOpen(false)}>
-                                        <User size={20} /> My Health Profile
+                                    <Link to="/reminders" className="flex items-center gap-4 p-4 text-slate-600 dark:text-slate-300 font-bold rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800" onClick={() => setIsOpen(false)}>
+                                        <Bell size={20} /> Reminders & Alerts
                                     </Link>
-                                    <button onClick={() => { handleLogout(); setIsOpen(false); }} className="flex items-center gap-4 w-full p-4 text-rose-500 font-bold hover:bg-rose-50 dark:hover:bg-rose-900/10 rounded-2xl transition-colors">
-                                        <LogOut size={20} /> Logout
+                                    <button
+                                        className="flex items-center gap-4 w-full p-4 text-primary-600 font-black rounded-2xl bg-primary-50 dark:bg-primary-900/20 text-left"
+                                        onClick={() => {
+                                            setIsOpen(false);
+                                            setIsProfileOpen(true);
+                                        }}
+                                    >
+                                        <User size={20} /> My Health Profile
                                     </button>
+
                                 </>
                             ) : (
                                 <div className="grid grid-cols-2 gap-4">

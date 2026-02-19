@@ -14,6 +14,23 @@ const LoginPage = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const getErrorMessage = (errorCode) => {
+        switch (errorCode) {
+            case 'auth/user-not-found':
+                return 'No account found with this email.';
+            case 'auth/wrong-password':
+                return 'Incorrect password. Please try again.';
+            case 'auth/invalid-email':
+                return 'Please enter a valid email address.';
+            case 'auth/too-many-requests':
+                return 'Too many failed attempts. Please try again later.';
+            case 'auth/network-request-failed':
+                return 'Network error. Please check your internet connection.';
+            default:
+                return 'Failed to log in. Please check your credentials.';
+        }
+    };
+
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
@@ -21,13 +38,12 @@ const LoginPage = () => {
             setLoading(true);
             await login(email, password);
             toast.success('Logged in successfully!');
-            if (location.state?.fromKnowMore) {
-                navigate('/', { state: { fromLogin: true } });
-            } else {
-                navigate('/dashboard');
-            }
+            sessionStorage.setItem('vitaGuard_just_logged_in', 'true');
+            // Force a clean redirect to root to ensure App.jsx picks up the new logged-in state
+            window.location.href = '/';
         } catch (err) {
-            setError('Failed to log in. Please check your credentials.');
+            console.error("Login Error:", err);
+            setError(getErrorMessage(err.code));
             toast.error('Login failed. Check your email or password.');
         } finally {
             setLoading(false);
@@ -52,10 +68,10 @@ const LoginPage = () => {
                 <div className="relative z-10 p-12 flex flex-col justify-between w-full">
                     <div>
                         <Link to="/" className="inline-flex items-center space-x-3 mb-16">
-                            <div className="bg-blue-600 p-2.5 rounded-lg">
+                            <div className="bg-blue-600 p-2.5 rounded-xl">
                                 <HeartPulse className="h-6 w-6 text-white" />
                             </div>
-                            <span className="text-2xl font-semibold text-white">VitaGuard</span>
+                            <span className="text-2xl font-bold text-white">VitaGuard</span>
                         </Link>
 
                         <div className="space-y-6 max-w-lg">
