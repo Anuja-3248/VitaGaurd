@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, Activity, HeartPulse, Microscope, X, ChevronRight, LogIn, Info, ShieldAlert } from 'lucide-react';
@@ -39,9 +39,9 @@ const OnboardingModal = ({ onComplete }) => {
                             initial={{ scale: 0 }}
                             animate={{ scale: 1 }}
                             transition={{ type: "spring", damping: 15 }}
-                            className="bg-purple-600/20 p-5 rounded-[2.5rem] border border-purple-500/30 mb-8 backdrop-blur-md"
+                            className="bg-blue-600/20 p-5 rounded-[2.5rem] border border-blue-500/30 mb-8 backdrop-blur-md"
                         >
-                            <HeartPulse className="w-12 h-12 text-purple-500 drop-shadow-[0_0_15px_rgba(168,85,247,0.5)]" />
+                            <HeartPulse className="w-12 h-12 text-blue-500 drop-shadow-[0_0_15px_rgba(59,130,246,0.5)]" />
                         </motion.div>
 
                         {/* Title: Styled like the image with glow */}
@@ -53,17 +53,17 @@ const OnboardingModal = ({ onComplete }) => {
                         <div className="flex flex-row gap-6">
                             <button
                                 onClick={handleLogin}
-                                className="flex items-center gap-3 px-10 py-5 bg-purple-600 text-white rounded-[1.5rem] font-bold hover:bg-purple-700 transition-all shadow-[0_15px_30px_-5px_rgba(147,51,234,0.4)] active:scale-95"
+                                className="flex items-center gap-3 px-10 py-5 bg-blue-600 text-white rounded-[1.5rem] font-bold hover:bg-blue-700 transition-all shadow-[0_15px_30px_-5px_rgba(37,99,235,0.4)] active:scale-95"
                             >
                                 <LogIn size={22} strokeWidth={2.5} />
                                 <span className="text-lg">Login</span>
                             </button>
                             <button
                                 onClick={() => setView('info')}
-                                className="flex items-center gap-3 px-10 py-5 bg-white/10 text-white border border-purple-500/20 rounded-[1.5rem] font-bold hover:bg-white/20 transition-all backdrop-blur-md active:scale-95"
+                                className="flex items-center gap-3 px-10 py-5 bg-white/10 text-white border border-white/20 rounded-[1.5rem] font-bold hover:bg-white/20 transition-all backdrop-blur-md active:scale-95"
                             >
                                 <Info size={22} strokeWidth={2.5} />
-                                <span className="text-lg text-purple-100">Know More</span>
+                                <span className="text-lg">Know More</span>
                             </button>
                         </div>
                     </motion.div>
@@ -85,8 +85,8 @@ const OnboardingModal = ({ onComplete }) => {
 
                         <div className="space-y-12">
                             <div>
-                                <div className="flex items-center gap-2 mb-6 text-purple-500">
-                                    <div className="h-0.5 w-8 bg-purple-500"></div>
+                                <div className="flex items-center gap-2 mb-6 text-blue-500">
+                                    <div className="h-0.5 w-8 bg-blue-500"></div>
                                     <p className="text-[10px] font-black uppercase tracking-[0.4em]">system intelligence</p>
                                 </div>
                                 <h2 className="text-5xl font-bold text-white mb-6 tracking-tighter" style={{ fontFamily: 'Arial, sans-serif' }}>
@@ -104,11 +104,11 @@ const OnboardingModal = ({ onComplete }) => {
                                     { Icon: HeartPulse, label: "Vitals Tracking", desc: "Real-time biometric marker analysis." },
                                     { Icon: Microscope, label: "Clinical Synthesis", desc: "Evidence-based diagnostic reporting." }
                                 ].map((item, i) => (
-                                    <div key={i} className="flex gap-4 p-5 rounded-3xl bg-white/5 border border-white/5 hover:border-purple-500/20 transition-colors group">
-                                        <div className="text-indigo-400 group-hover:scale-110 transition-transform"><item.Icon size={24} /></div>
+                                    <div key={i} className="flex gap-4 p-5 rounded-3xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors group">
+                                        <div className="text-blue-500 group-hover:scale-110 transition-transform"><item.Icon size={24} /></div>
                                         <div>
                                             <p className="font-bold text-white mb-1">{item.label}</p>
-                                            <p className="text-xs text-slate-400 leading-normal">{item.desc}</p>
+                                            <p className="text-xs text-slate-500 leading-normal">{item.desc}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -116,7 +116,7 @@ const OnboardingModal = ({ onComplete }) => {
 
                             <button
                                 onClick={onComplete}
-                                className="w-full py-6 bg-purple-600 text-white rounded-3xl font-black hover:bg-purple-700 transition-all flex items-center justify-center gap-3 group shadow-xl shadow-purple-500/20"
+                                className="w-full py-6 bg-blue-600 text-white rounded-3xl font-black hover:bg-blue-700 transition-all flex items-center justify-center gap-3 group shadow-xl shadow-blue-500/20"
                             >
                                 <span className="text-lg uppercase tracking-widest">Proceed to Platform</span>
                                 <ChevronRight size={22} className="group-hover:translate-x-1 transition-transform" />

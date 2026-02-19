@@ -116,16 +116,16 @@ const Navbar = () => {
 
                         {currentUser ? (
                             <div className="flex items-center space-x-4">
-                                <Link to="/dashboard" className="p-3 text-slate-600 dark:text-white hover:text-primary-600 dark:hover:text-primary-400 hover:bg-white dark:hover:bg-white/10 rounded-xl transition-all relative group" title="Dashboard">
+                                <Link to="/dashboard" className="p-3 text-slate-600 dark:text-white hover:text-purple-600 dark:hover:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 rounded-xl transition-all relative group" title="Dashboard">
                                     <LayoutDashboard size={20} />
-                                    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-slate-800 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">Dashboard</span>
+                                    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 dark:bg-purple-900 text-white text-[10px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">Dashboard</span>
                                 </Link>
                                 <button
                                     onClick={toggleProfile}
-                                    className="flex items-center gap-3 bg-white dark:bg-white/10 px-4 py-2 rounded-2xl shadow-sm border border-slate-100 dark:border-white/10 hover:border-white/30 transition-all text-slate-700 dark:text-white font-bold text-sm"
+                                    className="flex items-center gap-3 bg-white dark:bg-purple-900/10 px-4 py-2 rounded-2xl shadow-sm border border-slate-100 dark:border-purple-500/20 hover:border-purple-500/50 transition-all text-slate-700 dark:text-white font-bold text-sm"
                                 >
-                                    <div className="bg-slate-100 dark:bg-white/20 p-1 rounded-lg">
-                                        <User size={16} className="text-slate-600 dark:text-white" />
+                                    <div className="bg-purple-100 dark:bg-purple-500/20 p-1 rounded-lg">
+                                        <User size={16} className="text-purple-600 dark:text-purple-300" />
                                     </div>
                                     Profile
                                 </button>
@@ -133,7 +133,7 @@ const Navbar = () => {
                             </div>
                         ) : (
                             <div className="flex items-center space-x-4">
-                                <Link to="/login" className="text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 font-bold text-sm">Login</Link>
+                                <Link to="/login" className="text-slate-600 dark:text-slate-400 hover:text-purple-600 dark:hover:text-purple-400 font-bold text-sm">Login</Link>
                                 <Link to="/signup" className="btn-primary py-2.5 px-6 text-sm">Sign Up</Link>
                             </div>
                         )}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
 import { ShieldCheck, Activity, LineChart, Lock, ArrowRight, CheckCircle2, X, Microscope, Database, FileText, Brain, HeartPulse } from 'lucide-react';
@@ -175,7 +175,7 @@ const LandingPage = () => {
                                             </Link>
                                             <button
                                                 onClick={() => window.location.hash = '#features'}
-                                                className="group text-lg px-10 py-5 text-center bg-purple-600/10 text-purple-400 border border-purple-500/30 rounded-2xl font-bold hover:bg-purple-600/20 transition-all backdrop-blur-md flex items-center justify-center gap-2"
+                                                className="group text-lg px-10 py-5 text-center bg-white/10 text-white border border-white/20 rounded-2xl font-bold hover:bg-white/20 transition-all backdrop-blur-md flex items-center justify-center gap-2"
                                             >
                                                 Explore Features
                                             </button>
@@ -248,24 +248,24 @@ const LandingPage = () => {
                                             icon: <GenZIcon icon={Activity} color="text-white" glowColor="bg-white/20" />,
                                             title: "Biometric Intake",
                                             desc: "Our intelligent gateway synchronizes with your existing health metrics and symptoms.",
-                                            color: "from-purple-600 to-indigo-600",
-                                            glow: "bg-purple-400/20"
+                                            color: "from-blue-600 to-indigo-600",
+                                            glow: "bg-blue-400/20"
                                         },
                                         {
                                             step: "02",
                                             icon: <GenZIcon icon={LineChart} color="text-white" glowColor="bg-white/20" />,
                                             title: "Diagnostic Synthesis",
                                             desc: "Advanced computational logic maps your reported symptoms against clinical datasets to detect early-stage deviations.",
-                                            color: "from-violet-500 to-purple-500",
-                                            glow: "bg-violet-400/20"
+                                            color: "from-health-cyber to-blue-500",
+                                            glow: "bg-cyan-400/20"
                                         },
                                         {
                                             step: "03",
                                             icon: <GenZIcon icon={CheckCircle2} color="text-white" glowColor="bg-white/20" />,
                                             title: "Clinical Synthesis",
                                             desc: "A high-fidelity report is generated with exact risk classifications and preventive measures.",
-                                            color: "from-fuchsia-600 to-purple-900",
-                                            glow: "bg-purple-400/10"
+                                            color: "from-slate-800 to-slate-900",
+                                            glow: "bg-emerald-400/10"
                                         }
                                     ].map((item, idx) => (
                                         <motion.div
@@ -293,7 +293,7 @@ const LandingPage = () => {
 
                                                 <div className="mb-4">
                                                     <div className="flex flex-col items-center">
-                                                        <span className="text-[10px] font-black text-purple-600 dark:text-purple-400 uppercase tracking-widest bg-purple-50 dark:bg-purple-900/30 px-3 py-1 rounded-full mb-3 inline-block">Stage {item.step}</span>
+                                                        <span className="text-[10px] font-black text-primary-600 dark:text-primary-400 uppercase tracking-widest bg-primary-50 dark:bg-primary-900/30 px-3 py-1 rounded-full mb-3 inline-block">Stage {item.step}</span>
                                                         <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{item.title}</h3>
                                                     </div>
                                                 </div>
@@ -303,7 +303,7 @@ const LandingPage = () => {
                                                 </p>
 
                                                 {/* Action Label */}
-                                                <div className="mt-6 text-purple-600 dark:text-purple-400 text-xs font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
+                                                <div className="mt-6 text-primary-600 dark:text-primary-400 text-xs font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
                                                     View Protocol Details <ArrowRight size={14} />
                                                 </div>
 
@@ -337,7 +337,7 @@ const LandingPage = () => {
                                             viewport={{ once: true }}
                                         >
                                             <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-8 leading-[1.1] tracking-tight">
-                                                Premium Features for Your <span className="text-purple-600">Health</span>
+                                                Premium Features for Your <span className="text-primary-600">Health</span>
                                             </h2>
                                             <p className="text-lg text-slate-500 dark:text-slate-400 mb-12 font-medium">
                                                 Our platform combines medical expertise with advanced AI to give you the most accurate proactive health tools.
@@ -345,10 +345,10 @@ const LandingPage = () => {
                                         </motion.div>
                                         <div className="space-y-6">
                                             {[
-                                                { icon: <GenZIcon icon={Activity} color="text-purple-500" />, title: "Symptom Checker", desc: "Detailed analysis of your current physical symptoms." },
+                                                { icon: <GenZIcon icon={Activity} color="text-primary-500" />, title: "Symptom Checker", desc: "Detailed analysis of your current physical symptoms." },
                                                 { icon: <GenZIcon icon={LineChart} color="text-health-teal" />, title: "Predictive Analytics", desc: "Identify long-term health risks based on lifestyle data." },
                                                 { icon: <GenZIcon icon={Lock} color="text-health-green" />, title: "Secure Data Storage", desc: "Your health records are encrypted and kept strictly private." },
-                                                { icon: <GenZIcon icon={ShieldCheck} color="text-purple-600" />, title: "Early Warnings", desc: "Prevent serious illness with proactive health indicators." }
+                                                { icon: <GenZIcon icon={ShieldCheck} color="text-primary-600" />, title: "Early Warnings", desc: "Prevent serious illness with proactive health indicators." }
                                             ].map((feature, idx) => (
                                                 <div key={idx} className="flex items-start gap-4">
                                                     <div className="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm mt-1">{feature.icon}</div>
@@ -429,7 +429,7 @@ const LandingPage = () => {
                             </div>
 
                             <div className="flex flex-col items-center gap-6">
-                                <Link to={currentUser ? "/dashboard" : "/signup"} className="btn-premium px-16 py-8 text-2xl bg-purple-600 text-white hover:bg-purple-700 border-none shadow-[0_20px_50px_-10px_rgba(147,51,234,0.4)] group">
+                                <Link to={currentUser ? "/dashboard" : "/signup"} className="btn-premium px-16 py-8 text-2xl bg-primary-600 text-white hover:bg-primary-700 border-none shadow-2xl shadow-primary-900/40 group">
                                     {currentUser ? "Launch Personal Portal" : "Begin Diagnostic Scan"}
                                     <ArrowRight size={28} className="group-hover:translate-x-2 transition-transform" />
                                 </Link>

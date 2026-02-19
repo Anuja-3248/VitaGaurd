@@ -73,7 +73,7 @@ const LoginPage = () => {
                 <div className="relative z-10 p-12 flex flex-col justify-between w-full">
                     <div>
                         <Link to="/" className="inline-flex items-center space-x-3 mb-16">
-                            <div className="bg-blue-600 p-2.5 rounded-xl">
+                            <div className="bg-purple-600 p-2.5 rounded-xl">
                                 <HeartPulse className="h-6 w-6 text-white" />
                             </div>
                             <span className="text-2xl font-bold text-white">VitaGuard</span>
@@ -93,7 +93,7 @@ const LoginPage = () => {
                     {/* Simple feature list */}
                     <div className="space-y-3 max-w-lg">
                         <div className="flex items-center gap-3">
-                            <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                            <div className="w-1.5 h-1.5 rounded-full bg-purple-400"></div>
                             <p className="text-slate-300 text-sm">24/7 Health Monitoring</p>
                         </div>
                         <div className="flex items-center gap-3">
@@ -135,7 +135,7 @@ const LoginPage = () => {
                             <motion.div
                                 initial={{ scale: 0.95, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
-                                className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm"
+                                className="p-4 bg-rose-500/10 border border-rose-500/20 rounded-lg text-rose-400 text-sm"
                             >
                                 {error}
                             </motion.div>
@@ -153,7 +153,7 @@ const LoginPage = () => {
                                     <input
                                         type="email"
                                         required
-                                        className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-white placeholder-slate-500"
+                                        className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-white placeholder-slate-500"
                                         placeholder="you@example.com"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -172,14 +172,14 @@ const LoginPage = () => {
                                     <input
                                         type="password"
                                         required
-                                        className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-white placeholder-slate-500"
+                                        className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-white placeholder-slate-500"
                                         placeholder="••••••••"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
                                 <div className="text-right mt-2">
-                                    <button type="button" className="text-sm text-blue-400 hover:text-blue-300 transition-colors">
+                                    <button type="button" className="text-sm text-purple-400 hover:text-purple-300 transition-colors">
                                         Forgot password?
                                     </button>
                                 </div>
@@ -188,7 +188,7 @@ const LoginPage = () => {
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium transition-all shadow-lg shadow-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 {loading ? 'Signing in...' : 'Sign in'}
                                 {!loading && <ArrowRight size={18} />}
@@ -198,7 +198,7 @@ const LoginPage = () => {
                         <div className="text-center">
                             <p className="text-slate-400 text-sm">
                                 Don't have an account?{' '}
-                                <Link to="/signup" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
+                                <Link to="/signup" className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
                                     Sign up
                                 </Link>
                             </p>
