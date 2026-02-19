@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HeartPulse, ChevronRight, ChevronLeft, Activity, Info, Loader2, CheckCircle2, Scan, ShieldCheck } from 'lucide-react';
+import { HeartPulse, ChevronRight, Activity, Info, Loader2, Scan, ShieldCheck } from 'lucide-react';
 
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
@@ -84,29 +84,37 @@ const AssessmentPage = () => {
             const analysisResult = await analyzeHealthWithGemini(formData);
             const finalScore = analysisResult.data.score;
 
+            let savedId = null;
             if (currentUser) {
-                const docRef = await addDoc(collection(db, "assessments"), {
-                    userId: currentUser.uid,
-                    ...formData,
-                    riskScore: finalScore,
-                    summary: analysisResult.data.summary,
-                    details: analysisResult.data.details,
-                    recommendations: analysisResult.data.recommendations,
-                    tips: analysisResult.data.tips,
-                    dietOptions: analysisResult.data.dietOptions,
-                    aiSource: analysisResult.source,
-                    timestamp: serverTimestamp()
-                });
-                navigate(`/results/${docRef.id}`);
-            } else {
-                localStorage.setItem('latestAssessment', JSON.stringify({
-                    ...formData,
-                    riskScore: finalScore,
-                    ...analysisResult.data,
-                    timestamp: new Date().toISOString()
-                }));
-                navigate('/results/local');
+                try {
+                    const docRef = await addDoc(collection(db, "assessments"), {
+                        userId: currentUser.uid,
+                        ...formData,
+                        riskScore: finalScore,
+                        summary: analysisResult.data.summary,
+                        details: analysisResult.data.details,
+                        recommendations: analysisResult.data.recommendations,
+                        tips: analysisResult.data.tips,
+                        dietOptions: analysisResult.data.dietOptions,
+                        aiSource: analysisResult.source,
+                        timestamp: serverTimestamp()
+                    });
+                    savedId = docRef.id;
+                } catch (err) {
+                    console.error("Cloud Save Failed:", err);
+                }
             }
+
+            setLoading(false);
+            navigate('/results', {
+                state: {
+                    id: savedId,
+                    score: finalScore,
+                    name: formData.name,
+                    formData: formData,
+                    aiAnalysis: analysisResult
+                }
+            });
         } catch (error) {
             console.error("Submission error:", error);
             alert("Analysis failed. Please check your connection.");
@@ -179,7 +187,6 @@ const AssessmentPage = () => {
     return (
         <div className="bg-slate-50 dark:bg-dark-bg min-h-screen pt-32 pb-20 px-4">
             <div className="max-w-5xl mx-auto">
-                {/* Progress Stepper */}
                 <div className="mb-12 flex justify-between relative px-4">
                     <div className="absolute top-1/2 left-0 w-full h-[2px] bg-slate-200 dark:bg-white/5 -translate-y-1/2 z-0"></div>
                     <div
@@ -289,7 +296,6 @@ const AssessmentPage = () => {
                             >
                                 {renderStep2Header()}
 
-                                {/* Visual Body Map Path */}
                                 {(selectionMode === 'both' || selectionMode === 'visual') && (
                                     <div className="relative group animate-in fade-in slide-in-from-bottom-4 duration-500">
                                         <div className="flex justify-between items-center mb-6">
@@ -303,22 +309,15 @@ const AssessmentPage = () => {
                                                 </div>
                                             </div>
                                             {selectionMode === 'both' && (
-                                                <button
-                                                    onClick={() => setSelectionMode('text')}
-                                                    className="px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase text-slate-400 hover:text-primary-500 tracking-widest transition-all flex items-center gap-2 border border-slate-100 dark:border-white/5"
-                                                >
+                                                <button onClick={() => setSelectionMode('text')} className="px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase text-slate-400 hover:text-primary-500 tracking-widest transition-all flex items-center gap-2 border border-slate-100 dark:border-white/5">
                                                     Skip mapping <ChevronRight size={14} />
                                                 </button>
                                             )}
                                         </div>
-                                        <BodyVisualizer
-                                            selectedRegions={formData.bodyRegions}
-                                            onToggleRegion={toggleRegion}
-                                        />
+                                        <BodyVisualizer selectedRegions={formData.bodyRegions} onToggleRegion={toggleRegion} />
                                     </div>
                                 )}
 
-                                {/* Global Symptom Path */}
                                 {(selectionMode === 'both' || selectionMode === 'text') && (
                                     <div className="space-y-8 pt-8 relative border-t border-slate-100 dark:border-white/5 animate-in fade-in slide-in-from-bottom-4 duration-500">
                                         <div className="flex justify-between items-center">
@@ -332,10 +331,7 @@ const AssessmentPage = () => {
                                                 </div>
                                             </div>
                                             {selectionMode === 'both' && (
-                                                <button
-                                                    onClick={() => setSelectionMode('visual')}
-                                                    className="px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase text-slate-400 hover:text-amber-500 tracking-widest transition-all flex items-center gap-2 border border-slate-100 dark:border-white/5"
-                                                >
+                                                <button onClick={() => setSelectionMode('visual')} className="px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase text-slate-400 hover:text-amber-500 tracking-widest transition-all flex items-center gap-2 border border-slate-100 dark:border-white/5">
                                                     Skip selection <ChevronRight size={14} />
                                                 </button>
                                             )}
@@ -370,10 +366,7 @@ const AssessmentPage = () => {
 
                                 <div className="flex gap-4 pt-8">
                                     <button onClick={handleBack} className="flex-1 px-8 py-5 border border-slate-200 dark:border-white/10 text-slate-500 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all">Back</button>
-                                    <button
-                                        onClick={handleNext}
-                                        className="flex-[2] btn-primary py-5 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-glow"
-                                    >
+                                    <button onClick={handleNext} className="flex-[2] btn-primary py-5 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-glow">
                                         Calibrate Lifestyle
                                     </button>
                                 </div>
@@ -391,10 +384,7 @@ const AssessmentPage = () => {
                                 <div>
                                     <div className="flex justify-between items-center mb-2">
                                         <h2 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">Lifestyle Factors</h2>
-                                        <button
-                                            onClick={handleSubmit}
-                                            className="px-4 py-2 bg-slate-900 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase text-primary-500 tracking-widest transition-all border border-primary-500/30 flex items-center gap-2 hover:bg-primary-500 hover:text-white"
-                                        >
+                                        <button onClick={handleSubmit} className="px-4 py-2 bg-slate-900 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase text-primary-500 tracking-widest transition-all border border-primary-500/30 flex items-center gap-2 hover:bg-primary-500 hover:text-white">
                                             Skip & Analyze Now <ChevronRight size={14} />
                                         </button>
                                     </div>
@@ -418,7 +408,6 @@ const AssessmentPage = () => {
                                                 ))}
                                             </div>
                                         </div>
-
                                         <div>
                                             <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Physical Activity</label>
                                             <div className="grid grid-cols-2 gap-3">
@@ -434,7 +423,6 @@ const AssessmentPage = () => {
                                                 ))}
                                             </div>
                                         </div>
-
                                         <div>
                                             <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Tobacco Exposure</label>
                                             <div className="grid grid-cols-2 gap-3">
@@ -450,7 +438,6 @@ const AssessmentPage = () => {
                                                 ))}
                                             </div>
                                         </div>
-
                                         <div>
                                             <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Alcohol Intake</label>
                                             <div className="grid grid-cols-2 gap-3">
@@ -467,16 +454,10 @@ const AssessmentPage = () => {
                                             </div>
                                         </div>
                                     </div>
-
                                     <div className="flex gap-4 pt-10">
                                         <button type="button" onClick={handleBack} className="flex-1 px-8 py-5 border border-slate-200 dark:border-white/10 text-slate-500 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all">Back</button>
-                                        <button
-                                            type="submit"
-                                            className="flex-[2] btn-primary py-5 text-[10px] font-black uppercase tracking-widest shadow-2xl transition-all active:scale-[0.98]"
-                                        >
-                                            {formData.sleep && formData.exercise && formData.smoking && formData.alcohol
-                                                ? 'Finalize Analysis'
-                                                : 'Analyze with Available Data'}
+                                        <button type="submit" className="flex-[2] btn-primary py-5 text-[10px] font-black uppercase tracking-widest shadow-2xl transition-all active:scale-[0.98]">
+                                            {formData.sleep && formData.exercise && formData.smoking && formData.alcohol ? 'Finalize Analysis' : 'Analyze with Available Data'}
                                         </button>
                                     </div>
                                 </form>

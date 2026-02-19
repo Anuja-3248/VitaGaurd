@@ -100,7 +100,7 @@ const ProfilePage = () => {
                             <ArrowLeft size={16} /> Back to Dashboard
                         </Link>
                         <h1 className="text-3xl font-bold text-slate-800 dark:text-white">My Health Profile</h1>
-                        <p className="text-slate-500 mt-1">Manage your baseline health parameters for accurate AI analysis.</p>
+                        <p className="text-slate-500 dark:text-slate-400 mt-1">Manage your baseline health parameters for accurate AI analysis.</p>
                     </div>
                     <div className="bg-primary-100 p-4 rounded-3xl text-primary-600 hidden md:block">
                         <ShieldCheck size={32} />
@@ -146,7 +146,7 @@ const ProfilePage = () => {
                                     <input
                                         type="email"
                                         value={currentUser?.email}
-                                        className="w-full bg-slate-100 border border-slate-200 rounded-2xl px-5 py-3 text-slate-400 cursor-not-allowed font-medium"
+                                        className="w-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-5 py-3 text-slate-400 dark:text-slate-500 cursor-not-allowed font-medium"
                                         disabled
                                     />
                                 </div>
@@ -273,7 +273,7 @@ const ProfilePage = () => {
                                     </>
                                 )}
                             </button>
-                            <p className="text-center text-slate-400 text-xs mt-4 italic font-medium">
+                            <p className="text-center text-slate-400 dark:text-slate-500 text-xs mt-4 italic font-medium">
                                 * Your data is securely encrypted and never shared with third parties.
                             </p>
                         </div>

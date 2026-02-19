@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, X, Bot, User, Loader2, Sparkles, Search, Cpu, Stethoscope } from 'lucide-react';
+import { Send, X, Bot, User, Loader2, Sparkles, Search, Cpu, Stethoscope, History } from 'lucide-react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { db } from '../firebase';
+import { collection, query, orderBy, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const HealthChatBot = ({ reportData }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -20,18 +22,67 @@ const HealthChatBot = ({ reportData }) => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
+    // Load Chat History from Firestore
+    useEffect(() => {
+        const loadHistory = async () => {
+            if (!reportData?.id) return;
+
+            try {
+                const chatRef = collection(db, "assessments", reportData.id, "chat");
+                const q = query(chatRef, orderBy("timestamp", "asc"));
+                const querySnapshot = await getDocs(q);
+
+                if (!querySnapshot.empty) {
+                    const loadedMessages = querySnapshot.docs.map(doc => ({
+                        ...doc.data(),
+                        timestamp: doc.data().timestamp?.toDate() || new Date()
+                    }));
+                    setMessages(loadedMessages);
+                } else {
+                    // Default Greeting if no history
+                    setMessages([
+                        {
+                            role: 'assistant',
+                            content: `Hello ${reportData?.userName || 'User'}! 👋 I've analyzed your health profile. You have a ${reportData?.riskLevel} risk status (${reportData?.score}% severity). How can I assist you with these results today? ✨`,
+                            timestamp: new Date()
+                        }
+                    ]);
+                }
+            } catch (error) {
+                console.error("Error loading chat history:", error);
+            }
+        };
+
+        loadHistory();
+    }, [reportData?.id]);
+
     useEffect(() => {
         if (isOpen) {
             scrollToBottom();
         }
     }, [messages, isOpen]);
 
+    const saveMessageToFirestore = async (role, content) => {
+        if (!reportData?.id) return;
+        try {
+            await addDoc(collection(db, "assessments", reportData.id, "chat"), {
+                role,
+                content,
+                timestamp: serverTimestamp()
+            });
+        } catch (error) {
+            console.error("Error saving message to Firestore:", error);
+        }
+    };
+
     const handleSend = async () => {
         if (!input.trim() || isLoading) return;
 
         const userMessage = input.trim();
         setInput('');
-        setMessages(prev => [...prev, { role: 'user', content: userMessage, timestamp: new Date() }]);
+        const newMessage = { role: 'user', content: userMessage, timestamp: new Date() };
+        setMessages(prev => [...prev, newMessage]);
+        saveMessageToFirestore('user', userMessage);
         setIsLoading(true);
 
         try {
@@ -76,11 +127,13 @@ const HealthChatBot = ({ reportData }) => {
             const response = await result.response;
             const text = response.text().trim();
 
-            setMessages(prev => [...prev, {
+            const aiMessage = {
                 role: 'assistant',
                 content: text,
                 timestamp: new Date()
-            }]);
+            };
+            setMessages(prev => [...prev, aiMessage]);
+            saveMessageToFirestore('assistant', text);
         } catch (error) {
             console.error("AI Error:", error);
             generateSmartLocalResponse(userMessage);
@@ -107,11 +160,13 @@ const HealthChatBot = ({ reportData }) => {
         }
 
         setTimeout(() => {
+            const assistantContent = response + "\n\n(Consult a professional for medical diagnosis. 🏥)";
             setMessages(prev => [...prev, {
                 role: 'assistant',
-                content: response + "\n\n(Consult a professional for medical diagnosis. 🏥)",
+                content: assistantContent,
                 timestamp: new Date()
             }]);
+            saveMessageToFirestore('assistant', assistantContent);
             setIsLoading(false);
         }, 1200);
     };
@@ -156,7 +211,7 @@ const HealthChatBot = ({ reportData }) => {
                         initial={{ opacity: 0, y: 50, scale: 0.9, originY: 1, originX: 1 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 50, scale: 0.9 }}
-                        className="fixed bottom-24 right-4 w-[95vw] md:w-[360px] h-[550px] max-h-[85vh] bg-white rounded-[2rem] shadow-[0_30px_90px_-20px_rgba(0,0,0,0.4)] z-[60] flex flex-col overflow-hidden border border-slate-200"
+                        className="fixed bottom-24 right-4 w-[95vw] md:w-[360px] h-[550px] max-h-[85vh] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-[0_30px_90px_-20px_rgba(0,0,0,0.4)] z-[60] flex flex-col overflow-hidden border border-slate-200 dark:border-white/10"
                     >
                         <div className="bg-slate-900 p-8 text-white relative">
                             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
@@ -181,7 +236,7 @@ const HealthChatBot = ({ reportData }) => {
                             </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-slate-50/30 scrollbar-hide">
+                        <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-slate-50/30 dark:bg-slate-900/50 scrollbar-hide">
                             {messages.map((msg, idx) => (
                                 <motion.div
                                     key={idx}
@@ -190,7 +245,7 @@ const HealthChatBot = ({ reportData }) => {
                                     className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <div className={`p-5 rounded-3xl text-sm leading-relaxed ${msg.role === 'assistant'
-                                        ? 'bg-white text-slate-800 shadow-sm border border-slate-100 rounded-tl-none font-medium max-w-[90%]'
+                                        ? 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 shadow-sm border border-slate-100 dark:border-white/5 rounded-tl-none font-medium max-w-[90%]'
                                         : 'bg-primary-600 text-white shadow-xl rounded-tr-none font-bold max-w-[85%]'
                                         }`}>
                                         {msg.content}
@@ -199,16 +254,16 @@ const HealthChatBot = ({ reportData }) => {
                             ))}
                             {isLoading && (
                                 <div className="flex justify-start">
-                                    <div className="px-6 py-4 bg-white rounded-2xl border border-slate-100 flex items-center gap-3">
+                                    <div className="px-6 py-4 bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-white/5 flex items-center gap-3">
                                         <Loader2 size={18} className="animate-spin text-primary-500" />
-                                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">AI is thinking...</span>
+                                        <span className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">AI is thinking...</span>
                                     </div>
                                 </div>
                             )}
                             <div ref={messagesEndRef} />
                         </div>
 
-                        <div className="p-8 bg-white border-t border-slate-50">
+                        <div className="p-8 bg-white dark:bg-slate-900 border-t border-slate-50 dark:border-white/5">
                             <div className="relative">
                                 <input
                                     type="text"
@@ -216,7 +271,7 @@ const HealthChatBot = ({ reportData }) => {
                                     onChange={(e) => setInput(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                                     placeholder="Type your health query..."
-                                    className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-5 pl-6 pr-16 text-sm focus:outline-none focus:border-primary-500 focus:bg-white transition-all font-medium"
+                                    className="w-full bg-slate-50 dark:bg-slate-800 border-2 border-slate-50 dark:border-slate-800 rounded-2xl py-5 pl-6 pr-16 text-sm focus:outline-none focus:border-primary-500 focus:bg-white dark:focus:bg-slate-700 transition-all font-medium text-slate-900 dark:text-white"
                                 />
                                 <button
                                     onClick={handleSend}
