@@ -182,24 +182,24 @@ const HealthChatBot = ({ reportData }) => {
             >
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="flex items-center gap-4 bg-white dark:bg-dark-card p-2 pr-6 rounded-[2.5rem] sticker group border-4 border-slate-900 dark:border-white"
+                    className="flex items-center gap-4 bg-white/10 backdrop-blur-md p-2 pr-6 rounded-[2.5rem] border border-white/20 hover:border-primary-500/50 transition-all duration-300 group shadow-2xl"
                 >
                     <div className="relative">
-                        <div className="w-14 h-14 bg-gradient-to-br from-primary-400 to-health-cyber rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
-                            <span className="text-3xl">🤖</span>
+                        <div className="w-14 h-14 bg-gradient-to-br from-primary-500 to-primary-700 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
+                            <Bot className="text-white" size={28} />
                         </div>
-                        <div className="absolute -bottom-1 -right-1 bg-white dark:bg-dark-card p-1.5 rounded-full shadow-md border-2 border-slate-900">
-                            <span className="text-xs">🩺</span>
+                        <div className="absolute -bottom-1 -right-1 bg-white dark:bg-slate-900 p-1.5 rounded-full shadow-md border border-slate-200 dark:border-white/10">
+                            <Stethoscope size={12} className="text-primary-500" />
                         </div>
                     </div>
                     <div className="flex flex-col items-start">
-                        <span className="font-black text-sm tracking-tight text-slate-900 dark:text-white">AI Doctor</span>
+                        <span className="font-black text-sm tracking-tight text-white">AI Diagnostic Assistant</span>
                         <div className="flex items-center gap-1.5 mt-0.5">
                             <span className="relative flex h-2 w-2">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-health-emerald opacity-75"></span>
                                 <span className="relative inline-flex rounded-full h-2 w-2 bg-health-emerald"></span>
                             </span>
-                            <span className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">Live Help</span>
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Intelligence</span>
                         </div>
                     </div>
                 </button>
@@ -211,9 +211,9 @@ const HealthChatBot = ({ reportData }) => {
                         initial={{ opacity: 0, y: 50, scale: 0.9, originY: 1, originX: 1 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 50, scale: 0.9 }}
-                        className="fixed bottom-24 right-4 w-[95vw] md:w-[360px] h-[550px] max-h-[85vh] bg-white dark:bg-slate-900 rounded-[2.5rem] shadow-[0_30px_90px_-20px_rgba(0,0,0,0.4)] z-[60] flex flex-col overflow-hidden border border-slate-200 dark:border-white/10"
+                        className="fixed bottom-24 right-4 w-[95vw] md:w-[380px] h-[600px] max-h-[85vh] clinical-purple-theme rounded-[3rem] shadow-[0_40px_120px_-20px_rgba(0,0,0,0.6)] z-[60] flex flex-col overflow-hidden border border-white/10"
                     >
-                        <div className="bg-slate-900 p-8 text-white relative">
+                        <div className="bg-white/5 backdrop-blur-xl p-8 border-b border-white/10 relative">
                             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
                                 <Cpu size={120} />
                             </div>

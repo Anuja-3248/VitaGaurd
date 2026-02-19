@@ -349,7 +349,14 @@ const ResultsPage = () => {
     };
 
     return (
-        <div className="bg-slate-50 dark:bg-dark-bg min-h-screen pt-36 pb-20 px-4 transition-colors duration-300">
+        <div className="clinical-purple-theme min-h-screen pt-36 pb-20 px-4 selection:bg-purple-500/30 selection:text-white">
+            {/* Background Orbs to match Home Page */}
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
+                <div className="glow-orb top-[20%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" style={{ animationDelay: '-2s' }} />
+                <div className="glow-orb bottom-[10%] left-[20%] w-[25%] h-[25%] bg-purple-600/10 animate-float" style={{ animationDelay: '-4s' }} />
+            </div>
+
             {/* Hidden Medical Template for PDF Generation */}
             <MedicalReportTemplate
                 ref={pdfTemplateRef}

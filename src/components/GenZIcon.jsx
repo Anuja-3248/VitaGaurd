@@ -1,16 +1,16 @@
 import { motion } from 'framer-motion';
 
-const GenZIcon = ({ icon: Icon, color = "text-primary-500", glowColor = "bg-primary-500/20", className = "" }) => {
+const ClinicalIcon = ({ icon: Icon, color = "text-primary-400", className = "" }) => {
     return (
         <motion.div
             whileHover={{ y: -5, scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className={`sticker p-4 group ${className}`}
+            className={`relative p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm group overflow-hidden ${className}`}
         >
-            <div className={`absolute inset-0 ${glowColor} opacity-0 group-hover:opacity-100 blur-xl transition-opacity rounded-2xl`}></div>
-            <Icon className={`relative z-10 transition-colors duration-300 ${color}`} size={24} strokeWidth={2.5} />
+            <div className="absolute inset-0 bg-primary-500/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <Icon className={`relative z-10 transition-colors duration-300 ${color}`} size={24} strokeWidth={2} />
         </motion.div>
     );
 };
 
-export default GenZIcon;
+export default ClinicalIcon;

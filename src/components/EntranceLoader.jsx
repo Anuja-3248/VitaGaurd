@@ -72,7 +72,7 @@ const EntranceLoader = ({ onComplete }) => {
             initial={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 1.05, filter: "blur(25px)" }}
             transition={{ duration: 1.2, ease: "easeInOut" }}
-            className="fixed inset-0 z-[9999] bg-white flex flex-col items-center justify-center overflow-hidden cursor-none"
+            className="fixed inset-0 z-[9999] clinical-purple-theme flex flex-col items-center justify-center overflow-hidden cursor-none"
         >
             {/* Custom Interactive Scanner Cursor */}
             <motion.div
@@ -82,22 +82,26 @@ const EntranceLoader = ({ onComplete }) => {
                 <motion.div
                     animate={{ scale: [1, 1.5, 1], rotate: 360 }}
                     transition={{ duration: 3, repeat: Infinity }}
-                    className="w-full h-full border-2 border-primary-500 rounded-full flex items-center justify-center"
+                    className="w-full h-full border-2 border-cyan-400 rounded-full flex items-center justify-center"
                 >
-                    <div className="w-1 h-1 bg-primary-500 rounded-full" />
+                    <div className="w-1 h-1 bg-cyan-400 rounded-full" />
                 </motion.div>
                 <div className="absolute top-1/2 left-full ml-4 whitespace-nowrap">
-                    <span className="text-[10px] uppercase font-black tracking-widest text-primary-500">Scanner Active</span>
+                    <span className="text-[10px] uppercase font-black tracking-widest text-cyan-400">Scanner Active</span>
                 </div>
             </motion.div>
 
             {/* Premium Background Elements */}
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(79,70,229,0.03),_transparent_70%)]" />
-            <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-blue-50/50 blur-[120px] rounded-full" />
-            <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-50/50 blur-[120px] rounded-full" />
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
+                <div className="glow-orb top-[20%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" style={{ animationDelay: '-2s' }} />
+                <div className="glow-orb bottom-[10%] left-[20%] w-[25%] h-[25%] bg-purple-600/10 animate-float" style={{ animationDelay: '-4s' }} />
+            </div>
+
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,_rgba(79,70,229,0.05),_transparent_70%)]" />
 
             {/* Dynamic Scanning Grid */}
-            <div className="absolute inset-0 opacity-[0.1] pointer-events-none"
+            <div className="absolute inset-0 opacity-[0.05] pointer-events-none"
                 style={{ backgroundImage: 'linear-gradient(#4f46e5 1px, transparent 1px), linear-gradient(90deg, #4f46e5 1px, transparent 1px)', backgroundSize: '60px 60px' }}
             />
             <motion.div

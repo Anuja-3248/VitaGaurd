@@ -87,6 +87,15 @@
   .dark .cartoon-shadow {
     box-shadow: 0 8px 30px rgba(255, 255, 255, 0.03);
   }
+
+  .clinical-purple-theme {
+    background: linear-gradient(135deg, #0a0010 0%, #0d0020 50%, #120028 100%);
+    @apply min-h-screen relative overflow-hidden;
+  }
+
+  .glow-orb {
+    @apply absolute blur-[120px] rounded-full pointer-events-none opacity-20;
+  }
 }
 
 /* Custom Scrollbar */

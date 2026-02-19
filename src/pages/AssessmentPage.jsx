@@ -129,17 +129,23 @@ const AssessmentPage = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex flex-col items-center justify-center bg-white px-4">
+            <div className="clinical-purple-theme min-h-screen flex flex-col items-center justify-center px-4">
+                {/* Background Orbs */}
+                <div className="fixed inset-0 pointer-events-none z-0">
+                    <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
+                    <div className="glow-orb bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" />
+                </div>
+
                 <motion.div
                     animate={{ scale: [1, 1.2, 1], rotate: [0, 360] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className="mb-8 overflow-hidden rounded-full bg-primary-100 p-6"
+                    className="relative z-10 mb-8 overflow-hidden rounded-full bg-primary-100/10 p-6 border border-primary-500/20"
                 >
-                    <HeartPulse className="text-primary-600 h-16 w-16" />
+                    <HeartPulse className="text-primary-500 h-16 w-16" />
                 </motion.div>
-                <h2 className="text-3xl font-bold text-slate-800 dark:text-white mb-4">Analyzing Your Risks...</h2>
-                <p className="text-slate-500 dark:text-slate-400 text-center max-w-md">Our AI system is processing your symptoms and lifestyle data to provide precise health insights.</p>
-                <div className="mt-12 flex items-center gap-2 text-primary-600 font-bold">
+                <h2 className="relative z-10 text-3xl font-bold text-white mb-4">Analyzing Your Risks...</h2>
+                <p className="relative z-10 text-slate-400 text-center max-w-md">Our AI system is processing your symptoms and lifestyle data to provide precise health insights.</p>
+                <div className="relative z-10 mt-12 flex items-center gap-2 text-primary-400 font-bold">
                     <Loader2 className="animate-spin" size={20} />
                     Calculating Analysis...
                 </div>
@@ -148,8 +154,15 @@ const AssessmentPage = () => {
     }
 
     return (
-        <div className="bg-slate-50 min-h-screen pt-36 pb-20 px-4">
-            <div className="max-w-3xl mx-auto">
+        <div className="clinical-purple-theme min-h-screen pt-36 pb-20 px-4 selection:bg-purple-500/30 selection:text-white">
+            {/* Background Orbs */}
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
+                <div className="glow-orb top-[20%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" style={{ animationDelay: '-2s' }} />
+                <div className="glow-orb bottom-[10%] left-[20%] w-[25%] h-[25%] bg-purple-600/10 animate-float" style={{ animationDelay: '-4s' }} />
+            </div>
+
+            <div className="max-w-3xl mx-auto relative z-10">
                 {/* Progress Stepper */}
                 <div className="mb-12 flex justify-between relative">
                     <div className="absolute top-1/2 left-0 w-full h-1 bg-slate-200 -translate-y-1/2 z-0"></div>

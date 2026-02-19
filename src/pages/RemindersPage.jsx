@@ -119,23 +119,15 @@ const RemindersPage = () => {
                     <span className="text-[10px] font-black text-blue-400 uppercase tracking-[0.4em]">Surveillance Protocol: Reminders & Alerts Active</span>
                 </div>
 
-                {/* Header */}
+                {/* Header Section */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                     <div>
-                        <Link to="/" className="flex items-center gap-2 text-slate-500 hover:text-blue-400 transition-colors mb-4 text-sm font-bold uppercase tracking-widest">
-                            <ArrowRight size={16} className="rotate-180" /> Back to Headquarters
-                        </Link>
-                        <h1 className="text-4xl md:text-5xl font-black tracking-tighter flex items-center gap-4">
-                            Clinical Alerts <span className="text-blue-500"><Bell size={32} /></span>
-                        </h1>
-                        <p className="text-slate-400 mt-2 font-medium max-w-xl">
-                            Configure your medical surveillance and neural checkup schedules for automated monitoring.
-                        </p>
+                        <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-2">Monitoring Protocols</h2>
+                        <p className="text-slate-400 font-medium">Configure real-time clinical alerts and health surveillance windows.</p>
                     </div>
-
                     <button
                         onClick={() => setIsAdding(true)}
-                        className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-4 rounded-2xl font-black flex items-center justify-center gap-3 transition-all active:scale-95 shadow-lg shadow-blue-500/20"
+                        className="btn-premium px-8 py-4 bg-primary-600 text-white rounded-2xl flex items-center gap-2 group"
                     >
                         <Plus size={20} /> Initialize New Alert
                     </button>

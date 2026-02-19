@@ -35,22 +35,22 @@ const OnboardingFlow = ({ onComplete }) => {
         {
             title: "Welcome to VitaGuard",
             description: "Your unified clinical intelligence platform for proactive health monitoring. Let's explore how we synchronize your biometric data for maximum longevity.",
-            icon: <HeartPulse className="text-rose-500" size={28} />,
+            icon: <HeartPulse className="text-primary-400" size={28} />,
         },
         {
             title: "Predictive Intelligence",
             description: "Our neural engines identify health risks before they manifest into symptoms, giving you the power of early intervention through data synthesis.",
-            icon: <Brain className="text-violet-500" size={28} />,
+            icon: <Brain className="text-primary-400" size={28} />,
         },
         {
             title: "Bio-Metric Synthesis",
             description: "We analyze everything from resting heart rate to sleep patterns to provide a unified, evidence-based health risk score.",
-            icon: <Activity className="text-blue-500" size={28} />,
+            icon: <Activity className="text-cyan-400" size={28} />,
         },
         {
             title: "Clinical Systems Ready",
             description: "Setup complete. You are now equipped with the ultimate preventive healthcare tool. Let's begin your first assessment.",
-            icon: <ShieldCheck className="text-emerald-500" size={28} />,
+            icon: <ShieldCheck className="text-emerald-400" size={28} />,
         }
     ];
 
@@ -69,11 +69,17 @@ const OnboardingFlow = ({ onComplete }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[9999] bg-neutral-950/40 backdrop-blur-sm flex items-center justify-center p-6">
+        <div className="fixed inset-0 z-[9999] clinical-purple-theme flex items-center justify-center p-6">
+            {/* Background Orbs */}
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
+                <div className="glow-orb bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" />
+            </div>
+
             <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 40 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                className="w-full max-w-4xl bg-[#080808] border border-white/10 rounded-[4rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] overflow-hidden relative"
+                className="w-full max-w-4xl bg-white/5 backdrop-blur-2xl border border-white/10 rounded-[4.5rem] shadow-[0_60px_150px_-20px_rgba(0,0,0,1)] overflow-hidden relative z-10"
             >
                 {/* Close Button */}
                 <button

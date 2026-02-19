@@ -4,9 +4,12 @@ import { motion } from 'framer-motion';
 
 const Footer = () => {
     return (
-        <footer className="bg-slate-900 text-slate-300 pt-24 pb-12 relative overflow-hidden">
-            {/* Background Decoration */}
-            <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary-600/5 blur-[120px] rounded-full -mr-32 -mt-32"></div>
+        <footer className="clinical-purple-theme text-slate-300 pt-24 pb-12 relative overflow-hidden">
+            {/* Background Orbs */}
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
+                <div className="glow-orb bottom-[10%] left-[20%] w-[25%] h-[25%] bg-purple-600/10 animate-float" style={{ animationDelay: '-4s' }} />
+            </div>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="flex flex-col md:flex-row justify-between items-start gap-16 mb-16">

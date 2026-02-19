@@ -27,13 +27,16 @@ const WordAnimation = ({ text, delay = 0, className = "" }) => {
 
 const GatewayPortal = ({ onEnterSite, onLogin }) => {
     return (
-        <div className="fixed inset-0 z-[9999] bg-neutral-950 flex flex-col items-center justify-center p-6 overflow-hidden">
+        <div className="fixed inset-0 z-[9999] clinical-purple-theme flex flex-col items-center justify-center p-6 overflow-hidden">
             {/* Background Atmosphere */}
-            <div className="absolute top-[-20%] left-[-10%] w-[60%] h-[60%] bg-primary-900/20 blur-[150px] rounded-full" />
-            <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-900/10 blur-[150px] rounded-full" />
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
+                <div className="glow-orb top-[20%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" style={{ animationDelay: '-2s' }} />
+                <div className="glow-orb bottom-[10%] left-[20%] w-[25%] h-[25%] bg-purple-600/10 animate-float" style={{ animationDelay: '-4s' }} />
+            </div>
 
             {/* Technical Grid Overlay */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
+            <div className="absolute inset-0 opacity-[0.05] pointer-events-none z-0"
                 style={{ backgroundImage: 'linear-gradient(#ffffff 1px, transparent 1px), linear-gradient(90deg, #ffffff 1px, transparent 1px)', backgroundSize: '60px 60px' }}
             />
 

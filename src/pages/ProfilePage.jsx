@@ -84,15 +84,27 @@ const ProfilePage = () => {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-slate-50">
-                <Loader2 className="w-12 h-12 text-primary-600 animate-spin" />
+            <div className="clinical-purple-theme min-h-screen flex items-center justify-center">
+                {/* Background Orbs */}
+                <div className="fixed inset-0 pointer-events-none z-0">
+                    <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
+                    <div className="glow-orb bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" />
+                </div>
+                <Loader2 className="relative z-10 w-12 h-12 text-primary-500 animate-spin" />
             </div>
         );
     }
 
     return (
-        <div className="bg-slate-50 dark:bg-dark-bg min-h-screen pt-36 pb-12 px-4 transition-colors duration-300">
-            <div className="max-w-3xl mx-auto">
+        <div className="clinical-purple-theme min-h-screen pt-36 pb-12 px-4 selection:bg-purple-500/30 selection:text-white">
+            {/* Background Orbs */}
+            <div className="fixed inset-0 pointer-events-none z-0">
+                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
+                <div className="glow-orb top-[20%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" style={{ animationDelay: '-2s' }} />
+                <div className="glow-orb bottom-[10%] left-[20%] w-[25%] h-[25%] bg-purple-600/10 animate-float" style={{ animationDelay: '-4s' }} />
+            </div>
+
+            <div className="max-w-3xl mx-auto relative z-10">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-8">
                     <div>
