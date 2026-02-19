@@ -19,7 +19,11 @@ const SignupPage = () => {
             setError('');
             setLoading(true);
             await signup(email, password, name);
-            navigate('/dashboard');
+            // Set flag to trigger cinematic intro after successful signup
+            sessionStorage.setItem('vita_gateway_passed', 'true'); // Also bypass the gateway if needed
+            sessionStorage.setItem('vitaGuard_just_logged_in', 'true');
+            // Force clean redirect to root
+            window.location.href = '/';
         } catch (err) {
             setError('Failed to create an account. ' + err.message);
         } finally {
@@ -45,10 +49,10 @@ const SignupPage = () => {
                 <div className="relative z-10 p-12 flex flex-col justify-between w-full">
                     <div>
                         <Link to="/" className="inline-flex items-center space-x-3 mb-16">
-                            <div className="bg-blue-600 p-2.5 rounded-lg">
+                            <div className="bg-blue-600 p-2.5 rounded-xl">
                                 <HeartPulse className="h-6 w-6 text-white" />
                             </div>
-                            <span className="text-2xl font-semibold text-white">VitaGuard</span>
+                            <span className="text-2xl font-bold text-white">VitaGuard</span>
                         </Link>
 
                         <div className="space-y-6 max-w-lg">
