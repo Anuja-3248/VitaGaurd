@@ -36,6 +36,7 @@ function AppContent() {
                     {/* Protected Routes (mocked) */}
                     <Route path="/dashboard" element={<DashboardPage />} />
                     <Route path="/assessment" element={<AssessmentPage />} />
+                    <Route path="/results/:id" element={<ResultsPage />} />
                     <Route path="/results" element={<ResultsPage />} />
                     <Route path="/profile" element={<ProfilePage />} />
 
