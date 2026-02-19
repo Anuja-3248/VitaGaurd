@@ -5,18 +5,79 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { db } from '../firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const ProfileDropdown = ({ isOpen, onClose, onLogout }) => {
     const { currentUser } = useAuth();
     const navigate = useNavigate();
+    const [stats, setStats] = useState([
+        { label: 'Assessments', value: '0', icon: <Activity size={18} className="text-blue-400" />, sub: 'TOTAL' },
+        { label: 'Day Streak', value: '0', icon: <Award size={18} className="text-amber-400" />, sub: 'CURRENT' },
+        { label: 'Vitality', value: '0%', icon: <HeartPulse size={18} className="text-rose-400" />, sub: 'VITAL' },
+    ]);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            if (!currentUser || !isOpen) return;
+            try {
+                const q = query(
+                    collection(db, "assessments"),
+                    where("userId", "==", currentUser.uid)
+                );
+                const querySnapshot = await getDocs(q);
+                const assessments = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                const totalAssessments = assessments.length;
+
+                // Calculate Streak & Active Days
+                const dates = assessments
+                    .map(a => a.timestamp?.toDate ? a.timestamp.toDate() : (a.timestamp?.seconds ? new Date(a.timestamp.seconds * 1000) : null))
+                    .filter(d => d && !isNaN(d.getTime()))
+                    .map(d => new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime());
+
+                const uniqueDates = [...new Set(dates)].sort((a, b) => b - a);
+                const activeDays = uniqueDates.length;
+
+                let streak = 0;
+                if (uniqueDates.length > 0) {
+                    const today = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()).getTime();
+                    const yesterday = today - 86400000;
+
+                    if (uniqueDates[0] >= yesterday) {
+                        let currentCheck = uniqueDates[0];
+                        for (let i = 0; i < uniqueDates.length; i++) {
+                            if (uniqueDates[i] === currentCheck) {
+                                streak++;
+                                currentCheck -= 86400000;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                const latestRiskScore = assessments.length > 0 ? (assessments[0].riskScore || 0) : 0;
+                const vitalityScore = assessments.length > 0 ? (100 - latestRiskScore) : 0;
+
+                setStats([
+                    { label: 'Assessments', value: totalAssessments.toString(), icon: <Activity size={18} className="text-blue-400" />, sub: 'TOTAL' },
+                    { label: 'Day Streak', value: streak.toString(), icon: <Award size={18} className="text-amber-400" />, sub: 'CURRENT' },
+                    { label: 'Vitality', value: `${vitalityScore}%`, icon: <HeartPulse size={18} className="text-rose-400" />, sub: 'VITAL' },
+                ]);
+            } catch (error) {
+                console.error("Error fetching stats:", error);
+            }
+        };
+
+        fetchStats();
+    }, [currentUser, isOpen]);
 
     if (!isOpen) return null;
-
-    const stats = [
-        { label: 'Assessments', value: '12', icon: <Activity size={18} className="text-blue-400" />, sub: 'TOTAL' },
-        { label: 'Day Streak', value: '5', icon: <Award size={18} className="text-amber-400" />, sub: 'CURRENT' },
-        { label: 'Active Days', value: '8', icon: <Calendar size={18} className="text-purple-400" />, sub: 'VITAL' },
-    ];
 
     const handleLinkClick = () => {
         onClose();
