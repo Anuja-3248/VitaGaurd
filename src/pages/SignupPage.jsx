@@ -57,7 +57,7 @@ const SignupPage = () => {
                 <div className="relative z-10 p-12 flex flex-col justify-between w-full">
                     <div>
                         <Link to="/" className="inline-flex items-center space-x-3 mb-16">
-                            <div className="bg-blue-600 p-2.5 rounded-xl">
+                            <div className="bg-purple-600 p-2.5 rounded-xl">
                                 <HeartPulse className="h-6 w-6 text-white" />
                             </div>
                             <span className="text-2xl font-bold text-white">VitaGuard</span>
@@ -77,7 +77,7 @@ const SignupPage = () => {
                     {/* Simple feature list */}
                     <div className="space-y-3 max-w-lg">
                         <div className="flex items-center gap-3">
-                            <div className="w-1.5 h-1.5 rounded-full bg-blue-400"></div>
+                            <div className="w-1.5 h-1.5 rounded-full bg-purple-400"></div>
                             <p className="text-slate-300 text-sm">24/7 Health Monitoring</p>
                         </div>
                         <div className="flex items-center gap-3">
@@ -137,7 +137,7 @@ const SignupPage = () => {
                                     <input
                                         type="text"
                                         required
-                                        className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-white placeholder-slate-500"
+                                        className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-white placeholder-slate-500"
                                         placeholder="John Doe"
                                         value={name}
                                         onChange={(e) => setName(e.target.value)}
@@ -156,7 +156,7 @@ const SignupPage = () => {
                                     <input
                                         type="email"
                                         required
-                                        className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-white placeholder-slate-500"
+                                        className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-white placeholder-slate-500"
                                         placeholder="you@example.com"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -175,7 +175,7 @@ const SignupPage = () => {
                                     <input
                                         type="password"
                                         required
-                                        className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-white placeholder-slate-500"
+                                        className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-white placeholder-slate-500"
                                         placeholder="••••••••"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
@@ -187,17 +187,17 @@ const SignupPage = () => {
                                 <input
                                     type="checkbox"
                                     required
-                                    className="mt-1 h-4 w-4 border-slate-600 rounded bg-slate-800 text-blue-600 focus:ring-blue-500 focus:ring-offset-slate-900"
+                                    className="mt-1 h-4 w-4 border-slate-600 rounded bg-slate-800 text-purple-600 focus:ring-purple-500 focus:ring-offset-slate-900"
                                 />
                                 <span className="text-xs text-slate-400 leading-normal">
-                                    I agree to the <button type="button" className="text-blue-400 hover:text-blue-300 font-medium">Terms</button> and <button type="button" className="text-blue-400 hover:text-blue-300 font-medium">Privacy Policy</button>.
+                                    I agree to the <button type="button" className="text-purple-400 hover:text-purple-300 font-medium">Terms</button> and <button type="button" className="text-purple-400 hover:text-purple-300 font-medium">Privacy Policy</button>.
                                 </span>
                             </div>
 
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-medium transition-all shadow-lg shadow-purple-500/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
                                 {loading ? 'Creating account...' : 'Create account'}
                                 {!loading && <ArrowRight size={18} />}
@@ -207,7 +207,7 @@ const SignupPage = () => {
                         <div className="text-center">
                             <p className="text-slate-400 text-sm">
                                 Already have an account?{' '}
-                                <Link to="/login" className="text-blue-400 hover:text-blue-300 font-medium transition-colors">
+                                <Link to="/login" className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
                                     Sign in
                                 </Link>
                             </p>
