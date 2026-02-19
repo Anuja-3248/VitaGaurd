@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router-dom';
 import { ShieldCheck, Activity, LineChart, Lock, ArrowRight, CheckCircle2, Microscope, FileText, Brain, HeartPulse, Zap, Scan, ChevronRight } from 'lucide-react';
 import GenZIcon from '../components/GenZIcon';
 import { useAuth } from '../context/AuthContext';
-import AnimatedRobot from '../components/AnimatedRobot';
 
 const LandingPage = () => {
     const { currentUser } = useAuth();
@@ -43,11 +42,13 @@ const LandingPage = () => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.4, ease: "easeInOut" }}
                     >
-                        {/* Hero Section - Dark Purple Theme */}
-                        <section className="relative min-h-[100vh] flex items-center pt-28 pb-20 z-10 bg-[#0a0010]" style={{ background: 'linear-gradient(135deg, #0a0010 0%, #0d0020 50%, #120028 100%)' }}>
-                            {/* Purple glow orbs */}
-                            <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-purple-700/20 blur-[120px] rounded-full pointer-events-none" />
-                            <div className="absolute bottom-1/4 right-1/3 w-[300px] h-[300px] bg-purple-500/10 blur-[80px] rounded-full pointer-events-none" />
+                        {/* Hero Section */}
+                        <section className="relative min-h-screen flex items-center pt-28 pb-20 z-10">
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[800px] pointer-events-none opacity-20 dark:opacity-40 overflow-hidden">
+                                <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-primary-600 rounded-full blur-[140px] opacity-20 animate-pulse"></div>
+                                <div className="absolute top-40 right-1/4 w-[400px] h-[400px] bg-cyan-500 rounded-full blur-[120px] opacity-20 animate-pulse delay-700"></div>
+                            </div>
+
                             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative w-full">
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                                     <motion.div
@@ -56,37 +57,83 @@ const LandingPage = () => {
                                         variants={containerVariants}
                                         className="text-center lg:text-left"
                                     >
-                                        <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl lg:text-7xl font-normal text-white leading-[1.1] mb-8 tracking-tighter" style={{ fontFamily: "'DM Serif Display', serif" }}>
-                                            Prevention <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-300">Begins With</span> Prediction
+                                        <motion.div
+                                            variants={itemVariants}
+                                            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 dark:bg-primary-900/20 border border-primary-100 dark:border-primary-800/50 mb-10"
+                                        >
+                                            <Zap className="text-primary-600" size={14} />
+                                            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-primary-700 dark:text-primary-400">
+                                                Powered by Gemini 1.5 Flash
+                                            </span>
+                                        </motion.div>
+
+                                        <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl lg:text-8xl font-black text-slate-800 dark:text-white tracking-tighter leading-[0.9] mb-8">
+                                            Predicting your health <br />
+                                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-cyan-500 to-indigo-500">before symptoms emerge.</span>
                                         </motion.h1>
 
-                                        <motion.p variants={itemVariants} className="text-xl text-slate-300 mb-12 max-w-xl lg:mx-0 mx-auto leading-relaxed font-medium">
-                                            Bridge the gap between symptoms and clinical certainty. VitaGuard utilizes advanced diagnostic synthesis to map your biometric patterns, identifying subtle health shifts with technical precision.
+                                        <motion.p variants={itemVariants} className="text-xl text-slate-500 dark:text-slate-400 mb-12 max-w-xl lg:mx-0 mx-auto leading-relaxed font-medium">
+                                            VitaGuard synthesizes biometric data and medical intelligence to provide a futuristic preventative health analysis for the next generation.
                                         </motion.p>
 
                                         <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">
-                                            <Link to={currentUser ? "/dashboard" : "/signup"} className="group text-lg px-10 py-5 text-center bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-2xl transition-all shadow-xl shadow-purple-500/30 flex items-center justify-center gap-2">
-                                                {currentUser ? "Go to Dashboard" : "Get Started Free"}
-                                                <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
+                                            <Link to={currentUser ? "/assessment" : "/signup"} className="group relative px-10 py-5 bg-primary-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest shadow-2xl hover:bg-primary-500 transition-all flex items-center gap-3 overflow-hidden">
+                                                <span className="relative z-10">{currentUser ? "Start Biometric Scan" : "Create Identity"}</span>
+                                                <ChevronRight className="group-hover:translate-x-1 transition-transform relative z-10" size={18} />
+                                                <div className="absolute top-0 -left-[100%] w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent group-hover:left-[100%] transition-all duration-700"></div>
                                             </Link>
                                             <button
-                                                onClick={() => window.location.hash = '#features'}
-                                                className="group text-lg px-10 py-5 text-center bg-white/10 text-white border border-white/20 rounded-2xl font-bold hover:bg-white/20 transition-all backdrop-blur-md flex items-center justify-center gap-2"
+                                                onClick={() => setVisibleSection('features')}
+                                                className="px-10 py-5 bg-white dark:bg-slate-900 text-slate-800 dark:text-white border-2 border-slate-100 dark:border-white/5 rounded-2xl font-black uppercase text-xs tracking-widest hover:border-primary-600/30 transition-all"
                                             >
                                                 Explore Features
                                             </button>
                                         </motion.div>
                                     </motion.div>
 
-                                    <div className="relative lg:h-[600px] flex items-center justify-center">
-                                        {/* Purple glow behind robot */}
-                                        <div className="absolute inset-0 bg-purple-600/20 blur-[100px] rounded-full" />
-
-                                        {/* Animated Robot - self-contained, no external URL */}
-                                        <div className="relative z-10 w-full max-w-[520px]">
-                                            <AnimatedRobot />
+                                    <motion.div
+                                        className="relative lg:h-[600px] flex items-center justify-center"
+                                        initial={{ scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+                                    >
+                                        <div className="relative z-10 group">
+                                            <div className="absolute -inset-4 bg-gradient-to-tr from-primary-400 to-health-cyber rounded-[2.5rem] blur-2xl opacity-20 group-hover:opacity-30 transition-opacity"></div>
+                                            <div className="glass-card p-3 rounded-[2.5rem] shadow-glass relative bg-white dark:bg-dark-card border border-slate-200 dark:border-white/10">
+                                                <img
+                                                    src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=800"
+                                                    alt="Doctor using tablet"
+                                                    className="rounded-[2rem] shadow-inner w-full h-[500px] object-cover"
+                                                />
+                                                <motion.div
+                                                    animate={{ y: [0, -12, 0] }}
+                                                    transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                                                    className="absolute -top-6 -right-12 bg-white dark:bg-dark-card p-5 rounded-[2rem] shadow-premium border-2 border-primary-100 dark:border-dark-border flex items-center gap-4 z-30"
+                                                >
+                                                    <div className="bg-emerald-50 dark:bg-emerald-900/20 p-2.5 rounded-xl border border-emerald-100 dark:border-emerald-800/50">
+                                                        <Activity className="text-emerald-500 h-6 w-6" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] uppercase font-black text-slate-400 dark:text-slate-500 tracking-widest mb-0.5">Protocol</p>
+                                                        <p className="text-xl font-black text-primary-900 dark:text-white leading-none">98.4% <span className="text-xs font-bold text-slate-400 dark:text-slate-500 ml-1">Precision</span></p>
+                                                    </div>
+                                                </motion.div>
+                                                <motion.div
+                                                    animate={{ y: [0, 12, 0] }}
+                                                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                                                    className="absolute -bottom-8 -left-12 bg-white dark:bg-dark-card p-5 rounded-[2rem] shadow-premium border-2 border-primary-100 dark:border-dark-border flex items-center gap-4 z-30"
+                                                >
+                                                    <div className="bg-primary-50 dark:bg-primary-900/20 p-2.5 rounded-xl border border-primary-100 dark:border-primary-800/50">
+                                                        <ShieldCheck className="text-primary-600 dark:text-primary-400 h-6 w-6" />
+                                                    </div>
+                                                    <div>
+                                                        <p className="text-[10px] uppercase font-black text-slate-400 dark:text-slate-500 tracking-widest mb-0.5">Trust Score</p>
+                                                        <p className="text-xl font-black text-primary-900 dark:text-white leading-none italic tracking-tighter">Verified <span className="text-xs font-bold text-health-cyber ml-1">✓</span></p>
+                                                    </div>
+                                                </motion.div>
+                                            </div>
                                         </div>
-                                    </div>
+                                    </motion.div>
                                 </div>
                             </div>
                         </section>
@@ -245,33 +292,13 @@ const LandingPage = () => {
                             <h2 className="text-6xl md:text-8xl font-black mb-8 tracking-tighter leading-none">
                                 Secure Your <span className="italic text-primary-400">Future</span>
                             </h2>
-
-                            <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
-                                Access a sophisticated diagnostic suite designed to detect early-stage <span className="text-white font-bold">Cardiovascular, Respiratory, and Metabolic</span> risk factors before they escalate.
+                            <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto">
+                                Join 12,000+ individuals utilizing Predictive Synthesis to stay ahead of metabolic and cardiovascular risks.
                             </p>
-
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                                <div className="p-8 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
-                                    <div className="text-primary-400 font-black text-3xl mb-2">3-Factor</div>
-                                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Diagnostic Mapping</div>
-                                </div>
-                                <div className="p-8 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
-                                    <div className="text-emerald-400 font-black text-3xl mb-2">Dynamic</div>
-                                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Severity Scoring</div>
-                                </div>
-                                <div className="p-8 bg-white/5 rounded-3xl border border-white/10 hover:bg-white/10 transition-colors">
-                                    <div className="text-health-cyber font-black text-3xl mb-2">Clinical</div>
-                                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">PDF Documentation</div>
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col items-center gap-6">
-                                <Link to={currentUser ? "/dashboard" : "/signup"} className="btn-premium px-16 py-8 text-2xl bg-primary-600 text-white hover:bg-primary-700 border-none shadow-2xl shadow-primary-900/40 group">
-                                    {currentUser ? "Launch Personal Portal" : "Begin Diagnostic Scan"}
-                                    <ArrowRight size={28} className="group-hover:translate-x-2 transition-transform" />
-                                </Link>
-                                <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">No credit card or insurance required</p>
-                            </div>
+                            <Link to={currentUser ? "/assessment" : "/signup"} className="btn-premium px-16 py-8 text-2xl bg-primary-600 text-white hover:bg-primary-700 border-none shadow-2xl group flex items-center justify-center gap-3">
+                                {currentUser ? "Begin Diagnostic Scan" : "Create Identity"}
+                                <ArrowRight size={28} className="group-hover:translate-x-2 transition-transform" />
+                            </Link>
                         </div>
                     </div>
                 </div>
