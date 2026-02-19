@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useLocation } from 'react-router-dom';
-import { ShieldCheck, Activity, LineChart, Lock, ArrowRight, CheckCircle2, X, Microscope, Database, FileText, Brain, HeartPulse } from 'lucide-react';
+import { ShieldCheck, Activity, LineChart, Lock, ArrowRight, CheckCircle2, Microscope, FileText, Brain, HeartPulse, Zap, Scan, ChevronRight } from 'lucide-react';
 import GenZIcon from '../components/GenZIcon';
 import { useAuth } from '../context/AuthContext';
 import AnimatedRobot from '../components/AnimatedRobot';
@@ -10,7 +10,6 @@ const LandingPage = () => {
     const { currentUser } = useAuth();
     const [activeStep, setActiveStep] = useState(null);
     const location = useLocation();
-
     const [visibleSection, setVisibleSection] = useState('hero'); // 'hero', 'protocol', 'features'
 
     useEffect(() => {
@@ -33,111 +32,8 @@ const LandingPage = () => {
         visible: { y: 0, opacity: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
     };
 
-    const stepDetails = {
-        "01": {
-            title: "Biometric Intake Protocol",
-            subtitle: "Data Collection & Calibration",
-            icon: <GenZIcon icon={Microscope} color="text-blue-500" glowColor="bg-blue-500/20" />,
-            content: "Our system gathers baseline health markers including age, gender, BMI (via height/weight), and specific physical symptoms. This phase uses 'Smart Matching' to cross-reference your inputs with demographic risk pools.",
-            features: ["Personal Health Profiling", "Symptom Categorization", "Baseline Calibration"],
-            color: "from-blue-600 to-indigo-600"
-        },
-        "02": {
-            title: "Predictive Diagnostic Synthesis",
-            subtitle: "Advanced Analytical Framework",
-            icon: <GenZIcon icon={Brain} color="text-cyan-500" glowColor="bg-cyan-500/20" />,
-            content: "The heart of the VitaGuard protocol utilizes sophisticated computational logic to cross-examine your biometric markers. Our advanced analytical framework identifies subtle deviations in cardiovascular and metabolic patterns, providing a high-precision risk forecast.",
-            features: ["Computational Logic Review", "Dynamic Risk Projection", "Biometric Pattern Mapping"],
-            color: "from-health-cyber to-blue-500"
-        },
-        "03": {
-            title: "Clinical Synthesis",
-            subtitle: "Intelligent Action Planning",
-            icon: <GenZIcon icon={FileText} color="text-slate-800 dark:text-slate-100" glowColor="bg-slate-800/20 dark:bg-slate-100/10" />,
-            content: "The final output is a clinical-grade risk report. Our AI generates personalized precautions and calculates a 'Severity Score' to help you determine if immediate medical consultation is required.",
-            features: ["Risk Level Classification", "Custom Precautions", "PDF Health Documentation"],
-            color: "from-slate-800 to-slate-900"
-        }
-    };
-
     return (
         <div className="overflow-x-hidden bg-white dark:bg-dark-bg selection:bg-primary-100 selection:text-primary-700 transition-colors duration-300">
-
-
-            {/* Modal Overlay */}
-            <AnimatePresence>
-                {activeStep && (
-                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setActiveStep(null)}
-                            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
-                        />
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: 20 }}
-                            className="relative w-full max-w-2xl glass-card rounded-[3rem] p-8 md:p-12 overflow-hidden shadow-2xl border-white"
-                        >
-                            <div className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${stepDetails[activeStep].color} opacity-10 blur-[80px] -mr-32 -mt-32`}></div>
-
-                            <button
-                                onClick={() => setActiveStep(null)}
-                                className="absolute top-8 right-8 p-2 bg-slate-100 dark:bg-dark-border/50 rounded-full hover:bg-slate-200 dark:hover:bg-dark-border transition-colors text-slate-500 dark:text-slate-400"
-                            >
-                                <X size={20} />
-                            </button>
-
-                            <div className="relative z-10">
-                                <div className="flex items-center gap-4 mb-8">
-                                    <div className="bg-white dark:bg-dark-card p-4 rounded-2xl shadow-sm border border-slate-100 dark:border-dark-border">
-                                        {stepDetails[activeStep].icon}
-                                    </div>
-                                    <div>
-                                        <p className="text-[10px] font-black text-primary-600 dark:text-primary-400 uppercase tracking-[0.3em] mb-1">{stepDetails[activeStep].subtitle}</p>
-                                        <h3 className="text-3xl font-black text-slate-900 dark:text-white">{stepDetails[activeStep].title}</h3>
-                                    </div>
-                                </div>
-
-                                <p className="text-slate-600 dark:text-slate-300 text-lg leading-relaxed mb-10 font-medium">
-                                    {stepDetails[activeStep].content}
-                                </p>
-
-                                <div className="space-y-4">
-                                    <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Key Capabilities</p>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                        {stepDetails[activeStep].features.map((f, i) => (
-                                            <div key={i} className="flex items-center gap-3 bg-slate-50 dark:bg-dark-card/50 p-4 rounded-2xl border border-slate-100 dark:border-dark-border">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-primary-500"></div>
-                                                <span className="font-bold text-slate-700 dark:text-slate-200">{f}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <div className="mt-12 pt-8 border-t border-slate-100">
-                                    <button
-                                        onClick={() => setActiveStep(null)}
-                                        className="w-full btn-premium py-5 text-lg"
-                                    >
-                                        Got it, Proceed <ArrowRight size={20} />
-                                    </button>
-                                </div>
-                            </div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
-
-            {/* Background Decorations */}
-            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-                <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-primary-100/30 dark:bg-primary-900/10 blur-[120px] rounded-full animate-float"></div>
-                <div className="absolute top-[20%] -right-[5%] w-[30%] h-[30%] bg-health-cyber/10 dark:bg-health-cyber/5 blur-[100px] rounded-full animate-float" style={{ animationDelay: '-2s' }}></div>
-                <div className="absolute bottom-[10%] left-[20%] w-[25%] h-[25%] bg-health-violet/10 dark:bg-health-violet/5 blur-[100px] rounded-full animate-float" style={{ animationDelay: '-4s' }}></div>
-            </div>
-
             <AnimatePresence mode="wait">
                 {visibleSection === 'hero' && (
                     <motion.div
@@ -180,7 +76,6 @@ const LandingPage = () => {
                                                 Explore Features
                                             </button>
                                         </motion.div>
-
                                     </motion.div>
 
                                     <div className="relative lg:h-[600px] flex items-center justify-center">
@@ -206,39 +101,18 @@ const LandingPage = () => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.4, ease: "easeInOut" }}
                     >
-
-                        {/* How It Works Section */}
                         <section id="how-it-works" className="py-32 bg-white dark:bg-dark-bg relative overflow-hidden transition-colors duration-300">
-                            {/* Visual Connection Line (Desktop) */}
-                            <div className="absolute top-[60%] left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary-100 to-transparent hidden md:block z-0"></div>
-
                             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                                 <div className="text-center mb-24">
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        whileInView={{ opacity: 1, scale: 1 }}
-                                        viewport={{ once: true }}
-                                        className="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-slate-900 text-white font-black text-[10px] uppercase tracking-[0.3em] mb-6"
-                                    >
+                                    <div className="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-slate-900 text-white font-black text-[10px] uppercase tracking-[0.3em] mb-6">
                                         The Protocol
-                                    </motion.div>
-                                    <motion.h2
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true }}
-                                        className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter mb-6"
-                                    >
+                                    </div>
+                                    <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter mb-6">
                                         Precision <span className="italic text-primary-600 dark:text-primary-400">Workflow</span>
-                                    </motion.h2>
-                                    <motion.p
-                                        initial={{ opacity: 0, y: 20 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true }}
-                                        transition={{ delay: 0.2 }}
-                                        className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium"
-                                    >
+                                    </h2>
+                                    <p className="text-lg text-slate-500 dark:text-slate-400 max-w-2xl mx-auto font-medium">
                                         Our diagnostic engine transforms raw data into clinical intelligence through a three-stage neural architecture.
-                                    </motion.p>
+                                    </p>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
@@ -255,14 +129,14 @@ const LandingPage = () => {
                                             step: "02",
                                             icon: <GenZIcon icon={LineChart} color="text-white" glowColor="bg-white/20" />,
                                             title: "Diagnostic Synthesis",
-                                            desc: "Advanced computational logic maps your reported symptoms against clinical datasets to detect early-stage deviations.",
-                                            color: "from-health-cyber to-blue-500",
+                                            desc: "Advanced computational logic maps your reported symptoms against clinical datasets.",
+                                            color: "from-cyan-500 to-blue-500",
                                             glow: "bg-cyan-400/20"
                                         },
                                         {
                                             step: "03",
                                             icon: <GenZIcon icon={CheckCircle2} color="text-white" glowColor="bg-white/20" />,
-                                            title: "Clinical Synthesis",
+                                            title: "Final Output",
                                             desc: "A high-fidelity report is generated with exact risk classifications and preventive measures.",
                                             color: "from-slate-800 to-slate-900",
                                             glow: "bg-emerald-400/10"
@@ -275,40 +149,16 @@ const LandingPage = () => {
                                             viewport={{ once: true }}
                                             transition={{ delay: idx * 0.2, duration: 0.8 }}
                                             className="relative group cursor-pointer"
-                                            onClick={() => setActiveStep(item.step)}
                                         >
-                                            {/* Step Indicator Shadow */}
-                                            <div className="absolute -top-6 left-1/2 -translate-x-1/2 text-[8rem] font-black text-slate-900 dark:text-slate-100 opacity-[0.03] dark:opacity-[0.05] select-none group-hover:opacity-[0.07] transition-opacity duration-700">
-                                                {item.step}
-                                            </div>
-
-                                            <div className="glass-card bg-white/50 dark:bg-dark-card/40 p-10 rounded-[3rem] border-slate-100 dark:border-dark-border/50 hover:border-white dark:hover:border-dark-border hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] transition-all duration-700 h-full flex flex-col items-center text-center group">
-                                                {/* Icon Container with Gradient Orb */}
+                                            <div className="glass-card bg-white dark:bg-dark-card/40 p-10 rounded-[3rem] border border-slate-100 dark:border-dark-border/50 hover:border-white transition-all duration-700 h-full flex flex-col items-center text-center">
                                                 <div className="relative mb-8">
-                                                    <div className={`absolute inset-0 ${item.glow} blur-2xl rounded-full scale-150 group-hover:scale-[2] transition-transform duration-700`}></div>
-                                                    <div className={`relative bg-gradient-to-br ${item.color} p-6 rounded-[2rem] shadow-lg shadow-blue-500/10 transform group-hover:rotate-12 transition-transform duration-500`}>
+                                                    <div className={`absolute inset-0 ${item.glow} blur-2xl rounded-full scale-150`}></div>
+                                                    <div className={`relative bg-gradient-to-br ${item.color} p-6 rounded-[2rem] shadow-lg`}>
                                                         {item.icon}
                                                     </div>
                                                 </div>
-
-                                                <div className="mb-4">
-                                                    <div className="flex flex-col items-center">
-                                                        <span className="text-[10px] font-black text-primary-600 dark:text-primary-400 uppercase tracking-widest bg-primary-50 dark:bg-primary-900/30 px-3 py-1 rounded-full mb-3 inline-block">Stage {item.step}</span>
-                                                        <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{item.title}</h3>
-                                                    </div>
-                                                </div>
-
-                                                <p className="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
-                                                    {item.desc}
-                                                </p>
-
-                                                {/* Action Label */}
-                                                <div className="mt-6 text-primary-600 dark:text-primary-400 text-xs font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2">
-                                                    View Protocol Details <ArrowRight size={14} />
-                                                </div>
-
-                                                {/* Bottom Decorative Element */}
-                                                <div className={`w-12 h-1 bg-gradient-to-r ${item.color} rounded-full mt-8 opacity-20 group-hover:opacity-100 group-hover:w-20 transition-all duration-500`}></div>
+                                                <h3 className="text-2xl font-black text-slate-900 dark:text-white mb-4">{item.title}</h3>
+                                                <p className="text-slate-500 dark:text-slate-400 font-medium">{item.desc}</p>
                                             </div>
                                         </motion.div>
                                     ))}
@@ -326,32 +176,27 @@ const LandingPage = () => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.4, ease: "easeInOut" }}
                     >
-                        {/* Features Section */}
                         <section id="features" className="py-32 bg-slate-50/50 dark:bg-dark-bg/50 relative transition-colors duration-300">
                             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                                 <div className="flex flex-col lg:flex-row items-center gap-20">
                                     <div className="w-full lg:w-1/2">
-                                        <motion.div
-                                            initial={{ opacity: 0, x: -30 }}
-                                            whileInView={{ opacity: 1, x: 0 }}
-                                            viewport={{ once: true }}
-                                        >
-                                            <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-8 leading-[1.1] tracking-tight">
-                                                Premium Features for Your <span className="text-primary-600">Health</span>
-                                            </h2>
-                                            <p className="text-lg text-slate-500 dark:text-slate-400 mb-12 font-medium">
-                                                Our platform combines medical expertise with advanced AI to give you the most accurate proactive health tools.
-                                            </p>
-                                        </motion.div>
+                                        <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-8 leading-[1.1] tracking-tight">
+                                            Premium Features for Your <span className="text-primary-600">Health</span>
+                                        </h2>
+                                        <p className="text-lg text-slate-500 dark:text-slate-400 mb-12 font-medium">
+                                            Our platform combines medical expertise with advanced AI to give you the most accurate proactive health tools.
+                                        </p>
                                         <div className="space-y-6">
                                             {[
-                                                { icon: <GenZIcon icon={Activity} color="text-primary-500" />, title: "Symptom Checker", desc: "Detailed analysis of your current physical symptoms." },
-                                                { icon: <GenZIcon icon={LineChart} color="text-health-teal" />, title: "Predictive Analytics", desc: "Identify long-term health risks based on lifestyle data." },
-                                                { icon: <GenZIcon icon={Lock} color="text-health-green" />, title: "Secure Data Storage", desc: "Your health records are encrypted and kept strictly private." },
-                                                { icon: <GenZIcon icon={ShieldCheck} color="text-primary-600" />, title: "Early Warnings", desc: "Prevent serious illness with proactive health indicators." }
+                                                { icon: Brain, title: "Symptom Checker", desc: "Detailed analysis of your current physical symptoms." },
+                                                { icon: Activity, title: "Predictive Analytics", desc: "Identify long-term health risks based on lifestyle data." },
+                                                { icon: Lock, title: "Secure Data Storage", desc: "Your health records are encrypted and kept strictly private." },
+                                                { icon: ShieldCheck, title: "Early Warnings", desc: "Prevent serious illness with proactive health indicators." }
                                             ].map((feature, idx) => (
                                                 <div key={idx} className="flex items-start gap-4">
-                                                    <div className="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm mt-1">{feature.icon}</div>
+                                                    <div className="bg-white dark:bg-slate-800 p-3 rounded-xl shadow-sm mt-1">
+                                                        <feature.icon className="text-primary-600" size={24} />
+                                                    </div>
                                                     <div>
                                                         <h4 className="text-xl font-bold text-slate-800 dark:text-white mb-1">{feature.title}</h4>
                                                         <p className="text-slate-600 dark:text-slate-300">{feature.desc}</p>
@@ -372,10 +217,10 @@ const LandingPage = () => {
                                             </div>
                                             <div className="space-y-4">
                                                 <div className="bg-white p-2 rounded-2xl overflow-hidden shadow-lg h-40">
-                                                    <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=600" alt="Advanced Medical Laboratory" className="w-full h-full object-cover rounded-xl" />
+                                                    <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=600" alt="Advanced Medical Lab" className="w-full h-full object-cover rounded-xl" />
                                                 </div>
                                                 <div className="bg-white p-2 rounded-2xl overflow-hidden shadow-lg h-60">
-                                                    <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&q=80&w=600" alt="Modern Diagnostic Interface" className="w-full h-full object-cover rounded-xl" />
+                                                    <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?auto=format&fit=crop&q=80&w=600" alt="Modern Interface" className="w-full h-full object-cover rounded-xl" />
                                                 </div>
                                             </div>
                                         </div>
@@ -387,26 +232,18 @@ const LandingPage = () => {
                 )}
             </AnimatePresence>
 
-            {/* CTA Section (Always Visible or below sections) */}
+            {/* Footer CTA */}
             <section className="py-32 relative z-10 overflow-hidden">
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        viewport={{ once: true }}
-                        className="bg-slate-900 rounded-[3.5rem] p-16 md:p-24 text-center text-white relative overflow-hidden shadow-2xl"
-                    >
+                    <div className="bg-slate-900 rounded-[3.5rem] p-16 md:p-24 text-center text-white relative overflow-hidden shadow-2xl">
                         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-600/20 blur-[120px] rounded-full -mr-64 -mt-64 animate-pulse"></div>
-                        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-health-cyber/10 blur-[100px] rounded-full -ml-40 -mb-40"></div>
-
                         <div className="relative z-10 max-w-4xl mx-auto">
                             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-8 backdrop-blur-sm">
                                 <ShieldCheck size={18} className="text-emerald-400" />
                                 <span className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-400">Military Grade Encryption</span>
                             </div>
-
-                            <h2 className="text-6xl md:text-8xl font-normal mb-8 tracking-tighter leading-none text-white" style={{ fontFamily: "'DM Serif Display', serif" }}>
-                                Secure Your <span className="italic text-primary-400 underline decoration-primary-500/30">Future</span>
+                            <h2 className="text-6xl md:text-8xl font-black mb-8 tracking-tighter leading-none">
+                                Secure Your <span className="italic text-primary-400">Future</span>
                             </h2>
 
                             <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto font-medium leading-relaxed">
@@ -436,7 +273,7 @@ const LandingPage = () => {
                                 <p className="text-slate-500 text-xs font-bold uppercase tracking-widest">No credit card or insurance required</p>
                             </div>
                         </div>
-                    </motion.div>
+                    </div>
                 </div>
             </section>
         </div>

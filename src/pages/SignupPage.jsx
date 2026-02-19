@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, HeartPulse, User, ArrowRight } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
 
 const SignupPage = () => {
     const [name, setName] = useState('');
@@ -19,13 +20,15 @@ const SignupPage = () => {
             setError('');
             setLoading(true);
             await signup(email, password, name);
-            // Set flag to trigger cinematic intro after successful signup
-            sessionStorage.setItem('vita_gateway_passed', 'true'); // Also bypass the gateway if needed
+            toast.success('Account created successfully!');
+            // Set flags to trigger cinematic intro/onboarding after successful signup
+            sessionStorage.setItem('vita_gateway_passed', 'true');
             sessionStorage.setItem('vitaGuard_just_logged_in', 'true');
             // Force clean redirect to root
             window.location.href = '/';
         } catch (err) {
             setError('Failed to create an account. ' + err.message);
+            toast.error('Signup failed. Please try again.');
         } finally {
             setLoading(false);
         }

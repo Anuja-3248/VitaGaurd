@@ -99,12 +99,18 @@ const DashboardPage = () => {
             trend: assessments.length > 0 ? "recent" : "pending"
         },
         {
-            label: "Active Insights",
-            value: assessments.length > 0 ? "3 Alerts" : "0 Alerts",
-            color: "text-violet-500",
-            bgColor: "bg-violet-50 dark:bg-violet-500/10",
-            icon: <GenZIcon icon={Lightbulb} color="text-violet-500" glowColor="bg-violet-500/20" />,
-            trend: "analyzing"
+            label: "Health Readiness",
+            value: assessments.length > 0
+                ? `${100 - (assessments[0].riskScore || 0)}%`
+                : "N/A",
+            color: assessments.length > 0
+                ? (assessments[0].riskScore < 15 ? "text-emerald-500" : assessments[0].riskScore < 30 ? "text-amber-500" : "text-rose-500")
+                : "text-slate-400",
+            bgColor: assessments.length > 0
+                ? (assessments[0].riskScore < 15 ? "bg-emerald-50 dark:bg-emerald-500/10" : assessments[0].riskScore < 30 ? "bg-amber-50 dark:bg-amber-500/10" : "bg-rose-50 dark:bg-rose-500/10")
+                : "bg-slate-50 dark:bg-slate-800",
+            icon: <GenZIcon icon={Activity} color="text-violet-500" glowColor="bg-violet-500/20" />,
+            trend: assessments.length > 0 ? "clinical stability" : "awaiting scan"
         }
     ];
 
@@ -461,7 +467,7 @@ const DashboardPage = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 };
 
