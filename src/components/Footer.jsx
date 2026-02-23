@@ -4,86 +4,54 @@ import { HeartPulse, Github, Twitter, Linkedin, Mail, ShieldCheck } from 'lucide
 
 const Footer = () => {
     return (
-        <footer className="clinical-purple-theme text-slate-300 pt-24 pb-12 relative overflow-hidden">
-            {/* Background Orbs */}
-            <div className="fixed inset-0 pointer-events-none z-0">
-                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
-                <div className="glow-orb bottom-[10%] left-[20%] w-[25%] h-[25%] bg-purple-600/10 animate-float" style={{ animationDelay: '-4s' }} />
-            </div>
-
+        <footer className="bg-white dark:bg-dark-bg text-slate-300 pt-20 pb-12 relative overflow-hidden transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                <div className="flex flex-col md:flex-row justify-between items-start gap-16 mb-16">
+                <div className="flex flex-col items-center text-center">
                     {/* Brand & Mission */}
-                    <div className="max-w-md">
-                        <Link to="/" className="flex items-center space-x-2 mb-8 group">
-                            <div className="bg-primary-600 p-2 rounded-xl shadow-glow transition-transform group-hover:scale-110">
+                    <div className="max-w-2xl mb-12">
+                        <Link to="/" className="flex items-center justify-center space-x-2 mb-6 group">
+                            <div className="bg-purple-600 p-2 rounded-xl shadow-glow transition-transform group-hover:scale-110">
                                 <HeartPulse className="h-6 w-6 text-white" />
                             </div>
-                            <span className="text-2xl font-black text-slate-800 dark:text-white tracking-tighter">
-                                Vita<span className="text-primary-600">Guard</span>
+                            <span className="text-2xl font-black text-slate-900 dark:text-white tracking-tighter">
+                                Vita<span className="text-purple-600">Guard</span>
                             </span>
                         </Link>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-xs font-medium">
+                        <p className="text-slate-500 dark:text-slate-400 text-lg leading-relaxed font-medium mb-8">
                             Synthesizing medical intelligence with biometric data to predict and prevent health risks before they arise.
                         </p>
-                        <div className="flex gap-4">
-                            {[Github, Twitter, Linkedin, Mail].map((Icon, i) => (
-                                <a key={i} href="#" className="w-10 h-10 rounded-xl bg-slate-50 dark:bg-white/5 flex items-center justify-center text-slate-400 hover:text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 transition-all duration-300">
-                                    <Icon size={18} />
-                                </a>
-                            ))}
+
+                        {/* Contact Details */}
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12 text-sm font-bold text-slate-600 dark:text-slate-400">
+                            <div className="flex items-center gap-2">
+                                <Mail size={18} className="text-purple-600" />
+                                <span>contact@vitaguard.ai</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <ShieldCheck size={18} className="text-purple-600" />
+                                <span>Secure Medical Protocol v2.4</span>
+                            </div>
                         </div>
                     </div>
 
-                    {/* Platform Columns */}
-                    <div>
-                        <h4 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 dark:text-white/30 mb-8">Platform</h4>
-                        <ul className="space-y-4">
-                            {['Diagnostic Hub', 'Risk Analytics', 'Biometric Map', 'Community'].map((item) => (
-                                <li key={item}>
-                                    <Link to="#" className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                                        {item}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Resources */}
-                    <div>
-                        <h4 className="text-xs font-black uppercase tracking-[0.2em] text-slate-400 dark:text-white/30 mb-8">Resources</h4>
-                        <ul className="space-y-4">
-                            {['Documentation', 'Privacy Policy', 'Security Protocol', 'Clinical Basis'].map((item) => (
-                                <li key={item}>
-                                    <Link to="#" className="text-sm font-bold text-slate-600 dark:text-slate-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
-                                        {item}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    {/* Trust Column */}
-                    <div className="bg-slate-50 dark:bg-white/5 rounded-[2rem] p-8 border border-slate-100 dark:border-white/5">
-                        <div className="flex items-center gap-3 mb-4 text-emerald-600">
-                            <ShieldCheck size={20} />
-                            <span className="text-xs font-black uppercase tracking-widest leading-none">HIPAA Compliant</span>
-                        </div>
-                        <h4 className="text-lg font-black text-slate-800 dark:text-white mb-2 leading-tight">Data Integrity Guarantee</h4>
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed mb-6">Your medical telemetry is end-to-end encrypted and never sold to third parties.</p>
-                        <div className="h-1 w-full bg-slate-200 dark:bg-white/10 rounded-full overflow-hidden">
-                            <div className="h-full w-3/4 bg-primary-600 rounded-full"></div>
-                        </div>
+                    {/* Social Links */}
+                    <div className="flex gap-4 mb-16">
+                        {[Github, Twitter, Linkedin].map((Icon, i) => (
+                            <a key={i} href="#" className="w-12 h-12 rounded-2xl bg-slate-50 dark:bg-white/5 flex items-center justify-center text-slate-400 hover:text-purple-600 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-300 border border-slate-100 dark:border-white/5">
+                                <Icon size={20} />
+                            </a>
+                        ))}
                     </div>
                 </div>
 
+                {/* Bottom Bar */}
                 <div className="pt-8 border-t border-slate-100 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">
                         &copy; {new Date().getFullYear()} VITAGUARD MEDICAL INTELLIGENCE. ALL RIGHTS RESERVED.
                     </p>
                     <div className="flex gap-8">
-                        <Link to="#" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary-600">Terms of Service</Link>
-                        <Link to="#" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary-600">Compliance</Link>
+                        <Link to="#" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-purple-600 transition-colors">Privacy & Terms</Link>
+                        <Link to="#" className="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-purple-600 transition-colors">Clinical Compliance</Link>
                     </div>
                 </div>
             </div>

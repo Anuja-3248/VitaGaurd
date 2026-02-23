@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ShieldCheck, Activity, LineChart, Lock, ArrowRight, CheckCircle2, X, Microscope, Database, FileText, Brain, HeartPulse } from 'lucide-react';
 import GenZIcon from '../components/GenZIcon';
 import { useAuth } from '../context/AuthContext';
-import AnimatedRobot from '../components/AnimatedRobot';
+// Image replaced as requested
 
 const LandingPage = () => {
     const { currentUser } = useAuth();
@@ -187,9 +187,17 @@ const LandingPage = () => {
                                         {/* Purple glow behind robot */}
                                         <div className="absolute inset-0 bg-purple-600/20 blur-[100px] rounded-full" />
 
-                                        {/* Animated Robot - self-contained, no external URL */}
-                                        <div className="relative z-10 w-full max-w-[520px]">
-                                            <AnimatedRobot />
+                                        {/* Image Box with Border - Medical Empathy */}
+                                        <div className="relative z-10 w-full max-w-[550px] aspect-video group">
+                                            <div className="absolute inset-0 bg-purple-500/20 rounded-[2.5rem] blur-2xl group-hover:bg-purple-500/30 transition-all duration-700" />
+                                            <div className="relative h-full w-full rounded-[2.5rem] border-4 border-purple-500/30 overflow-hidden shadow-2xl transition-transform duration-700 hover:scale-[1.02]">
+                                                <img
+                                                    src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=2000&auto=format&fit=crop"
+                                                    alt="Healthcare Empathy"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-purple-900/40 to-transparent opacity-60" />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
