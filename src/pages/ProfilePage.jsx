@@ -84,24 +84,24 @@ const ProfilePage = () => {
 
     if (loading) {
         return (
-            <div className="clinical-purple-theme min-h-screen flex items-center justify-center">
+            <div className="bg-slate-50 dark:bg-[#0a0010] min-h-screen flex items-center justify-center transition-colors duration-300">
                 {/* Background Orbs */}
                 <div className="fixed inset-0 pointer-events-none z-0">
                     <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
-                    <div className="glow-orb bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" />
+                    <div className="glow-orb bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-purple-600/5 animate-float" />
                 </div>
-                <Loader2 className="relative z-10 w-12 h-12 text-primary-500 animate-spin" />
+                <Loader2 className="relative z-10 w-12 h-12 text-purple-500 animate-spin" />
             </div>
         );
     }
 
     return (
-        <div className="clinical-purple-theme min-h-screen pt-36 pb-12 px-4 selection:bg-purple-500/30 selection:text-white">
-            {/* Background Orbs */}
+        <div className="bg-slate-50 dark:bg-[#0a0010] min-h-screen pt-36 pb-12 px-4 selection:bg-purple-500/30 selection:text-white transition-colors duration-300">
+            {/* Background Orbs - visible mainly in dark mode */}
             <div className="fixed inset-0 pointer-events-none z-0">
-                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
-                <div className="glow-orb top-[20%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" style={{ animationDelay: '-2s' }} />
-                <div className="glow-orb bottom-[10%] left-[20%] w-[25%] h-[25%] bg-purple-600/10 animate-float" style={{ animationDelay: '-4s' }} />
+                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 dark:bg-purple-600/20 animate-float" />
+                <div className="glow-orb top-[20%] right-[-5%] w-[30%] h-[30%] bg-purple-400/5 dark:bg-purple-600/10 animate-float" style={{ animationDelay: '-2s' }} />
+                <div className="glow-orb bottom-[10%] left-[20%] w-[25%] h-[25%] bg-purple-600/5 dark:bg-purple-600/15 animate-float" style={{ animationDelay: '-4s' }} />
             </div>
 
             <div className="max-w-3xl mx-auto relative z-10">
@@ -135,7 +135,7 @@ const ProfilePage = () => {
 
                         {/* Basic Info Section */}
                         <section className="space-y-6">
-                            <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] border-b pb-4">Personal Details</h3>
+                            <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-200 dark:border-white/10 pb-4">Personal Details</h3>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
@@ -220,7 +220,7 @@ const ProfilePage = () => {
 
                         {/* Physical Stats Section */}
                         <section className="space-y-6 pt-4">
-                            <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] border-b pb-4">Physical Composition</h3>
+                            <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-200 dark:border-white/10 pb-4">Physical Composition</h3>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="relative">
                                     <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
@@ -255,7 +255,7 @@ const ProfilePage = () => {
 
                         {/* Additional Info Section */}
                         <section className="space-y-6 pt-4">
-                            <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] border-b pb-4">Medical Background</h3>
+                            <h3 className="text-sm font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-200 dark:border-white/10 pb-4">Medical Background</h3>
                             <div>
                                 <label className="block text-sm font-bold text-slate-700 dark:text-slate-300 mb-2 uppercase tracking-wide opacity-70">Past Medical History</label>
                                 <textarea

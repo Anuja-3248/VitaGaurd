@@ -147,11 +147,15 @@ const LandingPage = () => {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.4, ease: "easeInOut" }}
                     >
-                        {/* Hero Section - Dark Purple Theme */}
-                        <section className="relative min-h-[100vh] flex items-center pt-28 pb-20 z-10 bg-[#0a0010]" style={{ background: 'linear-gradient(135deg, #0a0010 0%, #0d0020 50%, #120028 100%)' }}>
-                            {/* Purple glow orbs */}
-                            <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-purple-700/20 blur-[120px] rounded-full pointer-events-none" />
-                            <div className="absolute bottom-1/4 right-1/3 w-[300px] h-[300px] bg-purple-500/10 blur-[80px] rounded-full pointer-events-none" />
+                        {/* Hero Section - Theme aware */}
+                        <section className="relative min-h-[100vh] flex items-center pt-28 pb-20 z-10 bg-white dark:bg-[#0a0a0a] transition-colors duration-500">
+                            {/* Light mode: subtle gradient overlay */}
+                            <div className="dark:hidden absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-purple-50/30 pointer-events-none" />
+                            {/* Dark mode: solid black overlay */}
+                            <div className="hidden dark:block absolute inset-0 bg-[#0a0a0a] pointer-events-none" />
+                            {/* Purple glow orbs - light mode only */}
+                            <div className="dark:hidden absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-purple-700/20 blur-[120px] rounded-full pointer-events-none" />
+                            <div className="dark:hidden absolute bottom-1/4 right-1/3 w-[300px] h-[300px] bg-purple-500/10 blur-[80px] rounded-full pointer-events-none" />
                             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative w-full">
                                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                                     <motion.div
@@ -160,11 +164,11 @@ const LandingPage = () => {
                                         variants={containerVariants}
                                         className="text-center lg:text-left"
                                     >
-                                        <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl lg:text-7xl font-normal text-white leading-[1.1] mb-8 tracking-tighter" style={{ fontFamily: "'DM Serif Display', serif" }}>
-                                            Prevention <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-violet-300">Begins With</span> Prediction
+                                        <motion.h1 variants={itemVariants} className="text-5xl md:text-6xl lg:text-7xl font-normal text-slate-900 dark:text-white leading-[1.1] mb-8 tracking-tighter" style={{ fontFamily: "'DM Serif Display', serif" }}>
+                                            Prevention <span className="italic text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-violet-500 dark:from-purple-400 dark:to-violet-300">Begins With</span> Prediction
                                         </motion.h1>
 
-                                        <motion.p variants={itemVariants} className="text-xl text-slate-300 mb-12 max-w-xl lg:mx-0 mx-auto leading-relaxed font-medium">
+                                        <motion.p variants={itemVariants} className="text-xl text-slate-600 dark:text-slate-300 mb-12 max-w-xl lg:mx-0 mx-auto leading-relaxed font-medium">
                                             Bridge the gap between symptoms and clinical certainty. VitaGuard utilizes advanced diagnostic synthesis to map your biometric patterns, identifying subtle health shifts with technical precision.
                                         </motion.p>
 
@@ -175,7 +179,7 @@ const LandingPage = () => {
                                             </Link>
                                             <button
                                                 onClick={() => window.location.hash = '#features'}
-                                                className="group text-lg px-10 py-5 text-center bg-purple-600/10 text-purple-400 border border-purple-500/30 rounded-2xl font-bold hover:bg-purple-600/20 transition-all backdrop-blur-md flex items-center justify-center gap-2"
+                                                className="group text-lg px-10 py-5 text-center bg-purple-100 dark:bg-purple-600/10 text-purple-700 dark:text-purple-400 border border-purple-300 dark:border-purple-500/30 rounded-2xl font-bold hover:bg-purple-200 dark:hover:bg-purple-600/20 transition-all backdrop-blur-md flex items-center justify-center gap-2"
                                             >
                                                 Explore Features
                                             </button>

@@ -51,11 +51,11 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="clinical-purple-theme min-h-screen flex selection:bg-purple-500/30 selection:text-white">
+        <div className="bg-slate-50 dark:bg-[#0a0010] min-h-screen flex selection:bg-purple-500/30 selection:text-white transition-colors duration-300">
             {/* Background Orbs */}
             <div className="fixed inset-0 pointer-events-none z-0">
-                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
-                <div className="glow-orb bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" />
+                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 dark:bg-purple-600/15 animate-float" />
+                <div className="glow-orb bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-purple-400/5 dark:bg-purple-500/10 animate-float" />
             </div>
             {/* Left Side - Welcome Panel with Image */}
             <div className="hidden lg:flex lg:w-1/2 bg-neutral-900 relative overflow-hidden">
@@ -109,7 +109,7 @@ const LoginPage = () => {
             </div>
 
             {/* Right Side - Login Form */}
-            <div className="flex-1 flex items-center justify-center p-8">
+            <div className="flex-1 flex items-center justify-center p-8 bg-white/60 dark:bg-transparent backdrop-blur-sm">
                 <div className="w-full max-w-md">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
@@ -119,16 +119,16 @@ const LoginPage = () => {
                         {/* Mobile logo */}
                         <div className="lg:hidden text-center mb-8">
                             <Link to="/" className="inline-flex items-center space-x-3">
-                                <div className="bg-blue-600 p-2.5 rounded-lg">
+                                <div className="bg-purple-600 p-2.5 rounded-xl">
                                     <HeartPulse className="h-6 w-6 text-white" />
                                 </div>
-                                <span className="text-2xl font-semibold text-white">VitaGuard</span>
+                                <span className="text-2xl font-semibold text-slate-900 dark:text-white">VitaGuard</span>
                             </Link>
                         </div>
 
                         <div>
-                            <h2 className="text-3xl font-medium text-white mb-2">Sign in to your account</h2>
-                            <p className="text-slate-400">Enter your credentials to continue</p>
+                            <h2 className="text-3xl font-medium text-slate-900 dark:text-white mb-2">Sign in to your account</h2>
+                            <p className="text-slate-500 dark:text-slate-400">Enter your credentials to continue</p>
                         </div>
 
                         {error && (
@@ -143,17 +143,17 @@ const LoginPage = () => {
 
                         <form onSubmit={handleLogin} className="space-y-6">
                             <div>
-                                <label className="block text-slate-300 text-sm font-medium mb-2">
+                                <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-2">
                                     Email address
                                 </label>
                                 <div className="relative">
-                                    <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-500">
+                                    <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 dark:text-slate-500">
                                         <Mail size={18} />
                                     </span>
                                     <input
                                         type="email"
                                         required
-                                        className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-white placeholder-slate-500"
+                                        className="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
                                         placeholder="you@example.com"
                                         value={email}
                                         onChange={(e) => setEmail(e.target.value)}
@@ -162,24 +162,24 @@ const LoginPage = () => {
                             </div>
 
                             <div>
-                                <label className="block text-slate-300 text-sm font-medium mb-2">
+                                <label className="block text-slate-700 dark:text-slate-300 text-sm font-medium mb-2">
                                     Password
                                 </label>
                                 <div className="relative">
-                                    <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-500">
+                                    <span className="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 dark:text-slate-500">
                                         <Lock size={18} />
                                     </span>
                                     <input
                                         type="password"
                                         required
-                                        className="w-full pl-12 pr-4 py-3 bg-slate-800 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-white placeholder-slate-500"
+                                        className="w-full pl-12 pr-4 py-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500"
                                         placeholder="••••••••"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
                                 <div className="text-right mt-2">
-                                    <button type="button" className="text-sm text-purple-400 hover:text-purple-300 transition-colors">
+                                    <button type="button" className="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors">
                                         Forgot password?
                                     </button>
                                 </div>
@@ -196,9 +196,9 @@ const LoginPage = () => {
                         </form>
 
                         <div className="text-center">
-                            <p className="text-slate-400 text-sm">
+                            <p className="text-slate-500 dark:text-slate-400 text-sm">
                                 Don't have an account?{' '}
-                                <Link to="/signup" className="text-purple-400 hover:text-purple-300 font-medium transition-colors">
+                                <Link to="/signup" className="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium transition-colors">
                                     Sign up
                                 </Link>
                             </p>

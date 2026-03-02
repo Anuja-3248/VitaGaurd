@@ -56,7 +56,7 @@ const Navbar = () => {
     };
 
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-[#0a0010]/40 backdrop-blur-2xl border-b border-white/10 transition-all duration-300">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-[#0a0010]/80 backdrop-blur-2xl border-b border-slate-200/50 dark:border-white/10 transition-all duration-300">
             <AnimatePresence>
                 {isProfileOpen && (
                     <ProfileDropdown
@@ -71,11 +71,11 @@ const Navbar = () => {
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
                     <Link to="/" className="flex items-center space-x-3 group">
-                        <div className="bg-blue-600 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-300 flex items-center justify-center">
+                        <div className="bg-purple-600 p-2.5 rounded-xl group-hover:scale-110 transition-transform duration-300 flex items-center justify-center">
                             <HeartPulse className="h-5 w-5 text-white" />
                         </div>
                         <span className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-                            VitaGuard
+                            Vita<span className="text-purple-600">Guard</span>
                         </span>
                     </Link>
 

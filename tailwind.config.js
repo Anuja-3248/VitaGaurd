@@ -12,16 +12,16 @@ export default {
         extend: {
             colors: {
                 primary: {
-                    50: '#f5f7ff',
-                    100: '#ebf0fe',
-                    200: '#ced9fd',
-                    300: '#adc0fc',
-                    400: '#6d8bf9',
-                    500: '#2d56f7',
-                    600: '#294ede',
-                    700: '#2241b9',
-                    800: '#1b3494',
-                    900: '#162b79',
+                    50: '#faf5ff',
+                    100: '#f3e8ff',
+                    200: '#e9d5ff',
+                    300: '#d8b4fe',
+                    400: '#c084fc',
+                    500: '#a855f7',
+                    600: '#9333ea',
+                    700: '#7e22ce',
+                    800: '#6b21a8',
+                    900: '#581c87',
                 },
                 dark: {
                     bg: '#0a0a0a',     /* Neutral 950 - Faint Black */
@@ -46,7 +46,7 @@ export default {
             boxShadow: {
                 'premium': '0 10px 40px -10px rgba(0, 0, 0, 0.05)',
                 'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
-                'glow': '0 0 20px rgba(45, 86, 247, 0.2)',
+                'glow': '0 0 20px rgba(147, 51, 234, 0.25)',
                 'sticker': '4px 4px 0px 0px rgba(15, 23, 42, 0.05)',
                 'sticker-dark': '4px 4px 0px 0px rgba(255, 255, 255, 0.05)',
                 'cartoon': '0 8px 30px rgba(0, 0, 0, 0.12)',
@@ -72,8 +72,8 @@ export default {
                     '50%': { transform: 'translateY(-15px)' },
                 },
                 pulseGlow: {
-                    '0%, 100%': { boxShadow: '0 0 15px rgba(45, 86, 247, 0.2)' },
-                    '50%': { boxShadow: '0 0 30px rgba(45, 86, 247, 0.4)' },
+                    '0%, 100%': { boxShadow: '0 0 15px rgba(147, 51, 234, 0.2)' },
+                    '50%': { boxShadow: '0 0 30px rgba(147, 51, 234, 0.45)' },
                 }
             }
         },

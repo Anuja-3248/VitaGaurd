@@ -166,23 +166,23 @@ const AssessmentPage = () => {
 
     if (loading) {
         return (
-            <div className="clinical-purple-theme min-h-screen flex flex-col items-center justify-center px-4">
+            <div className="bg-slate-50 dark:bg-[#0a0010] min-h-screen flex flex-col items-center justify-center px-4 transition-colors duration-300">
                 {/* Background Orbs */}
                 <div className="fixed inset-0 pointer-events-none z-0">
-                    <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
-                    <div className="glow-orb bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" />
+                    <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 dark:bg-purple-600/20 animate-float" />
+                    <div className="glow-orb bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-purple-500/5 dark:bg-purple-500/10 animate-float" />
                 </div>
 
                 <motion.div
                     animate={{ scale: [1, 1.2, 1], rotate: [0, 360] }}
                     transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    className="relative z-10 mb-8 overflow-hidden rounded-full bg-primary-100/10 p-6 border border-primary-500/20"
+                    className="relative z-10 mb-8 overflow-hidden rounded-full bg-purple-100/80 dark:bg-purple-100/10 p-6 border border-purple-500/20"
                 >
-                    <HeartPulse className="text-primary-500 h-16 w-16" />
+                    <HeartPulse className="text-purple-600 dark:text-purple-400 h-16 w-16" />
                 </motion.div>
-                <h2 className="relative z-10 text-3xl font-bold text-white mb-4">Analyzing Your Risks...</h2>
-                <p className="relative z-10 text-slate-400 text-center max-w-md">Our AI system is processing your symptoms and lifestyle data to provide precise health insights.</p>
-                <div className="relative z-10 mt-12 flex items-center gap-2 text-primary-400 font-bold">
+                <h2 className="relative z-10 text-3xl font-bold text-slate-900 dark:text-white mb-4">Analyzing Your Risks...</h2>
+                <p className="relative z-10 text-slate-500 dark:text-slate-400 text-center max-w-md">Our AI system is processing your symptoms and lifestyle data to provide precise health insights.</p>
+                <div className="relative z-10 mt-12 flex items-center gap-2 text-purple-600 dark:text-purple-400 font-bold">
                     <Loader2 className="animate-spin" size={20} />
                     Processing...
                 </div>
@@ -191,12 +191,12 @@ const AssessmentPage = () => {
     }
 
     return (
-        <div className="clinical-purple-theme min-h-screen pt-36 pb-20 px-4 selection:bg-purple-500/30 selection:text-white">
-            {/* Background Orbs */}
+        <div className="bg-slate-50 dark:bg-[#0a0010] min-h-screen pt-36 pb-20 px-4 selection:bg-purple-500/30 selection:text-white transition-colors duration-300">
+            {/* Background Orbs - visible mainly in dark mode */}
             <div className="fixed inset-0 pointer-events-none z-0">
-                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 animate-float" />
-                <div className="glow-orb top-[20%] right-[-5%] w-[30%] h-[30%] bg-cyan-600/5 animate-float" style={{ animationDelay: '-2s' }} />
-                <div className="glow-orb bottom-[10%] left-[20%] w-[25%] h-[25%] bg-purple-600/10 animate-float" style={{ animationDelay: '-4s' }} />
+                <div className="glow-orb top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-600/10 dark:bg-purple-600/20 animate-float" />
+                <div className="glow-orb top-[20%] right-[-5%] w-[30%] h-[30%] bg-purple-400/5 dark:bg-purple-600/10 animate-float" style={{ animationDelay: '-2s' }} />
+                <div className="glow-orb bottom-[10%] left-[20%] w-[25%] h-[25%] bg-purple-600/5 dark:bg-purple-600/15 animate-float" style={{ animationDelay: '-4s' }} />
             </div>
 
             <div className="max-w-3xl mx-auto relative z-10">

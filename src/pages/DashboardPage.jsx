@@ -424,26 +424,26 @@ const DashboardPage = () => {
                         </section>
 
                         {/* Health Insight Card */}
-                        <section className="bg-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden group shadow-2xl border border-purple-500/20">
-                            <div className="absolute top-0 right-0 w-80 h-80 bg-purple-600/20 blur-[100px] rounded-full -mr-40 -mt-40 group-hover:scale-110 transition-transform duration-700"></div>
-                            <div className="absolute bottom-0 left-0 w-40 h-40 bg-violet-600/10 blur-[60px] rounded-full -ml-20 -mb-20"></div>
+                        <section className="bg-gradient-to-br from-purple-600 via-violet-700 to-purple-900 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900 rounded-[2.5rem] p-10 text-white relative overflow-hidden group shadow-2xl border border-purple-500/30 dark:border-purple-500/20">
+                            <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 dark:bg-purple-600/20 blur-[100px] rounded-full -mr-40 -mt-40 group-hover:scale-110 transition-transform duration-700"></div>
+                            <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/5 dark:bg-violet-600/10 blur-[60px] rounded-full -ml-20 -mb-20"></div>
 
                             <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
                                 <div className="md:w-3/5 text-center md:text-left">
-                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-purple-400 font-black text-[10px] uppercase tracking-widest mb-6 border border-purple-500/20">
+                                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-white font-black text-[10px] uppercase tracking-widest mb-6 border border-white/20">
                                         Clinical Insight
                                     </div>
                                     <h3 className="text-3xl font-black mb-4 tracking-tight italic">Optimizing for Longevity</h3>
-                                    <p className="text-slate-400 mb-8 font-medium leading-relaxed">
+                                    <p className="text-white/80 mb-8 font-medium leading-relaxed">
                                         Data shows consistent cardiovascular monitoring can reduce long-term risks by up to 24%. Stay proactive.
                                     </p>
-                                    <button className="btn-premium px-8 py-4 bg-white text-slate-900 hover:bg-slate-50 border-none shadow-white/5">
+                                    <button className="px-8 py-4 bg-white text-purple-700 font-black rounded-2xl hover:bg-purple-50 transition-all shadow-xl shadow-black/10">
                                         Explore Methodology
                                     </button>
                                 </div>
                                 <div className="md:w-2/5 flex justify-center">
-                                    <div className="h-40 w-40 bg-white/5 backdrop-blur-md rounded-[2.5rem] flex items-center justify-center border border-white/10 shadow-inner group-hover:rotate-12 transition-transform duration-500">
-                                        <TrendingUp size={80} className="text-health-cyber opacity-40" />
+                                    <div className="h-40 w-40 bg-white/10 backdrop-blur-md rounded-[2.5rem] flex items-center justify-center border border-white/20 shadow-inner group-hover:rotate-12 transition-transform duration-500">
+                                        <TrendingUp size={80} className="text-white/50" />
                                     </div>
                                 </div>
                             </div>
