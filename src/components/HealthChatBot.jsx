@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { db } from '../firebase';
 import { collection, query, orderBy, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 
-const HealthChatBot = ({ reportData }) => {
+const HealthChatBot = ({ reportData, autoTrigger }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([
         {
@@ -61,6 +61,24 @@ const HealthChatBot = ({ reportData }) => {
             scrollToBottom();
         }
     }, [messages, isOpen]);
+
+    // Handle Auto Trigger from Parent
+    useEffect(() => {
+        if (autoTrigger && autoTrigger.query && autoTrigger.id) {
+            setIsOpen(true);
+            const timer = setTimeout(() => {
+                setInput(autoTrigger.query);
+            }, 500);
+            return () => clearTimeout(timer);
+        }
+    }, [autoTrigger]);
+
+    // Auto-click send if input was set by trigger
+    useEffect(() => {
+        if (autoTrigger && input === autoTrigger.query && isOpen && !isLoading) {
+            handleSend();
+        }
+    }, [input, isOpen, autoTrigger]);
 
     const saveMessageToFirestore = async (role, content) => {
         if (!reportData?.id) return;

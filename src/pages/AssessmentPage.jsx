@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HeartPulse, ChevronRight, Activity, Info, Loader2, Scan, ShieldCheck } from 'lucide-react';
+import { HeartPulse, ChevronRight, Activity, Info, Loader2, Scan, ShieldCheck, Moon, Cigarette, GlassWater } from 'lucide-react';
 
 import { db } from '../firebase';
 import { collection, addDoc, serverTimestamp, doc, getDoc } from 'firebase/firestore';
@@ -125,42 +125,15 @@ const AssessmentPage = () => {
 
     const steps = [
         { title: "Profile", icon: <Info size={18} /> },
+        { title: "Mapping", icon: <Scan size={18} /> },
         { title: "Symptoms", icon: <Activity size={18} /> },
         { title: "Lifestyle", icon: <HeartPulse size={18} /> }
     ];
 
-    const renderStep2Header = () => (
+    const renderStepHeader = (title, subtitle) => (
         <div className="mb-10">
-            <div className="flex justify-between items-start mb-3">
-                <h2 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">Health Profiling</h2>
-                <button
-                    onClick={handleSubmit}
-                    className="px-4 py-2 bg-primary-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all shadow-glow hover:bg-primary-500 flex items-center gap-2"
-                >
-                    Analyze Now <ChevronRight size={14} />
-                </button>
-            </div>
-            <p className="text-slate-500 dark:text-slate-400 mb-6">Choose how you'd like to report your symptoms.</p>
-            <div className="flex flex-wrap gap-3">
-                <button
-                    onClick={() => setSelectionMode('both')}
-                    className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border-2 ${selectionMode === 'both' ? 'bg-primary-600 border-primary-600 text-white shadow-lg' : 'bg-transparent border-slate-200 dark:border-white/10 text-slate-400'}`}
-                >
-                    Show Both
-                </button>
-                <button
-                    onClick={() => setSelectionMode('visual')}
-                    className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border-2 ${selectionMode === 'visual' ? 'bg-primary-600 border-primary-600 text-white shadow-lg' : 'bg-transparent border-slate-200 dark:border-white/10 text-slate-400'}`}
-                >
-                    3D Body Map
-                </button>
-                <button
-                    onClick={() => setSelectionMode('text')}
-                    className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border-2 ${selectionMode === 'text' ? 'bg-primary-600 border-primary-600 text-white shadow-lg' : 'bg-transparent border-slate-200 dark:border-white/10 text-slate-400'}`}
-                >
-                    Symptom List
-                </button>
-            </div>
+            <h2 className="text-3xl font-bold text-slate-800 dark:text-white tracking-tight mb-2">{title}</h2>
+            <p className="text-slate-500 dark:text-slate-400">{subtitle}</p>
         </div>
     );
 
@@ -306,82 +279,18 @@ const AssessmentPage = () => {
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
-                                className="space-y-12"
+                                className="space-y-10"
                             >
-                                {renderStep2Header()}
+                                {renderStepHeader("Anatomical Mapping", "Select the regions where you are experiencing discomfort.")}
 
-                                {(selectionMode === 'both' || selectionMode === 'visual') && (
-                                    <div className="relative group animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                        <div className="flex justify-between items-center mb-6">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-12 h-12 bg-primary-100 dark:bg-primary-900/30 rounded-2xl flex items-center justify-center">
-                                                    <Scan className="text-primary-600" size={24} />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-xl font-black text-slate-800 dark:text-white leading-none mb-1">Anatomical Mapping</h3>
-                                                    <p className="text-[10px] uppercase font-black tracking-widest text-slate-400">Identify regions of discomfort</p>
-                                                </div>
-                                            </div>
-                                            {selectionMode === 'both' && (
-                                                <button onClick={() => setSelectionMode('text')} className="px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase text-slate-400 hover:text-primary-500 tracking-widest transition-all flex items-center gap-2 border border-slate-100 dark:border-white/5">
-                                                    Skip mapping <ChevronRight size={14} />
-                                                </button>
-                                            )}
-                                        </div>
-                                        <BodyVisualizer selectedRegions={formData.bodyRegions} onToggleRegion={toggleRegion} />
-                                    </div>
-                                )}
-
-                                {(selectionMode === 'both' || selectionMode === 'text') && (
-                                    <div className="space-y-8 pt-8 relative border-t border-slate-100 dark:border-white/5 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                        <div className="flex justify-between items-center">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/30 rounded-2xl flex items-center justify-center">
-                                                    <Activity className="text-amber-600" size={24} />
-                                                </div>
-                                                <div>
-                                                    <h3 className="text-xl font-black text-slate-800 dark:text-white leading-none mb-1">Clinical Indicators</h3>
-                                                    <p className="text-[10px] uppercase font-black tracking-widest text-slate-400">Select observed symptoms</p>
-                                                </div>
-                                            </div>
-                                            {selectionMode === 'both' && (
-                                                <button onClick={() => setSelectionMode('visual')} className="px-4 py-2 bg-slate-50 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase text-slate-400 hover:text-amber-500 tracking-widest transition-all flex items-center gap-2 border border-slate-100 dark:border-white/5">
-                                                    Skip selection <ChevronRight size={14} />
-                                                </button>
-                                            )}
-                                        </div>
-                                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                            {['Chest Pain', 'Shortness of Breath', 'Fatigue', 'Dizziness', 'Persistent Cough', 'Nausea', 'Frequent Urination', 'Headache'].map((s) => (
-                                                <button
-                                                    key={s}
-                                                    onClick={() => toggleSymptom(s)}
-                                                    type="button"
-                                                    className={`p-5 rounded-2xl text-left border-2 transition-all ${formData.symptoms.includes(s) ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-900 dark:text-primary-300 shadow-xl' : 'border-slate-50 bg-slate-50 dark:bg-white/5 text-slate-600 dark:text-slate-400 hover:border-slate-200 dark:hover:border-white/10'}`}
-                                                >
-                                                    <div className="flex justify-between items-center gap-2">
-                                                        <span className="font-black text-[10px] uppercase tracking-tighter">{s}</span>
-                                                        {formData.symptoms.includes(s) && <ShieldCheck size={16} className="text-primary-600" />}
-                                                    </div>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                <div className="mt-8 p-8 bg-slate-50 dark:bg-dark-bg/40 rounded-[2.5rem] border border-slate-100 dark:border-white/5 shadow-inner">
-                                    <label className="block text-[10px] font-black uppercase text-slate-400 tracking-[0.3em] mb-4">Patient Narrative (Optional)</label>
-                                    <textarea
-                                        className="w-full px-6 py-5 bg-white dark:bg-dark-bg border border-slate-200 dark:border-white/10 rounded-[1.5rem] focus:ring-4 focus:ring-primary-500/10 outline-none resize-none text-slate-900 dark:text-white transition-all min-h-[140px]"
-                                        placeholder="Describe your symptoms in more detail..."
-                                        value={formData.otherSymptoms}
-                                        onChange={(e) => setFormData({ ...formData, otherSymptoms: e.target.value })}
-                                    ></textarea>
+                                <div className="relative group p-4 bg-slate-50 dark:bg-white/5 rounded-[2.5rem] border border-slate-100 dark:border-white/5">
+                                    <BodyVisualizer selectedRegions={formData.bodyRegions} onToggleRegion={toggleRegion} />
                                 </div>
 
-                                <div className="flex gap-4 pt-8">
-                                    <button onClick={handleBack} className="flex-1 px-8 py-5 border border-slate-200 dark:border-white/10 text-slate-500 rounded-2xl font-black uppercase text-[10px] tracking-widest hover:bg-slate-50 transition-all">Back</button>
-                                    <button onClick={handleNext} className="flex-[2] btn-primary py-5 text-[10px] font-black uppercase tracking-widest transition-all active:scale-95 shadow-glow">
-                                        Calibrate Lifestyle
+                                <div className="flex gap-4 pt-4">
+                                    <button onClick={handleBack} className="flex-1 px-8 py-5 border border-slate-200 dark:border-white/10 text-slate-500 rounded-2xl font-bold text-sm hover:bg-slate-50 transition-all">Back</button>
+                                    <button onClick={handleNext} className="flex-[2] btn-primary py-5 text-sm font-bold shadow-glow">
+                                        Identify Symptoms
                                     </button>
                                 </div>
                             </motion.div>
@@ -393,76 +302,165 @@ const AssessmentPage = () => {
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: -20 }}
-                                className="space-y-8"
+                                className="space-y-10"
                             >
-                                <div>
-                                    <div className="flex justify-between items-center mb-2">
-                                        <h2 className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">Lifestyle Factors</h2>
-                                        <button onClick={handleSubmit} className="px-4 py-2 bg-slate-900 dark:bg-slate-800 rounded-xl text-[10px] font-black uppercase text-primary-500 tracking-widest transition-all border border-primary-500/30 flex items-center gap-2 hover:bg-primary-500 hover:text-white">
-                                            Skip & Analyze Now <ChevronRight size={14} />
+                                {renderStepHeader("Clinical Indicators", "Select the symptoms that best describe your current condition.")}
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {['Chest Pain', 'Shortness of Breath', 'Fatigue', 'Dizziness', 'Persistent Cough', 'Nausea', 'Frequent Urination', 'Headache'].map((s) => (
+                                        <button
+                                            key={s}
+                                            onClick={() => toggleSymptom(s)}
+                                            type="button"
+                                            className={`group p-6 rounded-[2rem] text-left border-2 transition-all duration-300 relative overflow-hidden ${formData.symptoms.includes(s) ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20 shadow-xl' : 'border-slate-50 bg-slate-50 dark:bg-white/5 hover:border-purple-200 dark:hover:border-purple-900/40 hover:bg-white dark:hover:bg-purple-900/10'}`}
+                                        >
+                                            <div className="flex justify-between items-center relative z-10">
+                                                <span className={`font-bold transition-colors ${formData.symptoms.includes(s) ? 'text-purple-900 dark:text-purple-300' : 'text-slate-600 dark:text-slate-400'}`}>{s}</span>
+                                                <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${formData.symptoms.includes(s) ? 'bg-purple-600 border-purple-600' : 'border-slate-200 dark:border-white/10'}`}>
+                                                    {formData.symptoms.includes(s) && <ShieldCheck size={14} className="text-white" />}
+                                                </div>
+                                            </div>
                                         </button>
-                                    </div>
-                                    <p className="text-slate-500 dark:text-slate-400">Environmental factors help refine the accuracy of health outcomes.</p>
+                                    ))}
                                 </div>
 
+                                <div className="p-8 bg-slate-50 dark:bg-white/5 rounded-[2.5rem] border border-slate-100 dark:border-white/5">
+                                    <label className="block text-sm font-bold text-slate-500 mb-4">Brief Patient Narrative (Optional)</label>
+                                    <textarea
+                                        className="w-full px-6 py-5 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-white/10 rounded-2xl focus:ring-4 focus:ring-purple-500/10 outline-none resize-none text-slate-900 dark:text-white transition-all min-h-[120px]"
+                                        placeholder="Add any other details about your health..."
+                                        value={formData.otherSymptoms}
+                                        onChange={(e) => setFormData({ ...formData, otherSymptoms: e.target.value })}
+                                    ></textarea>
+                                </div>
+
+                                <div className="flex gap-4 pt-4">
+                                    <button onClick={handleBack} className="flex-1 px-8 py-5 border border-slate-200 dark:border-white/10 text-slate-500 rounded-2xl font-bold text-sm hover:bg-slate-50 transition-all">Back</button>
+                                    <button onClick={handleNext} className="flex-[2] btn-primary py-5 text-sm font-bold shadow-glow">
+                                        Calibrate Lifestyle
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+
+                        {step === 4 && (
+                            <motion.div
+                                key="step4"
+                                initial={{ opacity: 0, x: 20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: -20 }}
+                                className="space-y-8"
+                            >
+                                {renderStepHeader("Lifestyle Factors", "Environmental factors help refine the accuracy of health outcomes.")}
+
                                 <form onSubmit={handleSubmit} className="space-y-8">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div>
-                                            <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Daily Sleep (Avg)</label>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                {['less_5', '5_7', '7_9', '9_plus'].map((val) => (
+                                    <div className="space-y-12">
+                                        {/* Sleep Section */}
+                                        <div className="relative pl-8 border-l-2 border-slate-100 dark:border-white/5">
+                                            <div className="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-white dark:bg-slate-900 border-2 border-purple-500 z-10" />
+                                            <div className="flex items-center gap-3 mb-6">
+                                                <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-lg text-blue-600">
+                                                    <Moon size={18} />
+                                                </div>
+                                                <h3 className="text-lg font-bold text-slate-700 dark:text-white">Daily Sleep Duration</h3>
+                                            </div>
+                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                                {[
+                                                    { id: 'less_5', label: '< 5 Hrs' },
+                                                    { id: '5_7', label: '5 - 7 Hrs' },
+                                                    { id: '7_9', label: '7 - 9 Hrs' },
+                                                    { id: '9_plus', label: '9+ Hrs' }
+                                                ].map((opt) => (
                                                     <button
-                                                        key={val}
+                                                        key={opt.id}
                                                         type="button"
-                                                        onClick={() => setFormData({ ...formData, sleep: val })}
-                                                        className={`p-4 rounded-2xl border-2 text-xs font-bold transition-all ${formData.sleep === val ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-900 dark:text-primary-300' : 'border-slate-50 bg-slate-50 dark:bg-white/5 text-slate-500 hover:border-slate-200'}`}
+                                                        onClick={() => setFormData({ ...formData, sleep: opt.id })}
+                                                        className={`py-4 px-2 rounded-xl border-2 transition-all duration-300 font-bold text-xs ${formData.sleep === opt.id ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20 text-purple-900 dark:text-purple-300 shadow-md' : 'border-slate-50 bg-slate-50 dark:bg-white/5 text-slate-500 hover:border-purple-200'}`}
                                                     >
-                                                        {val.replace('_', '+').replace('less', '<').toUpperCase()} HR
+                                                        {opt.label}
                                                     </button>
                                                 ))}
                                             </div>
                                         </div>
-                                        <div>
-                                            <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Physical Activity</label>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                {['never', 'sometimes', 'regular', 'daily'].map((val) => (
+
+                                        {/* Activity Section */}
+                                        <div className="relative pl-8 border-l-2 border-slate-100 dark:border-white/5">
+                                            <div className="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-white dark:bg-slate-900 border-2 border-emerald-500 z-10" />
+                                            <div className="flex items-center gap-3 mb-6">
+                                                <div className="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-emerald-600">
+                                                    <Activity size={18} />
+                                                </div>
+                                                <h3 className="text-lg font-bold text-slate-700 dark:text-white">Physical Activity Level</h3>
+                                            </div>
+                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                                {[
+                                                    { id: 'never', label: 'Rarely' },
+                                                    { id: 'sometimes', label: 'Weekly' },
+                                                    { id: 'regular', label: 'Active' },
+                                                    { id: 'daily', label: 'Daily' }
+                                                ].map((opt) => (
                                                     <button
-                                                        key={val}
+                                                        key={opt.id}
                                                         type="button"
-                                                        onClick={() => setFormData({ ...formData, exercise: val })}
-                                                        className={`p-4 rounded-2xl border-2 text-xs font-bold transition-all ${formData.exercise === val ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-900 dark:text-primary-300' : 'border-slate-50 bg-slate-50 dark:bg-white/5 text-slate-500 hover:border-slate-200'}`}
+                                                        onClick={() => setFormData({ ...formData, exercise: opt.id })}
+                                                        className={`py-4 px-2 rounded-xl border-2 transition-all duration-300 font-bold text-xs ${formData.exercise === opt.id ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20 text-purple-900 dark:text-purple-300 shadow-md' : 'border-slate-50 bg-slate-50 dark:bg-white/5 text-slate-500 hover:border-purple-200'}`}
                                                     >
-                                                        {val.toUpperCase()}
+                                                        {opt.label}
                                                     </button>
                                                 ))}
                                             </div>
                                         </div>
-                                        <div>
-                                            <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Tobacco Exposure</label>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                {['non', 'former', 'occasional', 'regular'].map((val) => (
+
+                                        {/* Tobacco Section */}
+                                        <div className="relative pl-8 border-l-2 border-slate-100 dark:border-white/5">
+                                            <div className="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-white dark:bg-slate-900 border-2 border-orange-500 z-10" />
+                                            <div className="flex items-center gap-3 mb-6">
+                                                <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg text-orange-600">
+                                                    <Cigarette size={18} />
+                                                </div>
+                                                <h3 className="text-lg font-bold text-slate-700 dark:text-white">Tobacco Usage</h3>
+                                            </div>
+                                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                                {[
+                                                    { id: 'non', label: 'Never' },
+                                                    { id: 'occasional', label: 'Occasional' },
+                                                    { id: 'regular', label: 'Regular' }
+                                                ].map((opt) => (
                                                     <button
-                                                        key={val}
+                                                        key={opt.id}
                                                         type="button"
-                                                        onClick={() => setFormData({ ...formData, smoking: val })}
-                                                        className={`p-4 rounded-2xl border-2 text-xs font-bold transition-all ${formData.smoking === val ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-900 dark:text-primary-300' : 'border-slate-50 bg-slate-50 dark:bg-white/5 text-slate-500 hover:border-slate-200'}`}
+                                                        onClick={() => setFormData({ ...formData, smoking: opt.id })}
+                                                        className={`py-4 px-2 rounded-xl border-2 transition-all duration-300 font-bold text-xs ${formData.smoking === opt.id ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20 text-purple-900 dark:text-purple-300 shadow-md' : 'border-slate-50 bg-slate-50 dark:bg-white/5 text-slate-500 hover:border-purple-200'}`}
                                                     >
-                                                        {val.toUpperCase()}
+                                                        {opt.label}
                                                     </button>
                                                 ))}
                                             </div>
                                         </div>
-                                        <div>
-                                            <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-4">Alcohol Intake</label>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                {['none', 'low', 'moderate', 'high'].map((val) => (
+
+                                        {/* Alcohol Section */}
+                                        <div className="relative pl-8 border-l-2 border-slate-100 dark:border-white/5">
+                                            <div className="absolute -left-[11px] top-0 w-5 h-5 rounded-full bg-white dark:bg-slate-900 border-2 border-amber-500 z-10" />
+                                            <div className="flex items-center gap-3 mb-6">
+                                                <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-amber-600">
+                                                    <GlassWater size={18} />
+                                                </div>
+                                                <h3 className="text-lg font-bold text-slate-700 dark:text-white">Alcohol Consumption</h3>
+                                            </div>
+                                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                                {[
+                                                    { id: 'none', label: 'None' },
+                                                    { id: 'low', label: 'Low' },
+                                                    { id: 'moderate', label: 'Moderate' },
+                                                    { id: 'high', label: 'High' }
+                                                ].map((opt) => (
                                                     <button
-                                                        key={val}
+                                                        key={opt.id}
                                                         type="button"
-                                                        onClick={() => setFormData({ ...formData, alcohol: val })}
-                                                        className={`p-4 rounded-2xl border-2 text-xs font-bold transition-all ${formData.alcohol === val ? 'border-primary-600 bg-primary-50 dark:bg-primary-900/20 text-primary-900 dark:text-primary-300' : 'border-slate-50 bg-slate-50 dark:bg-white/5 text-slate-500 hover:border-slate-200'}`}
+                                                        onClick={() => setFormData({ ...formData, alcohol: opt.id })}
+                                                        className={`py-4 px-2 rounded-xl border-2 transition-all duration-300 font-bold text-xs ${formData.alcohol === opt.id ? 'border-purple-600 bg-purple-50 dark:bg-purple-900/20 text-purple-900 dark:text-purple-300 shadow-md' : 'border-slate-50 bg-slate-50 dark:bg-white/5 text-slate-500 hover:border-purple-200'}`}
                                                     >
-                                                        {val.toUpperCase()}
+                                                        {opt.label}
                                                     </button>
                                                 ))}
                                             </div>
