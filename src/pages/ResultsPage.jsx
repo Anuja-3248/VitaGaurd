@@ -18,35 +18,48 @@ const ResultsPage = () => {
     const { id } = useParams();
     const location = useLocation();
 
-    const [assessmentData, setAssessmentData] = useState(location.state?.aiAnalysis || location.state || null);
-    const [loading, setLoading] = useState(!assessmentData && !!id);
+    const [assessmentData, setAssessmentData] = useState(null);
+    const [loading, setLoading] = useState(true);
     const reportRef = useRef(null);
     const pdfTemplateRef = useRef(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const [showHighRiskAlert, setShowHighRiskAlert] = useState(false);
     const [chatTrigger, setChatTrigger] = useState(null);
 
+    // Synchronize data when location or ID changes
     useEffect(() => {
-        const fetchAssessment = async () => {
-            if (!id || assessmentData) return;
-            setLoading(true);
-            try {
-                if (id === 'local') {
-                    const localData = localStorage.getItem('latestAssessment');
-                    if (localData) setAssessmentData(JSON.parse(localData));
-                } else {
-                    const docRef = doc(db, "assessments", id);
-                    const docSnap = await getDoc(docRef);
-                    if (docSnap.exists()) setAssessmentData(docSnap.data());
+        const syncData = async () => {
+            // Case 1: Active Navigation State (highest priority)
+            if (location.state) {
+                setAssessmentData(location.state.aiAnalysis || location.state);
+                setLoading(false);
+                return;
+            }
+
+            // Case 2: Direct URL access with ID
+            if (id) {
+                setLoading(true);
+                try {
+                    if (id === 'local') {
+                        const localData = localStorage.getItem('latestAssessment');
+                        if (localData) setAssessmentData(JSON.parse(localData));
+                    } else {
+                        const docRef = doc(db, "assessments", id);
+                        const docSnap = await getDoc(docRef);
+                        if (docSnap.exists()) setAssessmentData(docSnap.data());
+                    }
+                } catch (error) {
+                    console.error("Data Fetching Failed:", error);
+                } finally {
+                    setLoading(false);
                 }
-            } catch (error) {
-                console.error("Error fetching report:", error);
-            } finally {
+            } else {
                 setLoading(false);
             }
         };
-        fetchAssessment();
-    }, [id, assessmentData]);
+
+        syncData();
+    }, [id, location.state, location.key]);
 
     const result = useMemo(() => {
         if (!assessmentData) return null;
@@ -248,53 +261,115 @@ const ResultsPage = () => {
                             </ul>
                         </div>
 
-                        {/* Lifestyle Impact - Showing exactly what causes the risk */}
-                        <div className="bg-white dark:bg-dark-card rounded-[2.5rem] p-10 shadow-lg border border-slate-100 dark:border-white/5">
-                            <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-8 flex items-center gap-3">
-                                ⚡ Lifestyle Habits Affecting Your Score
+                        {/* Lifestyle Impact - Simplified & Fixed */}
+                        <div className="bg-white dark:bg-dark-card rounded-[2.5rem] p-10 shadow-xl border border-slate-100 dark:border-white/5 relative overflow-hidden">
+                            <h3 className="text-2xl font-bold text-slate-800 dark:text-white mb-2 flex items-center gap-3">
+                                <Zap className="text-amber-500 fill-amber-500/20" size={24} /> Daily Lifestyle Check
                             </h3>
-                            <div className="space-y-4">
-                                {(() => {
-                                    // Robust data finding: check formData property, then state, then assessmentData itself
-                                    const source = assessmentData?.formData || location.state?.formData || (assessmentData?.sleep ? assessmentData : {});
-                                    const items = [
-                                        { key: 'Sleep', value: source.sleep, icon: <Moon size={18} /> },
-                                        { key: 'Activity', value: source.exercise || source.activity, icon: <Activity size={18} /> },
-                                        { key: 'Tobacco', value: source.smoking || source.tobacco, icon: <Cigarette size={18} /> },
-                                        { key: 'Alcohol', value: source.alcohol, icon: <GlassWater size={18} /> }
-                                    ].filter(item => item.value);
+                            <p className="text-slate-500 dark:text-slate-400 text-sm font-bold mb-10">How your daily habits are affecting your health score</p>
 
-                                    if (items.length === 0) return <p className="text-slate-500 text-sm font-bold">No lifestyle data available for this report.</p>;
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                {(() => {
+                                    // Robust data sourcing
+                                    const source = location.state?.formData || assessmentData?.formData || (assessmentData?.sleep ? assessmentData : {}) || {};
+
+                                    const getInsight = (field, val) => {
+                                        const cleanVal = String(val || '').toLowerCase().trim();
+                                        if (!cleanVal || cleanVal === 'undefined' || cleanVal === 'null') {
+                                            return { label: 'Not Provided', score: 0, status: 'Unknown', color: 'slate' };
+                                        }
+
+                                        const mapping = {
+                                            sleep: {
+                                                less_5: { label: "< 5 Hrs", score: 30, status: 'Risk', color: 'rose' },
+                                                '5_7': { label: "5 - 7 Hrs", score: 65, status: 'Unstable', color: 'amber' },
+                                                '7_9': { label: "7 - 9 Hrs", score: 100, status: 'Healthy', color: 'emerald' },
+                                                '9_plus': { label: "9+ Hrs", score: 90, status: 'Healthy', color: 'emerald' }
+                                            },
+                                            exercise: {
+                                                never: { label: "Rarely", score: 35, status: 'Risk', color: 'rose' },
+                                                rarely: { label: "Rarely", score: 35, status: 'Risk', color: 'rose' },
+                                                sometimes: { label: "Weekly", score: 60, status: 'Unstable', color: 'amber' },
+                                                regular: { label: "Active", score: 85, status: 'Healthy', color: 'emerald' },
+                                                daily: { label: "Daily", score: 100, status: 'Healthy', color: 'emerald' }
+                                            },
+                                            smoking: {
+                                                non: { label: "Never", score: 100, status: 'Healthy', color: 'emerald' },
+                                                never: { label: "Never", score: 100, status: 'Healthy', color: 'emerald' },
+                                                occasional: { label: "Occasional", score: 50, status: 'Unstable', color: 'amber' },
+                                                regular: { label: "Regular", score: 20, status: 'Risk', color: 'rose' }
+                                            },
+                                            alcohol: {
+                                                none: { label: "None", score: 100, status: 'Healthy', color: 'emerald' },
+                                                never: { label: "None", score: 100, status: 'Healthy', color: 'emerald' },
+                                                low: { label: "Low", score: 90, status: 'Healthy', color: 'emerald' },
+                                                moderate: { label: "Moderate", score: 60, status: 'Unstable', color: 'amber' },
+                                                high: { label: "High", score: 30, status: 'Risk', color: 'rose' }
+                                            }
+                                        };
+
+                                        const res = mapping[field]?.[cleanVal];
+                                        if (res) return res;
+
+                                        // Fallback smart matching
+                                        if (cleanVal.includes('less') || cleanVal.includes('poor') || cleanVal.includes('risk'))
+                                            return { label: val, score: 30, status: 'Risk', color: 'rose' };
+                                        if (cleanVal.includes('moderate') || cleanVal.includes('sometimes') || cleanVal.includes('fair'))
+                                            return { label: val, score: 60, status: 'Unstable', color: 'amber' };
+                                        if (cleanVal.includes('never') || cleanVal.includes('none') || cleanVal.includes('healthy'))
+                                            return { label: val, score: 100, status: 'Healthy', color: 'emerald' };
+
+                                        return { label: val, score: 50, status: 'Unstable', color: 'amber' };
+                                    };
+
+                                    const items = [
+                                        { key: 'Sleep Quality', ...getInsight('sleep', source.sleep), icon: <Moon size={20} /> },
+                                        { key: 'Workout Frequency', ...getInsight('exercise', source.exercise), icon: <Activity size={20} /> },
+                                        { key: 'Tobacco Usage', ...getInsight('smoking', source.smoking), icon: <Cigarette size={20} /> },
+                                        { key: 'Alcohol Intake', ...getInsight('alcohol', source.alcohol), icon: <GlassWater size={20} /> }
+                                    ];
+
+                                    if (items.length === 0) return <p className="text-slate-500 text-sm font-bold text-center w-full py-10">No lifestyle data available.</p>;
+
+                                    const colorMap = {
+                                        rose: { text: 'text-rose-500', bg: 'bg-rose-500/10', glow: 'bg-rose-500/5' },
+                                        amber: { text: 'text-amber-500', bg: 'bg-amber-500/10', glow: 'bg-amber-500/5' },
+                                        emerald: { text: 'text-emerald-500', bg: 'bg-emerald-500/10', glow: 'bg-emerald-500/5' },
+                                        purple: { text: 'text-purple-500', bg: 'bg-purple-500/10', glow: 'bg-purple-500/5' },
+                                        slate: { text: 'text-slate-500', bg: 'bg-slate-500/10', glow: 'bg-slate-500/5' }
+                                    };
 
                                     return items.map((item, idx) => {
-                                        const val = String(item.value).toLowerCase();
-                                        const isHighRisk = val.includes('poor') ||
-                                            val.includes('regular') ||
-                                            val.includes('high') ||
-                                            val.includes('heavy') ||
-                                            val.includes('less than');
-
-                                        const isContributing = val.includes('moderate') ||
-                                            val.includes('occasional') ||
-                                            val.includes('1-2') ||
-                                            val.includes('needs_improvement') ||
-                                            val.includes('fair');
-
+                                        const colors = colorMap[item.color] || colorMap.slate;
                                         return (
-                                            <div key={idx} className="flex justify-between items-center p-6 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5">
-                                                <div className="flex items-center gap-4">
-                                                    <div className={`p-2 rounded-lg ${isHighRisk ? 'bg-rose-100 text-rose-600' : isContributing ? 'bg-amber-100 text-amber-600' : 'bg-emerald-100 text-emerald-600'}`}>
-                                                        {item.icon}
+                                            <motion.div key={idx} whileHover={{ y: -5 }} className="relative p-6 rounded-[2rem] bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 overflow-hidden group transition-all duration-300">
+                                                <div className="flex flex-col items-center text-center relative z-10">
+                                                    <div className="relative w-28 h-28 mb-4">
+                                                        <svg className="w-full h-full transform -rotate-90">
+                                                            <circle cx="56" cy="56" r="48" stroke="currentColor" strokeWidth="6" fill="transparent" className="text-slate-200 dark:text-white/10" />
+                                                            <motion.circle cx="56" cy="56" r="48" stroke="currentColor" strokeWidth="8" fill="transparent"
+                                                                strokeDasharray={301.6} initial={{ strokeDashoffset: 301.6 }}
+                                                                animate={{ strokeDashoffset: 301.6 - (301.6 * item.score) / 100 }}
+                                                                transition={{ duration: 1.5, delay: 0.5 + idx * 0.1 }}
+                                                                className={colors.text}
+                                                            />
+                                                        </svg>
+                                                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                                                            <div className={`p-3 ${colors.bg} rounded-2xl mb-1 ${colors.text}`}>
+                                                                {item.icon}
+                                                            </div>
+                                                            <span className="text-[12px] font-black text-slate-800 dark:text-white leading-none">{item.score}%</span>
+                                                            <span className="text-[7px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-tighter mt-0.5">Health</span>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <span className="text-xs font-bold text-slate-400 uppercase block mb-1">{item.key}</span>
-                                                        <span className="text-slate-800 dark:text-white font-bold capitalize">{item.value}</span>
+                                                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1">{item.key}</span>
+                                                    <h4 className="text-sm font-bold text-slate-800 dark:text-white capitalize mb-4 tracking-tight">{item.label}</h4>
+                                                    <div className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-tighter ${colors.bg} ${colors.text}`}>
+                                                        {item.status}
                                                     </div>
                                                 </div>
-                                                <span className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest ${isHighRisk ? 'bg-rose-500/10 text-rose-500' : isContributing ? 'bg-amber-500/10 text-amber-500' : 'bg-emerald-500/10 text-emerald-500'}`}>
-                                                    {isHighRisk ? 'High Risk' : isContributing ? 'Contribution' : 'Healthy'}
-                                                </span>
-                                            </div>
+                                                <div className={`absolute -bottom-10 -right-10 w-24 h-24 ${colors.glow} blur-3xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                                            </motion.div>
                                         );
                                     });
                                 })()}
